@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Home on Your Site Title</title><link>/</link><description>Recent content in Home on Your Site Title</description><generator>Hugo</generator><language>en-us</language><lastBuildDate>Tue, 14 Nov 2023 00:00:00 +0000</lastBuildDate><atom:link href="/index.xml" rel="self" type="application/rss+xml"/><item><title>Product Manager</title><link>/jobs/product-manager/</link><pubDate>Tue, 14 Nov 2023 00:00:00 +0000</pubDate><guid>/jobs/product-manager/</guid><description>&lt;p>We&amp;rsquo;re looking for a Product Manager to join our team and help shape the future of our product.&lt;/p>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Home on 烧烤量化</title><link>https://sk-quant.github.io/</link><description>Recent content in Home on 烧烤量化</description><generator>Hugo</generator><language>zh-cn</language><atom:link href="https://sk-quant.github.io/index.xml" rel="self" type="application/rss+xml"/><item><title>Product Manager</title><link>https://sk-quant.github.io/jobs/product-manager/</link><pubDate>Tue, 14 Nov 2023 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/jobs/product-manager/</guid><description>&lt;p>We&amp;rsquo;re looking for a Product Manager to join our team and help shape the future of our product.&lt;/p>
 &lt;h2 id="about-the-role">About the Role&lt;/h2>
 &lt;p>As a Product Manager, you&amp;rsquo;ll be responsible for:&lt;/p>
 &lt;ul>
@@ -37,7 +37,7 @@
 &lt;li>Office perks and snacks&lt;/li>
 &lt;/ul>
 &lt;h2 id="how-to-apply">How to Apply&lt;/h2>
-&lt;p>Please send your resume and a cover letter detailing your product management experience and why you&amp;rsquo;re interested in joining our team. Include examples of products you&amp;rsquo;ve managed and their impact.&lt;/p></description></item><item><title>Senior Frontend Developer</title><link>/jobs/senior-frontend-developer/</link><pubDate>Tue, 14 Nov 2023 00:00:00 +0000</pubDate><guid>/jobs/senior-frontend-developer/</guid><description>&lt;p>We&amp;rsquo;re looking for a Senior Frontend Developer to join our growing team and help shape the future of our SaaS platform.&lt;/p>
+&lt;p>Please send your resume and a cover letter detailing your product management experience and why you&amp;rsquo;re interested in joining our team. Include examples of products you&amp;rsquo;ve managed and their impact.&lt;/p></description></item><item><title>Senior Frontend Developer</title><link>https://sk-quant.github.io/jobs/senior-frontend-developer/</link><pubDate>Tue, 14 Nov 2023 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/jobs/senior-frontend-developer/</guid><description>&lt;p>We&amp;rsquo;re looking for a Senior Frontend Developer to join our growing team and help shape the future of our SaaS platform.&lt;/p>
 &lt;h2 id="about-the-role">About the Role&lt;/h2>
 &lt;p>As a Senior Frontend Developer, you&amp;rsquo;ll be responsible for:&lt;/p>
 &lt;ul>
@@ -75,7 +75,7 @@
 &lt;li>Home office setup allowance&lt;/li>
 &lt;/ul>
 &lt;h2 id="how-to-apply">How to Apply&lt;/h2>
-&lt;p>Please send your resume, portfolio, and a brief cover letter explaining why you&amp;rsquo;d be a great fit for our team. Include links to any relevant projects or open source contributions.&lt;/p></description></item><item><title>Content Management in Hugo: Best Practices</title><link>/blog/content-management-hugo/</link><pubDate>Mon, 24 Jul 2023 00:00:00 +0000</pubDate><guid>/blog/content-management-hugo/</guid><description>&lt;div class="bg-gray-50 p-6 rounded-lg mb-8">
+&lt;p>Please send your resume, portfolio, and a brief cover letter explaining why you&amp;rsquo;d be a great fit for our team. Include links to any relevant projects or open source contributions.&lt;/p></description></item><item><title>Content Management in Hugo: Best Practices</title><link>https://sk-quant.github.io/blog/content-management-hugo/</link><pubDate>Mon, 24 Jul 2023 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/blog/content-management-hugo/</guid><description>&lt;div class="bg-gray-50 p-6 rounded-lg mb-8">
  &lt;h2 class="text-xl font-semibold mb-4">Table of Contents&lt;/h2>
  &lt;nav id="TableOfContents">
  &lt;ul>
@@ -120,7 +120,7 @@
 &lt;p>Effective content management is crucial for maintaining a scalable Hugo site. This guide covers best practices for organizing and managing your content.&lt;/p>
 &lt;h2 id="content-organization">Content Organization&lt;/h2>
 &lt;h3 id="directory-structure">Directory Structure&lt;/h3>
-&lt;p>Create a logical content hierarchy:&lt;/p></description></item><item><title>Optimizing Hugo Performance: Speed Up Your Site</title><link>/blog/optimizing-hugo-performance/</link><pubDate>Sun, 23 Jul 2023 00:00:00 +0000</pubDate><guid>/blog/optimizing-hugo-performance/</guid><description>&lt;div class="bg-gray-50 p-6 rounded-lg mb-8">
+&lt;p>Create a logical content hierarchy:&lt;/p></description></item><item><title>Optimizing Hugo Performance: Speed Up Your Site</title><link>https://sk-quant.github.io/blog/optimizing-hugo-performance/</link><pubDate>Sun, 23 Jul 2023 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/blog/optimizing-hugo-performance/</guid><description>&lt;div class="bg-gray-50 p-6 rounded-lg mb-8">
  &lt;h2 class="text-xl font-semibold mb-4">Table of Contents&lt;/h2>
  &lt;nav id="TableOfContents">
  &lt;ul>
@@ -160,7 +160,7 @@
 &lt;p>Performance is crucial for user experience and SEO. In this guide, we&amp;rsquo;ll explore various techniques to optimize your Hugo site for maximum performance.&lt;/p>
 &lt;h2 id="asset-optimization">Asset Optimization&lt;/h2>
 &lt;h3 id="image-optimization">Image Optimization&lt;/h3>
-&lt;p>Images often contribute the most to page weight. Here&amp;rsquo;s how to optimize them:&lt;/p></description></item><item><title>Deploying Hugo Sites: A Complete Guide</title><link>/blog/deploying-hugo-sites/</link><pubDate>Sat, 22 Jul 2023 00:00:00 +0000</pubDate><guid>/blog/deploying-hugo-sites/</guid><description>&lt;div class="bg-gray-50 p-6 rounded-lg mb-8">
+&lt;p>Images often contribute the most to page weight. Here&amp;rsquo;s how to optimize them:&lt;/p></description></item><item><title>Deploying Hugo Sites: A Complete Guide</title><link>https://sk-quant.github.io/blog/deploying-hugo-sites/</link><pubDate>Sat, 22 Jul 2023 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/blog/deploying-hugo-sites/</guid><description>&lt;div class="bg-gray-50 p-6 rounded-lg mb-8">
  &lt;h2 class="text-xl font-semibold mb-4">Table of Contents&lt;/h2>
  &lt;nav id="TableOfContents">
  &lt;ul>
@@ -229,7 +229,7 @@
 &lt;/div>
 
 &lt;h3 id="2-vercel">2. Vercel&lt;/h3>
-&lt;p>Vercel provides excellent performance and analytics.&lt;/p></description></item><item><title>Customizing Your Hugo Theme: A Deep Dive</title><link>/blog/customizing-your-hugo-theme/</link><pubDate>Fri, 21 Jul 2023 00:00:00 +0000</pubDate><guid>/blog/customizing-your-hugo-theme/</guid><description>&lt;div class="bg-gray-50 p-6 rounded-lg mb-8">
+&lt;p>Vercel provides excellent performance and analytics.&lt;/p></description></item><item><title>Customizing Your Hugo Theme: A Deep Dive</title><link>https://sk-quant.github.io/blog/customizing-your-hugo-theme/</link><pubDate>Fri, 21 Jul 2023 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/blog/customizing-your-hugo-theme/</guid><description>&lt;div class="bg-gray-50 p-6 rounded-lg mb-8">
  &lt;h2 class="text-xl font-semibold mb-4">Table of Contents&lt;/h2>
  &lt;nav id="TableOfContents">
  &lt;ul>
@@ -261,7 +261,7 @@
 &lt;/div>
 
 &lt;h2 id="introduction">Introduction&lt;/h2>
-&lt;p>While Hugo comes with many beautiful themes, you&amp;rsquo;ll often want to customize them to match your specific needs. This guide will walk you through the process of customizing your Hugo theme effectively.&lt;/p></description></item><item><title>Getting Started with Hugo: A Beginner's Guide</title><link>/blog/getting-started-with-hugo/</link><pubDate>Thu, 20 Jul 2023 00:00:00 +0000</pubDate><guid>/blog/getting-started-with-hugo/</guid><description>&lt;div class="bg-gray-50 p-6 rounded-lg mb-8">
+&lt;p>While Hugo comes with many beautiful themes, you&amp;rsquo;ll often want to customize them to match your specific needs. This guide will walk you through the process of customizing your Hugo theme effectively.&lt;/p></description></item><item><title>Getting Started with Hugo: A Beginner's Guide</title><link>https://sk-quant.github.io/blog/getting-started-with-hugo/</link><pubDate>Thu, 20 Jul 2023 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/blog/getting-started-with-hugo/</guid><description>&lt;div class="bg-gray-50 p-6 rounded-lg mb-8">
  &lt;h2 class="text-xl font-semibold mb-4">Table of Contents&lt;/h2>
  &lt;nav id="TableOfContents">
  &lt;ul>
@@ -288,7 +288,7 @@
 &lt;li>Great Community&lt;/li>
 &lt;/ol>
 &lt;h2 id="setting-up-your-first-hugo-site">Setting Up Your First Hugo Site&lt;/h2>
-&lt;p>Let&amp;rsquo;s walk through creating your first Hugo site:&lt;/p></description></item><item><title>About Our Company</title><link>/company/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/company/</guid><description>&lt;section class="bg-gradient-to-b from-blue-50 via-blue-50 to-white pt-20 pb-32">
+&lt;p>Let&amp;rsquo;s walk through creating your first Hugo site:&lt;/p></description></item><item><title>About Our Company</title><link>https://sk-quant.github.io/company/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/company/</guid><description>&lt;section class="bg-gradient-to-b from-blue-50 via-blue-50 to-white pt-20 pb-32">
  &lt;div class="container mx-auto px-4">
  
  &lt;div class="text-center">
@@ -314,7 +314,7 @@
  &lt;div class="team-member text-center">
  &lt;div class="relative mb-4 rounded-lg overflow-hidden aspect-square">
  
- &lt;img src="/images/company/exec-1.svg" alt="Sarah Johnson" class="w-full h-full object-cover">
+ &lt;img src="https://sk-quant.github.io/images/company/exec-1.svg" alt="Sarah Johnson" class="w-full h-full object-cover">
  
  
  &lt;a href="#" target="_blank" rel="noopener" class="absolute bottom-2 right-2 bg-white rounded-full p-2 shadow-md hover:shadow-lg transition-shadow">
@@ -325,7 +325,7 @@
  
  &lt;/div>
  &lt;h3 class="text-xl font-bold mb-1">Sarah Johnson&lt;/h3>
- &lt;p class="text-gray-600">Chief Executive Officer&lt;/p></description></item><item><title>Beautiful Design System</title><link>/features/design-system/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/features/design-system/</guid><description>&lt;h2 id="comprehensive-design-system">Comprehensive Design System&lt;/h2>
+ &lt;p class="text-gray-600">Chief Executive Officer&lt;/p></description></item><item><title>Beautiful Design System</title><link>https://sk-quant.github.io/features/design-system/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/features/design-system/</guid><description>&lt;h2 id="comprehensive-design-system">Comprehensive Design System&lt;/h2>
 &lt;p>Our theme includes a complete design system that makes it easy to create beautiful, consistent interfaces. Built on TailwindCSS, it provides the flexibility to customize every aspect of your design while maintaining a professional look.&lt;/p>
 &lt;h3 id="design-components">Design Components&lt;/h3>
 &lt;h4 id="core-elements">Core Elements&lt;/h4>
@@ -371,7 +371,7 @@
 &lt;li>Adaptive layouts&lt;/li>
 &lt;li>Touch-friendly interactions&lt;/li>
 &lt;/ul>
-&lt;p>Our design system provides the perfect foundation for creating beautiful, accessible, and responsive websites that stand out from the crowd.&lt;/p></description></item><item><title>Developer Experience</title><link>/features/developer-experience/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/features/developer-experience/</guid><description>&lt;h2 id="built-for-developers">Built for Developers&lt;/h2>
+&lt;p>Our design system provides the perfect foundation for creating beautiful, accessible, and responsive websites that stand out from the crowd.&lt;/p></description></item><item><title>Developer Experience</title><link>https://sk-quant.github.io/features/developer-experience/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/features/developer-experience/</guid><description>&lt;h2 id="built-for-developers">Built for Developers&lt;/h2>
 &lt;p>Our theme is designed with developers in mind, providing a clean, efficient workflow that makes building websites enjoyable and productive.&lt;/p>
 &lt;h3 id="development-features">Development Features&lt;/h3>
 &lt;h4 id="project-structure">Project Structure&lt;/h4>
@@ -427,15 +427,15 @@
 &lt;li>Troubleshooting guide&lt;/li>
 &lt;li>Deployment instructions&lt;/li>
 &lt;/ul>
-&lt;p>Our developer experience focuses on making it easy to build, customize, and maintain your website while following best practices and maintaining clean, efficient code.&lt;/p></description></item><item><title>Join Our Team</title><link>/careers/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/careers/</guid><description>&lt;p>At Saasify, we believe in empowering our team members to do their best work. We foster an environment of innovation, collaboration, and continuous learning. Our culture is built on trust, transparency, and a shared commitment to excellence.&lt;/p>
-&lt;p>We&amp;rsquo;re looking for passionate individuals who want to make a difference and grow with us. If you&amp;rsquo;re excited about building the future of SaaS and working with cutting-edge technology, we&amp;rsquo;d love to hear from you.&lt;/p></description></item><item><title>License</title><link>/license/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/license/</guid><description>&lt;h2 id="mit-license">MIT License&lt;/h2>
+&lt;p>Our developer experience focuses on making it easy to build, customize, and maintain your website while following best practices and maintaining clean, efficient code.&lt;/p></description></item><item><title>Join Our Team</title><link>https://sk-quant.github.io/careers/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/careers/</guid><description>&lt;p>At Saasify, we believe in empowering our team members to do their best work. We foster an environment of innovation, collaboration, and continuous learning. Our culture is built on trust, transparency, and a shared commitment to excellence.&lt;/p>
+&lt;p>We&amp;rsquo;re looking for passionate individuals who want to make a difference and grow with us. If you&amp;rsquo;re excited about building the future of SaaS and working with cutting-edge technology, we&amp;rsquo;d love to hear from you.&lt;/p></description></item><item><title>License</title><link>https://sk-quant.github.io/license/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/license/</guid><description>&lt;h2 id="mit-license">MIT License&lt;/h2>
 &lt;p>Copyright (c) 2024&lt;/p>
 &lt;p>Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the &amp;ldquo;Software&amp;rdquo;), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:&lt;/p></description></item><item><title>Lightning-Fast Performance</title><link>/features/performance/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/features/performance/</guid><description>&lt;h2 id="built-for-speed">Built for Speed&lt;/h2>
+furnished to do so, subject to the following conditions:&lt;/p></description></item><item><title>Lightning-Fast Performance</title><link>https://sk-quant.github.io/features/performance/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/features/performance/</guid><description>&lt;h2 id="built-for-speed">Built for Speed&lt;/h2>
 &lt;p>Our theme is engineered from the ground up with performance in mind. By leveraging Hugo&amp;rsquo;s powerful static site generation and combining it with modern optimization techniques, we deliver websites that load instantly and run smoothly.&lt;/p>
 &lt;h3 id="performance-metrics">Performance Metrics&lt;/h3>
 &lt;ul>
@@ -466,7 +466,7 @@ furnished to do so, subject to the following conditions:&lt;/p></description></i
 &lt;li>Automatic cache invalidation&lt;/li>
 &lt;li>Geographic redundancy&lt;/li>
 &lt;/ul>
-&lt;p>Our performance-first approach ensures your website not only looks great but delivers an exceptional user experience through blazing-fast load times and smooth interactions.&lt;/p></description></item><item><title>Pricing</title><link>/pricing/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/pricing/</guid><description>&lt;section class="py-16 bg-white">
+&lt;p>Our performance-first approach ensures your website not only looks great but delivers an exceptional user experience through blazing-fast load times and smooth interactions.&lt;/p></description></item><item><title>Pricing</title><link>https://sk-quant.github.io/pricing/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/pricing/</guid><description>&lt;section class="py-16 bg-white">
  &lt;div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
  
  &lt;div class="text-center">
@@ -551,7 +551,7 @@ furnished to do so, subject to the following conditions:&lt;/p></description></i
  &lt;div class="p-8 flex flex-col flex-grow">
  &lt;div class="mb-6">
  &lt;h3 class="text-2xl font-bold text-gray-900">Company&lt;/h3>
- &lt;p class="mt-2 text-gray-500">Relevant for multiple users, extended &amp;amp; premium support.&lt;/p></description></item><item><title>Privacy Policy</title><link>/privacy/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/privacy/</guid><description>&lt;h2 id="introduction">Introduction&lt;/h2>
+ &lt;p class="mt-2 text-gray-500">Relevant for multiple users, extended &amp;amp; premium support.&lt;/p></description></item><item><title>Privacy Policy</title><link>https://sk-quant.github.io/privacy/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/privacy/</guid><description>&lt;h2 id="introduction">Introduction&lt;/h2>
 &lt;p>At Saasify, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our service.&lt;/p>
 &lt;hr>
 &lt;h2 id="information-we-collect">Information We Collect&lt;/h2>

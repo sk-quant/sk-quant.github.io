@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Features on Your Site Title</title><link>/features/</link><description>Recent content in Features on Your Site Title</description><generator>Hugo</generator><language>en-us</language><atom:link href="/features/index.xml" rel="self" type="application/rss+xml"/><item><title>Beautiful Design System</title><link>/features/design-system/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/features/design-system/</guid><description>&lt;h2 id="comprehensive-design-system">Comprehensive Design System&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Features on 烧烤量化</title><link>https://sk-quant.github.io/features/</link><description>Recent content in Features on 烧烤量化</description><generator>Hugo</generator><language>zh-cn</language><atom:link href="https://sk-quant.github.io/features/index.xml" rel="self" type="application/rss+xml"/><item><title>Beautiful Design System</title><link>https://sk-quant.github.io/features/design-system/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/features/design-system/</guid><description>&lt;h2 id="comprehensive-design-system">Comprehensive Design System&lt;/h2>
 &lt;p>Our theme includes a complete design system that makes it easy to create beautiful, consistent interfaces. Built on TailwindCSS, it provides the flexibility to customize every aspect of your design while maintaining a professional look.&lt;/p>
 &lt;h3 id="design-components">Design Components&lt;/h3>
 &lt;h4 id="core-elements">Core Elements&lt;/h4>
@@ -44,7 +44,7 @@
 &lt;li>Adaptive layouts&lt;/li>
 &lt;li>Touch-friendly interactions&lt;/li>
 &lt;/ul>
-&lt;p>Our design system provides the perfect foundation for creating beautiful, accessible, and responsive websites that stand out from the crowd.&lt;/p></description></item><item><title>Developer Experience</title><link>/features/developer-experience/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/features/developer-experience/</guid><description>&lt;h2 id="built-for-developers">Built for Developers&lt;/h2>
+&lt;p>Our design system provides the perfect foundation for creating beautiful, accessible, and responsive websites that stand out from the crowd.&lt;/p></description></item><item><title>Developer Experience</title><link>https://sk-quant.github.io/features/developer-experience/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/features/developer-experience/</guid><description>&lt;h2 id="built-for-developers">Built for Developers&lt;/h2>
 &lt;p>Our theme is designed with developers in mind, providing a clean, efficient workflow that makes building websites enjoyable and productive.&lt;/p>
 &lt;h3 id="development-features">Development Features&lt;/h3>
 &lt;h4 id="project-structure">Project Structure&lt;/h4>
@@ -100,7 +100,7 @@
 &lt;li>Troubleshooting guide&lt;/li>
 &lt;li>Deployment instructions&lt;/li>
 &lt;/ul>
-&lt;p>Our developer experience focuses on making it easy to build, customize, and maintain your website while following best practices and maintaining clean, efficient code.&lt;/p></description></item><item><title>Lightning-Fast Performance</title><link>/features/performance/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>/features/performance/</guid><description>&lt;h2 id="built-for-speed">Built for Speed&lt;/h2>
+&lt;p>Our developer experience focuses on making it easy to build, customize, and maintain your website while following best practices and maintaining clean, efficient code.&lt;/p></description></item><item><title>Lightning-Fast Performance</title><link>https://sk-quant.github.io/features/performance/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/features/performance/</guid><description>&lt;h2 id="built-for-speed">Built for Speed&lt;/h2>
 &lt;p>Our theme is engineered from the ground up with performance in mind. By leveraging Hugo&amp;rsquo;s powerful static site generation and combining it with modern optimization techniques, we deliver websites that load instantly and run smoothly.&lt;/p>
 &lt;h3 id="performance-metrics">Performance Metrics&lt;/h3>
 &lt;ul>
