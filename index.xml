@@ -466,7 +466,42 @@ furnished to do so, subject to the following conditions:&lt;/p></description></i
 &lt;li>Automatic cache invalidation&lt;/li>
 &lt;li>Geographic redundancy&lt;/li>
 &lt;/ul>
-&lt;p>Our performance-first approach ensures your website not only looks great but delivers an exceptional user experience through blazing-fast load times and smooth interactions.&lt;/p></description></item><item><title>Pricing</title><link>https://sk-quant.github.io/pricing/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/pricing/</guid><description>&lt;section class="py-16 bg-white">
+&lt;p>Our performance-first approach ensures your website not only looks great but delivers an exceptional user experience through blazing-fast load times and smooth interactions.&lt;/p></description></item><item><title>Privacy Policy</title><link>https://sk-quant.github.io/privacy/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/privacy/</guid><description>&lt;h2 id="introduction">Introduction&lt;/h2>
+&lt;p>At Saasify, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our service.&lt;/p>
+&lt;hr>
+&lt;h2 id="information-we-collect">Information We Collect&lt;/h2>
+&lt;h3 id="personal-information">Personal Information&lt;/h3>
+&lt;ul>
+&lt;li>&lt;strong>Name and email address&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>Billing information&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>Usage data and analytics&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>Communication preferences&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;h3 id="automatically-collected-information">Automatically Collected Information&lt;/h3>
+&lt;ul>
+&lt;li>&lt;strong>IP addresses&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>Browser type&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>Device information&lt;/strong>&lt;/li>
+&lt;li>&lt;strong>Cookies and tracking technologies&lt;/strong>&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="how-we-use-your-information">How We Use Your Information&lt;/h2>
+&lt;p>We use the collected information for:&lt;/p>
+&lt;ul>
+&lt;li>&lt;strong>Service Delivery&lt;/strong>&lt;br>
+Providing and maintaining our service&lt;/li>
+&lt;li>&lt;strong>Updates&lt;/strong>&lt;br>
+Notifying you about changes to our service&lt;/li>
+&lt;li>&lt;strong>Support&lt;/strong>&lt;br>
+Providing customer support&lt;/li>
+&lt;li>&lt;strong>Transactions&lt;/strong>&lt;br>
+Processing your transactions&lt;/li>
+&lt;li>&lt;strong>Analytics&lt;/strong>&lt;br>
+Analyzing usage patterns to improve our service&lt;/li>
+&lt;/ul>
+&lt;hr>
+&lt;h2 id="data-security">Data Security&lt;/h2>
+&lt;p>We implement appropriate technical and organizational security measures to protect your personal information. However, no method of transmission over the Internet is 100% secure.&lt;/p></description></item><item><title>服务套餐</title><link>https://sk-quant.github.io/pricing/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/pricing/</guid><description>&lt;section class="py-16 bg-white">
  &lt;div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
  
  &lt;div class="text-center">
@@ -485,12 +520,12 @@ furnished to do so, subject to the following conditions:&lt;/p></description></i
  
  &lt;div class="p-8 flex flex-col flex-grow">
  &lt;div class="mb-6">
- &lt;h3 class="text-2xl font-bold text-gray-900">Starter&lt;/h3>
+ &lt;h3 class="text-2xl font-bold text-gray-900">量化入门&lt;/h3>
  &lt;p class="mt-2 text-gray-500">Best option for personal use &amp;amp; for your next project.&lt;/p>
  &lt;/div>
  &lt;div class="mb-8">
  &lt;p class="flex items-baseline">
- &lt;span class="text-5xl font-bold tracking-tight text-gray-900">$29&lt;/span>
+ &lt;span class="text-5xl font-bold tracking-tight text-gray-900">$99&lt;/span>
  &lt;span class="ml-2 text-gray-500">/month&lt;/span>
  &lt;/p>
  &lt;/div>
@@ -550,40 +585,5 @@ furnished to do so, subject to the following conditions:&lt;/p></description></i
  
  &lt;div class="p-8 flex flex-col flex-grow">
  &lt;div class="mb-6">
- &lt;h3 class="text-2xl font-bold text-gray-900">Company&lt;/h3>
- &lt;p class="mt-2 text-gray-500">Relevant for multiple users, extended &amp;amp; premium support.&lt;/p></description></item><item><title>Privacy Policy</title><link>https://sk-quant.github.io/privacy/</link><pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/privacy/</guid><description>&lt;h2 id="introduction">Introduction&lt;/h2>
-&lt;p>At Saasify, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our service.&lt;/p>
-&lt;hr>
-&lt;h2 id="information-we-collect">Information We Collect&lt;/h2>
-&lt;h3 id="personal-information">Personal Information&lt;/h3>
-&lt;ul>
-&lt;li>&lt;strong>Name and email address&lt;/strong>&lt;/li>
-&lt;li>&lt;strong>Billing information&lt;/strong>&lt;/li>
-&lt;li>&lt;strong>Usage data and analytics&lt;/strong>&lt;/li>
-&lt;li>&lt;strong>Communication preferences&lt;/strong>&lt;/li>
-&lt;/ul>
-&lt;h3 id="automatically-collected-information">Automatically Collected Information&lt;/h3>
-&lt;ul>
-&lt;li>&lt;strong>IP addresses&lt;/strong>&lt;/li>
-&lt;li>&lt;strong>Browser type&lt;/strong>&lt;/li>
-&lt;li>&lt;strong>Device information&lt;/strong>&lt;/li>
-&lt;li>&lt;strong>Cookies and tracking technologies&lt;/strong>&lt;/li>
-&lt;/ul>
-&lt;hr>
-&lt;h2 id="how-we-use-your-information">How We Use Your Information&lt;/h2>
-&lt;p>We use the collected information for:&lt;/p>
-&lt;ul>
-&lt;li>&lt;strong>Service Delivery&lt;/strong>&lt;br>
-Providing and maintaining our service&lt;/li>
-&lt;li>&lt;strong>Updates&lt;/strong>&lt;br>
-Notifying you about changes to our service&lt;/li>
-&lt;li>&lt;strong>Support&lt;/strong>&lt;br>
-Providing customer support&lt;/li>
-&lt;li>&lt;strong>Transactions&lt;/strong>&lt;br>
-Processing your transactions&lt;/li>
-&lt;li>&lt;strong>Analytics&lt;/strong>&lt;br>
-Analyzing usage patterns to improve our service&lt;/li>
-&lt;/ul>
-&lt;hr>
-&lt;h2 id="data-security">Data Security&lt;/h2>
-&lt;p>We implement appropriate technical and organizational security measures to protect your personal information. However, no method of transmission over the Internet is 100% secure.&lt;/p></description></item></channel></rss>
+ &lt;h3 class="text-2xl font-bold text-gray-900">量化进级&lt;/h3>
+ &lt;p class="mt-2 text-gray-500">Relevant for multiple users, extended &amp;amp; premium support.&lt;/p></description></item></channel></rss>
