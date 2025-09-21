@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Jobs on 烧烤量化</title><link>https://sk-quant.github.io/job/</link><description>Recent content in Jobs on 烧烤量化</description><generator>Hugo</generator><language>zh-cn</language><lastBuildDate>Sat, 20 Sep 2025 19:59:16 +0800</lastBuildDate><atom:link href="https://sk-quant.github.io/job/index.xml" rel="self" type="application/rss+xml"/><item><title>量化基础</title><link>https://sk-quant.github.io/job/level1/</link><pubDate>Fri, 03 Jan 2025 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/job/level1/</guid><description>&lt;h2 id="课程概述">课程概述&lt;/h2>
+<?xml version="1.0" encoding="utf-8" standalone="yes"?><rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Jobs on 烧烤量化</title><link>https://sk-quant.github.io/jobs/</link><description>Recent content in Jobs on 烧烤量化</description><generator>Hugo</generator><language>zh-cn</language><lastBuildDate>Sun, 21 Sep 2025 11:07:21 +0800</lastBuildDate><atom:link href="https://sk-quant.github.io/jobs/index.xml" rel="self" type="application/rss+xml"/><item><title>量化基础</title><link>https://sk-quant.github.io/jobs/level1/</link><pubDate>Fri, 03 Jan 2025 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/jobs/level1/</guid><description>&lt;h2 id="课程概述">课程概述&lt;/h2>
 &lt;p>量化基础课程是量化交易学习的第一步，为初学者提供系统性的理论基础和实践技能培训。本课程涵盖投资理论、编程基础、技术分析和回测实践四大核心模块，帮助学员建立完整的量化投资知识体系。&lt;/p>
 &lt;p>通过100课时的系统学习，学员将掌握量化交易的核心概念、基础理论和实践技能，为后续的量化进阶学习奠定坚实基础。&lt;/p>
 &lt;h2 id="投资理论基础">投资理论基础&lt;/h2>
@@ -90,7 +90,7 @@
 &lt;li>掌握主要技术指标的计算原理和实际应用&lt;/li>
 &lt;li>独立搭建简单的量化策略回测系统&lt;/li>
 &lt;li>具备进入量化进阶课程学习的理论基础和编程能力&lt;/li>
-&lt;/ul></description></item><item><title>量化进阶</title><link>https://sk-quant.github.io/job/level2/</link><pubDate>Thu, 02 Jan 2025 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/job/level2/</guid><description>&lt;h2 id="课程概述">课程概述&lt;/h2>
+&lt;/ul></description></item><item><title>量化进阶</title><link>https://sk-quant.github.io/jobs/level2/</link><pubDate>Thu, 02 Jan 2025 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/jobs/level2/</guid><description>&lt;h2 id="课程概述">课程概述&lt;/h2>
 &lt;p>量化进阶课程是在量化基础之上的深度提升，专为有一定量化基础的学员设计。本课程将深入探讨实用的量化策略、实盘交易工具、市场前沿技术以及完整的实战项目开发，帮助学员从理论走向实践，成为真正的量化交易专家。&lt;/p>
 &lt;p>通过200课时的深度学习，将理论知识与实战应用紧密结合。课程不仅传授成熟的量化策略和交易技巧，更注重培养学员的实盘操作能力和系统开发技能，为学员在量化投资领域的职业发展奠定坚实基础。&lt;/p>
 &lt;h2 id="策略分享精讲">策略分享精讲&lt;/h2>
@@ -303,7 +303,7 @@
 &lt;/li>
 &lt;/ul>
 &lt;h2 id="学习目标">学习目标&lt;/h2>
-&lt;p>完成本课程学习后，学员将能够：&lt;/p></description></item><item><title>量化高手</title><link>https://sk-quant.github.io/job/level3/</link><pubDate>Wed, 01 Jan 2025 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/job/level3/</guid><description>&lt;h2 id="课程概述">课程概述&lt;/h2>
+&lt;p>完成本课程学习后，学员将能够：&lt;/p></description></item><item><title>量化高手</title><link>https://sk-quant.github.io/jobs/level3/</link><pubDate>Wed, 01 Jan 2025 00:00:00 +0000</pubDate><guid>https://sk-quant.github.io/jobs/level3/</guid><description>&lt;h2 id="课程概述">课程概述&lt;/h2>
 &lt;p>量化高手课程是量化交易学习体系的最高阶段，专为有丰富量化基础和进阶经验的学员设计。本课程深入探讨衍生品交易策略，涵盖可转债、融资融券、股指期货、股票期权等高级金融工具的量化应用，帮助学员构建多品种、多策略的专业量化交易体系。&lt;/p>
 &lt;p>通过300课时的深度学习，将复杂的衍生品交易理论与实战操作相结合。课程不仅传授高级量化策略的设计思路，更注重培养学员的风险管理能力和投资组合优化技能，为学员在量化投资领域达到专家水平提供全面支持。&lt;/p>
 &lt;h2 id="可转债量化交易">可转债量化交易&lt;/h2>
