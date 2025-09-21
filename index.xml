@@ -994,8 +994,8 @@ Analyzing usage patterns to improve our service&lt;/li>
  &lt;/div>
  &lt;div class="mb-8">
  &lt;p class="flex items-baseline">
- &lt;span class="text-5xl font-bold tracking-tight text-gray-900">$1999&lt;/span>
- &lt;span class="ml-2 text-gray-500">/month&lt;/span>
+ &lt;span class="text-5xl font-bold tracking-tight text-gray-900">¥1999&lt;/span>
+ &lt;span class="ml-2 text-gray-500">&lt;/span>
  &lt;/p>
  &lt;/div>
  &lt;ul class="space-y-4 text-gray-600 flex-grow">
