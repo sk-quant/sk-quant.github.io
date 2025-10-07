@@ -1,0 +1,1693 @@
+<!doctype html><html lang=zh-cn class=h-full><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><script>(function(e,t,n,s,o){e[s]=e[s]||[],e[s].push({"gtm.start":(new Date).getTime(),event:"gtm.js"});var a=t.getElementsByTagName(n)[0],i=t.createElement(n),r=s!="dataLayer"?"&l="+s:"";i.async=!0,i.src="https://www.googletagmanager.com/gtm.js?id="+o+r,a.parentNode.insertBefore(i,a)})(window,document,"script","dataLayer","GTM-XXXXXXX")</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-XXXXXXXXXX")</script><title>代码基础第4讲：Python面向对象编程 | 烧烤量化</title>
+<meta name=description content="深入理解Python面向对象编程，掌握类与对象、继承、多态、封装等核心概念，为构建量化交易系统打下基础"><meta name=author content="Ryan"><meta name=robots content="index, follow"><meta property="og:title" content="代码基础第4讲：Python面向对象编程 | 烧烤量化"><meta property="og:description" content="深入理解Python面向对象编程，掌握类与对象、继承、多态、封装等核心概念，为构建量化交易系统打下基础"><meta property="og:type" content="article"><meta property="og:url" content="https://sk-quant.github.io/blog/%E4%BB%A3%E7%A0%81%E5%9F%BA%E7%A1%80/04-python%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%BC%96%E7%A8%8B/"><meta property="og:site_name" content="烧烤量化"><meta name=twitter:card content="summary_large_image"><meta name=twitter:title content="代码基础第4讲：Python面向对象编程 | 烧烤量化"><meta name=twitter:description content="深入理解Python面向对象编程，掌握类与对象、继承、多态、封装等核心概念，为构建量化交易系统打下基础"><link rel=icon type=image/x-icon href=/images/favicon.ico><link rel=canonical href=https://sk-quant.github.io/blog/%E4%BB%A3%E7%A0%81%E5%9F%BA%E7%A1%80/04-python%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%BC%96%E7%A8%8B/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel=stylesheet><link rel=stylesheet href="/css/main.min.1255c60f0805e580d846a005c9da456febfe5426dbcd39f66ba0ae2958126a2d.css"></head><body class="min-h-screen flex flex-col"><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height=0 width=0 style=display:none;visibility:hidden></iframe></noscript><div class="fixed top-0 left-0 right-0 z-50"><div class=mobile-menu-wrapper><input type=checkbox id=nav-toggle class=nav-toggle><header class="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-100"><div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl"><nav class="flex items-center justify-between h-20"><a href=https://sk-quant.github.io/ class="flex items-center space-x-4"><img src=/images/logo.svg alt=烧烤量化 class=h-12>
+<span class="text-3xl font-semibold text-gray-800">烧烤量化</span></a><div class="hidden md:flex items-center space-x-8"><a href=/path class="text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">学习路线</a><div class="relative group"><button class="flex items-center text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">
+量化基础<svg class="ml-2 w-4 h-4" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="absolute left-0 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out"><div class="py-6 bg-white border border-gray-100 shadow-xl rounded-lg"><a href=/categories/%e6%8a%95%e8%b5%84%e7%90%86%e8%ae%ba/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">投资理论</a>
+<a href=/categories/%e4%bb%a3%e7%a0%81%e5%9f%ba%e7%a1%80/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">代码基础</a>
+<a href=/categories/%e6%8a%80%e6%9c%af%e6%8c%87%e6%a0%87/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">技术指标</a>
+<a href=/categories/%e5%9b%9e%e6%b5%8b%e5%b9%b3%e5%8f%b0/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">回测平台</a></div></div></div><div class="relative group"><button class="flex items-center text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">
+量化进阶<svg class="ml-2 w-4 h-4" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="absolute left-0 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out"><div class="py-6 bg-white border border-gray-100 shadow-xl rounded-lg"><a href=/categories/%e7%ad%96%e7%95%a5%e5%88%86%e4%ba%ab/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">策略分享</a>
+<a href=/categories/%e5%ae%9e%e7%9b%98%e5%b7%a5%e5%85%b7/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">实盘工具</a>
+<a href=/categories/%e7%83%ad%e7%82%b9%e9%a3%8e%e5%8f%a3/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">热点风口</a>
+<a href=/categories/%e7%bb%bc%e5%90%88%e5%ae%9e%e6%88%98/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">综合实战</a></div></div></div><div class="relative group"><button class="flex items-center text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">
+量化高手<svg class="ml-2 w-4 h-4" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="absolute left-0 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out"><div class="py-6 bg-white border border-gray-100 shadow-xl rounded-lg"><a href=/categories/%e5%8f%af%e8%bd%ac%e5%80%ba/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">可转债</a>
+<a href=/categories/%e8%9e%8d%e8%b5%84%e8%9e%8d%e5%88%b8/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">融资融券</a>
+<a href=/categories/%e8%82%a1%e7%a5%a8%e6%9c%9f%e6%9d%83/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">股票期权</a>
+<a href=/categories/%e8%82%a1%e6%8c%87%e6%9c%9f%e8%b4%a7/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">股指期货</a></div></div></div><a href=/pricing class="text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">服务套餐</a></div><div class="hidden md:flex items-center space-x-4"><a href=/contact class="inline-flex items-center justify-center px-6 py-3 rounded-lg font-bold transition duration-200 ease-in-out bg-primary-600 text-white hover:bg-primary-700 hover:scale-105">现在加入</a></div><div class=md:hidden><label for=nav-toggle class="p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2 transition-colors cursor-pointer"><svg class="w-6 h-6" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></label></div></nav></div><div class="nav-content md:hidden w-full fixed left-0 right-0 top-20 bg-white border-t border-gray-100 shadow-lg"><div class="w-full px-6 py-4"><a href=/path class="block text-xl text-gray-900 hover:text-primary-600 font-bold transition duration-200 py-2">学习路线</a><div class=py-2><div class="text-xl text-gray-900 font-bold mb-2">量化基础</div><div class=pl-4><a href=/categories/%e6%8a%95%e8%b5%84%e7%90%86%e8%ae%ba/ class="block text-gray-700 hover:text-primary-600 py-2">投资理论</a>
+<a href=/categories/%e4%bb%a3%e7%a0%81%e5%9f%ba%e7%a1%80/ class="block text-gray-700 hover:text-primary-600 py-2">代码基础</a>
+<a href=/categories/%e6%8a%80%e6%9c%af%e6%8c%87%e6%a0%87/ class="block text-gray-700 hover:text-primary-600 py-2">技术指标</a>
+<a href=/categories/%e5%9b%9e%e6%b5%8b%e5%b9%b3%e5%8f%b0/ class="block text-gray-700 hover:text-primary-600 py-2">回测平台</a></div></div><div class=py-2><div class="text-xl text-gray-900 font-bold mb-2">量化进阶</div><div class=pl-4><a href=/categories/%e7%ad%96%e7%95%a5%e5%88%86%e4%ba%ab/ class="block text-gray-700 hover:text-primary-600 py-2">策略分享</a>
+<a href=/categories/%e5%ae%9e%e7%9b%98%e5%b7%a5%e5%85%b7/ class="block text-gray-700 hover:text-primary-600 py-2">实盘工具</a>
+<a href=/categories/%e7%83%ad%e7%82%b9%e9%a3%8e%e5%8f%a3/ class="block text-gray-700 hover:text-primary-600 py-2">热点风口</a>
+<a href=/categories/%e7%bb%bc%e5%90%88%e5%ae%9e%e6%88%98/ class="block text-gray-700 hover:text-primary-600 py-2">综合实战</a></div></div><div class=py-2><div class="text-xl text-gray-900 font-bold mb-2">量化高手</div><div class=pl-4><a href=/categories/%e5%8f%af%e8%bd%ac%e5%80%ba/ class="block text-gray-700 hover:text-primary-600 py-2">可转债</a>
+<a href=/categories/%e8%9e%8d%e8%b5%84%e8%9e%8d%e5%88%b8/ class="block text-gray-700 hover:text-primary-600 py-2">融资融券</a>
+<a href=/categories/%e8%82%a1%e7%a5%a8%e6%9c%9f%e6%9d%83/ class="block text-gray-700 hover:text-primary-600 py-2">股票期权</a>
+<a href=/categories/%e8%82%a1%e6%8c%87%e6%9c%9f%e8%b4%a7/ class="block text-gray-700 hover:text-primary-600 py-2">股指期货</a></div></div><a href=/pricing class="block text-xl text-gray-900 hover:text-primary-600 font-bold transition duration-200 py-2">服务套餐</a><div class="pt-4 space-y-4"><a href=/contact class="block text-center px-6 py-3 rounded-lg font-bold transition duration-200 ease-in-out bg-primary-600 text-white hover:bg-primary-700 hover:scale-105">现在加入</a></div></div></div></header><style>.mobile-menu-wrapper{position:relative}.nav-toggle{display:none}.nav-content{display:none}.nav-toggle:checked~header .nav-content{display:block}</style></div></div><div class=pt-20><div class="container mx-auto px-4 py-12"><div class="flex flex-col lg:flex-row gap-8 mb-12"><article class=flex-1><header class=mb-8><div class=mb-4><a href=/categories/%E4%BB%A3%E7%A0%81%E5%9F%BA%E7%A1%80 class="inline-block px-3 py-1 text-sm font-medium text-primary-600 bg-primary-50 rounded-full hover:bg-primary-100 mr-2">代码基础</a></div><h1 class="text-4xl font-bold mb-4">代码基础第4讲：Python面向对象编程</h1><div class="flex flex-col space-y-4"><div class="flex items-center justify-between text-sm text-gray-500"><div class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7A4 4 0 118 7a4 4 0 018 0zm-4 7a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+<span>Ryan</span></div><div class="flex items-center space-x-6"><div class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747.0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746.0-3.332.477-4.5 1.253"/></svg>
+<span>35 分钟</span></div><div class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5A2 2 0 003 7v12a2 2 0 002 2z"/></svg>
+<time datetime=2025-09-04>September 4, 2025</time></div></div></div><div class="flex items-center flex-wrap gap-2"><a href=/tags/2025 class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors duration-200">#2025</a></div></div></header><div class=mb-8><img src=/images/blog/%e4%bb%a3%e7%a0%81%e5%9f%ba%e7%a1%80.jpg alt=代码基础第4讲：Python面向对象编程 class="w-full h-auto rounded-lg" loading=lazy></div><div class="prose prose-lg max-w-none"><h1 id=代码基础第4讲python面向对象编程>代码基础第4讲：Python面向对象编程</h1><h2 id=前言>前言</h2><p>面向对象编程（OOP）是Python的核心特性之一，在量化交易中有着广泛的应用。从策略模型到风险管理，从数据处理到订单执行，OOP都能帮助我们构建更加模块化、可维护和可扩展的代码结构。</p><h2 id=目录>目录</h2><ol><li><a href=#%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%BC%96%E7%A8%8B%E6%A6%82%E8%BF%B0>面向对象编程概述</a></li><li><a href=#%E7%B1%BB%E4%B8%8E%E5%AF%B9%E8%B1%A1>类与对象</a></li><li><a href=#%E7%BB%A7%E6%89%BF%E4%B8%8E%E5%A4%9A%E6%80%81>继承与多态</a></li><li><a href=#%E5%B0%81%E8%A3%85%E4%B8%8E%E5%B1%9E%E6%80%A7>封装与属性</a></li><li><a href=#%E7%89%B9%E6%AE%8A%E6%96%B9%E6%B3%95>特殊方法</a></li><li><a href=#%E9%87%8F%E5%8C%96%E4%BA%A4%E6%98%93%E4%B8%AD%E7%9A%84%E5%BA%94%E7%94%A8>量化交易中的应用</a></li><li><a href=#%E5%AE%9E%E8%B7%B5%E7%BB%83%E4%B9%A0>实践练习</a></li></ol><h2 id=面向对象编程概述>面向对象编程概述</h2><p>面向对象编程是一种程序设计范式，它将数据和操作数据的方法组织在一起，形成对象。OOP的四大核心特性是：</p><ul><li><strong>封装（Encapsulation）</strong>：将数据和操作数据的方法绑定在一起</li><li><strong>继承（Inheritance）</strong>：子类可以继承父类的属性和方法</li><li><strong>多态（Polymorphism）</strong>：不同类的对象可以响应相同的方法调用</li><li><strong>抽象（Abstraction）</strong>：隐藏复杂的实现细节，只暴露必要的接口</li></ul><h2 id=类与对象>类与对象</h2><h3 id=类的定义与实例化>类的定义与实例化</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>Stock</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;股票类&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 类变量</span>
+</span></span><span class=line><span class=cl>    <span class=n>market</span> <span class=o>=</span> <span class=s2>&#34;A股&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>code</span><span class=p>,</span> <span class=n>name</span><span class=p>,</span> <span class=n>price</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;初始化方法&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>code</span> <span class=o>=</span> <span class=n>code</span>  <span class=c1># 实例变量</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>name</span> <span class=o>=</span> <span class=n>name</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>price</span> <span class=o>=</span> <span class=n>price</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>_volume</span> <span class=o>=</span> <span class=mi>0</span>  <span class=c1># 私有变量（约定）</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>get_info</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;获取股票信息&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>code</span><span class=si>}</span><span class=s2> - </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s2>: ¥</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>price</span><span class=si>}</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>update_price</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>new_price</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;更新股票价格&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>new_price</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>price</span> <span class=o>=</span> <span class=n>new_price</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=kc>True</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=kc>False</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 创建对象</span>
+</span></span><span class=line><span class=cl><span class=n>stock1</span> <span class=o>=</span> <span class=n>Stock</span><span class=p>(</span><span class=s2>&#34;000001&#34;</span><span class=p>,</span> <span class=s2>&#34;平安银行&#34;</span><span class=p>,</span> <span class=mf>12.50</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>stock2</span> <span class=o>=</span> <span class=n>Stock</span><span class=p>(</span><span class=s2>&#34;600519&#34;</span><span class=p>,</span> <span class=s2>&#34;贵州茅台&#34;</span><span class=p>,</span> <span class=mf>1680.00</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>stock1</span><span class=o>.</span><span class=n>get_info</span><span class=p>())</span>  <span class=c1># 000001 - 平安银行: ¥12.5</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>stock2</span><span class=o>.</span><span class=n>get_info</span><span class=p>())</span>  <span class=c1># 600519 - 贵州茅台: ¥1680.0</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h3 id=类变量与实例变量>类变量与实例变量</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>Portfolio</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;投资组合类&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 类变量</span>
+</span></span><span class=line><span class=cl>    <span class=n>total_portfolios</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>name</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>name</span> <span class=o>=</span> <span class=n>name</span>  <span class=c1># 实例变量</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>stocks</span> <span class=o>=</span> <span class=p>{}</span>  <span class=c1># 实例变量</span>
+</span></span><span class=line><span class=cl>        <span class=n>Portfolio</span><span class=o>.</span><span class=n>total_portfolios</span> <span class=o>+=</span> <span class=mi>1</span>  <span class=c1># 修改类变量</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>add_stock</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>stock_code</span><span class=p>,</span> <span class=n>quantity</span><span class=p>,</span> <span class=n>price</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;添加股票&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>stocks</span><span class=p>[</span><span class=n>stock_code</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;quantity&#39;</span><span class=p>:</span> <span class=n>quantity</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;price&#39;</span><span class=p>:</span> <span class=n>price</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;value&#39;</span><span class=p>:</span> <span class=n>quantity</span> <span class=o>*</span> <span class=n>price</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>get_total_value</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;计算总价值&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nb>sum</span><span class=p>(</span><span class=n>stock</span><span class=p>[</span><span class=s1>&#39;value&#39;</span><span class=p>]</span> <span class=k>for</span> <span class=n>stock</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>stocks</span><span class=o>.</span><span class=n>values</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 创建投资组合</span>
+</span></span><span class=line><span class=cl><span class=n>portfolio1</span> <span class=o>=</span> <span class=n>Portfolio</span><span class=p>(</span><span class=s2>&#34;价值投资组合&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>portfolio2</span> <span class=o>=</span> <span class=n>Portfolio</span><span class=p>(</span><span class=s2>&#34;成长投资组合&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;总组合数: </span><span class=si>{</span><span class=n>Portfolio</span><span class=o>.</span><span class=n>total_portfolios</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>  <span class=c1># 2</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;portfolio1的组合数: </span><span class=si>{</span><span class=n>portfolio1</span><span class=o>.</span><span class=n>total_portfolios</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>  <span class=c1># 2</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h2 id=继承与多态>继承与多态</h2><h3 id=单继承>单继承</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>FinancialInstrument</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;金融工具基类&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>symbol</span><span class=p>,</span> <span class=n>name</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>symbol</span> <span class=o>=</span> <span class=n>symbol</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>name</span> <span class=o>=</span> <span class=n>name</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>get_price</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;获取价格（需要在子类中实现）&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>raise</span> <span class=ne>NotImplementedError</span><span class=p>(</span><span class=s2>&#34;子类必须实现get_price方法&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>get_info</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;获取基本信息&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>symbol</span><span class=si>}</span><span class=s2>: </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>name</span><span class=si>}</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>Stock</span><span class=p>(</span><span class=n>FinancialInstrument</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;股票类，继承自FinancialInstrument&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>symbol</span><span class=p>,</span> <span class=n>name</span><span class=p>,</span> <span class=n>price</span><span class=p>,</span> <span class=n>shares_outstanding</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>symbol</span><span class=p>,</span> <span class=n>name</span><span class=p>)</span>  <span class=c1># 调用父类构造函数</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>price</span> <span class=o>=</span> <span class=n>price</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>shares_outstanding</span> <span class=o>=</span> <span class=n>shares_outstanding</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>get_price</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;实现父类的抽象方法&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>price</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>get_market_cap</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;计算市值&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>price</span> <span class=o>*</span> <span class=bp>self</span><span class=o>.</span><span class=n>shares_outstanding</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>Bond</span><span class=p>(</span><span class=n>FinancialInstrument</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;债券类，继承自FinancialInstrument&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>symbol</span><span class=p>,</span> <span class=n>name</span><span class=p>,</span> <span class=n>face_value</span><span class=p>,</span> <span class=n>coupon_rate</span><span class=p>,</span> <span class=n>maturity_years</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>symbol</span><span class=p>,</span> <span class=n>name</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>face_value</span> <span class=o>=</span> <span class=n>face_value</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>coupon_rate</span> <span class=o>=</span> <span class=n>coupon_rate</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>maturity_years</span> <span class=o>=</span> <span class=n>maturity_years</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>get_price</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;实现父类的抽象方法&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=c1># 简化的债券定价</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>face_value</span> <span class=o>*</span> <span class=p>(</span><span class=mi>1</span> <span class=o>-</span> <span class=mf>0.02</span> <span class=o>*</span> <span class=bp>self</span><span class=o>.</span><span class=n>maturity_years</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>get_yield_to_maturity</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;计算到期收益率&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>coupon_rate</span> <span class=o>+</span> <span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>face_value</span> <span class=o>-</span> <span class=bp>self</span><span class=o>.</span><span class=n>get_price</span><span class=p>())</span> <span class=o>/</span> <span class=bp>self</span><span class=o>.</span><span class=n>maturity_years</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 多态性演示</span>
+</span></span><span class=line><span class=cl><span class=n>instruments</span> <span class=o>=</span> <span class=p>[</span>
+</span></span><span class=line><span class=cl>    <span class=n>Stock</span><span class=p>(</span><span class=s2>&#34;000001&#34;</span><span class=p>,</span> <span class=s2>&#34;平安银行&#34;</span><span class=p>,</span> <span class=mf>12.50</span><span class=p>,</span> <span class=mi>1000000000</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=n>Bond</span><span class=p>(</span><span class=s2>&#34;210001&#34;</span><span class=p>,</span> <span class=s2>&#34;国债210001&#34;</span><span class=p>,</span> <span class=mi>100</span><span class=p>,</span> <span class=mf>0.035</span><span class=p>,</span> <span class=mi>5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>instrument</span> <span class=ow>in</span> <span class=n>instruments</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=n>instrument</span><span class=o>.</span><span class=n>get_info</span><span class=p>()</span><span class=si>}</span><span class=s2> - 价格: </span><span class=si>{</span><span class=n>instrument</span><span class=o>.</span><span class=n>get_price</span><span class=p>()</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h3 id=多重继承>多重继承</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span><span class=lnt>85
+</span><span class=lnt>86
+</span><span class=lnt>87
+</span><span class=lnt>88
+</span><span class=lnt>89
+</span><span class=lnt>90
+</span><span class=lnt>91
+</span><span class=lnt>92
+</span><span class=lnt>93
+</span><span class=lnt>94
+</span><span class=lnt>95
+</span><span class=lnt>96
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>TechnicalAnalysisMixin</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;技术分析混入类&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>calculate_ma</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>prices</span><span class=p>,</span> <span class=n>window</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;计算移动平均线&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>prices</span><span class=p>)</span> <span class=o>&lt;</span> <span class=n>window</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=kc>None</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=nb>sum</span><span class=p>(</span><span class=n>prices</span><span class=p>[</span><span class=o>-</span><span class=n>window</span><span class=p>:])</span> <span class=o>/</span> <span class=n>window</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>calculate_rsi</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>prices</span><span class=p>,</span> <span class=n>window</span><span class=o>=</span><span class=mi>14</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;计算RSI指标&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>prices</span><span class=p>)</span> <span class=o>&lt;</span> <span class=n>window</span> <span class=o>+</span> <span class=mi>1</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=kc>None</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=n>gains</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>        <span class=n>losses</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=nb>len</span><span class=p>(</span><span class=n>prices</span><span class=p>)):</span>
+</span></span><span class=line><span class=cl>            <span class=n>change</span> <span class=o>=</span> <span class=n>prices</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>-</span> <span class=n>prices</span><span class=p>[</span><span class=n>i</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>            <span class=n>gains</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=nb>max</span><span class=p>(</span><span class=n>change</span><span class=p>,</span> <span class=mi>0</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>            <span class=n>losses</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=nb>max</span><span class=p>(</span><span class=o>-</span><span class=n>change</span><span class=p>,</span> <span class=mi>0</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=n>avg_gain</span> <span class=o>=</span> <span class=nb>sum</span><span class=p>(</span><span class=n>gains</span><span class=p>[</span><span class=o>-</span><span class=n>window</span><span class=p>:])</span> <span class=o>/</span> <span class=n>window</span>
+</span></span><span class=line><span class=cl>        <span class=n>avg_loss</span> <span class=o>=</span> <span class=nb>sum</span><span class=p>(</span><span class=n>losses</span><span class=p>[</span><span class=o>-</span><span class=n>window</span><span class=p>:])</span> <span class=o>/</span> <span class=n>window</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>avg_loss</span> <span class=o>==</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=n>rs</span> <span class=o>=</span> <span class=n>avg_gain</span> <span class=o>/</span> <span class=n>avg_loss</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=mi>100</span> <span class=o>-</span> <span class=p>(</span><span class=mi>100</span> <span class=o>/</span> <span class=p>(</span><span class=mi>1</span> <span class=o>+</span> <span class=n>rs</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>FundamentalAnalysisMixin</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;基本面分析混入类&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>calculate_pe_ratio</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>price</span><span class=p>,</span> <span class=n>earnings_per_share</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;计算市盈率&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>earnings_per_share</span> <span class=o>&lt;=</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=kc>None</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>price</span> <span class=o>/</span> <span class=n>earnings_per_share</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>calculate_pb_ratio</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>price</span><span class=p>,</span> <span class=n>book_value_per_share</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;计算市净率&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>book_value_per_share</span> <span class=o>&lt;=</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=kc>None</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>price</span> <span class=o>/</span> <span class=n>book_value_per_share</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>QuantitativeStock</span><span class=p>(</span><span class=n>Stock</span><span class=p>,</span> <span class=n>TechnicalAnalysisMixin</span><span class=p>,</span> <span class=n>FundamentalAnalysisMixin</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;量化股票类，多重继承&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>symbol</span><span class=p>,</span> <span class=n>name</span><span class=p>,</span> <span class=n>price</span><span class=p>,</span> <span class=n>shares_outstanding</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                 <span class=n>earnings_per_share</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>book_value_per_share</span><span class=o>=</span><span class=kc>None</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=n>symbol</span><span class=p>,</span> <span class=n>name</span><span class=p>,</span> <span class=n>price</span><span class=p>,</span> <span class=n>shares_outstanding</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>earnings_per_share</span> <span class=o>=</span> <span class=n>earnings_per_share</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>book_value_per_share</span> <span class=o>=</span> <span class=n>book_value_per_share</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>price_history</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>add_price_data</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>price</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;添加价格数据&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>price_history</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>price</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>get_comprehensive_analysis</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;综合分析&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=n>analysis</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;symbol&#39;</span><span class=p>:</span> <span class=bp>self</span><span class=o>.</span><span class=n>symbol</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;price&#39;</span><span class=p>:</span> <span class=bp>self</span><span class=o>.</span><span class=n>price</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;market_cap&#39;</span><span class=p>:</span> <span class=bp>self</span><span class=o>.</span><span class=n>get_market_cap</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 技术分析</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>price_history</span><span class=p>)</span> <span class=o>&gt;=</span> <span class=mi>20</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>analysis</span><span class=p>[</span><span class=s1>&#39;ma20&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>calculate_ma</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>price_history</span><span class=p>,</span> <span class=mi>20</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>analysis</span><span class=p>[</span><span class=s1>&#39;rsi&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>calculate_rsi</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>price_history</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 基本面分析</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>earnings_per_share</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>analysis</span><span class=p>[</span><span class=s1>&#39;pe_ratio&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>calculate_pe_ratio</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>price</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>earnings_per_share</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>book_value_per_share</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>analysis</span><span class=p>[</span><span class=s1>&#39;pb_ratio&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>calculate_pb_ratio</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>price</span><span class=p>,</span> <span class=bp>self</span><span class=o>.</span><span class=n>book_value_per_share</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>analysis</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 使用示例</span>
+</span></span><span class=line><span class=cl><span class=n>quant_stock</span> <span class=o>=</span> <span class=n>QuantitativeStock</span><span class=p>(</span><span class=s2>&#34;000001&#34;</span><span class=p>,</span> <span class=s2>&#34;平安银行&#34;</span><span class=p>,</span> <span class=mf>12.50</span><span class=p>,</span> <span class=mi>1000000000</span><span class=p>,</span> <span class=mf>2.5</span><span class=p>,</span> <span class=mf>8.5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 添加历史价格数据</span>
+</span></span><span class=line><span class=cl><span class=n>prices</span> <span class=o>=</span> <span class=p>[</span><span class=mf>12.0</span><span class=p>,</span> <span class=mf>12.2</span><span class=p>,</span> <span class=mf>12.1</span><span class=p>,</span> <span class=mf>12.3</span><span class=p>,</span> <span class=mf>12.5</span><span class=p>,</span> <span class=mf>12.4</span><span class=p>,</span> <span class=mf>12.6</span><span class=p>,</span> <span class=mf>12.7</span><span class=p>,</span> <span class=mf>12.5</span><span class=p>,</span> <span class=mf>12.8</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>          <span class=mf>12.9</span><span class=p>,</span> <span class=mf>12.7</span><span class=p>,</span> <span class=mf>12.6</span><span class=p>,</span> <span class=mf>12.8</span><span class=p>,</span> <span class=mf>12.9</span><span class=p>,</span> <span class=mf>13.0</span><span class=p>,</span> <span class=mf>12.8</span><span class=p>,</span> <span class=mf>12.7</span><span class=p>,</span> <span class=mf>12.5</span><span class=p>,</span> <span class=mf>12.6</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>price</span> <span class=ow>in</span> <span class=n>prices</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>quant_stock</span><span class=o>.</span><span class=n>add_price_data</span><span class=p>(</span><span class=n>price</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>analysis</span> <span class=o>=</span> <span class=n>quant_stock</span><span class=o>.</span><span class=n>get_comprehensive_analysis</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s2>&#34;综合分析结果:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>key</span><span class=p>,</span> <span class=n>value</span> <span class=ow>in</span> <span class=n>analysis</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=n>key</span><span class=si>}</span><span class=s2>: </span><span class=si>{</span><span class=n>value</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h2 id=封装与属性>封装与属性</h2><h3 id=属性装饰器>属性装饰器</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>TradingAccount</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;交易账户类&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>account_id</span><span class=p>,</span> <span class=n>initial_balance</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>account_id</span> <span class=o>=</span> <span class=n>account_id</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>_balance</span> <span class=o>=</span> <span class=n>initial_balance</span>  <span class=c1># 私有变量</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>_positions</span> <span class=o>=</span> <span class=p>{}</span>  <span class=c1># 持仓</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>_transactions</span> <span class=o>=</span> <span class=p>[]</span>  <span class=c1># 交易记录</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=nd>@property</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>balance</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;余额属性（只读）&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_balance</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=nd>@property</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>positions</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;持仓属性（只读）&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_positions</span><span class=o>.</span><span class=n>copy</span><span class=p>()</span>  <span class=c1># 返回副本防止外部修改</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=nd>@property</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>total_value</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;总资产（计算属性）&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=n>position_value</span> <span class=o>=</span> <span class=nb>sum</span><span class=p>(</span><span class=n>pos</span><span class=p>[</span><span class=s1>&#39;quantity&#39;</span><span class=p>]</span> <span class=o>*</span> <span class=n>pos</span><span class=p>[</span><span class=s1>&#39;current_price&#39;</span><span class=p>]</span> 
+</span></span><span class=line><span class=cl>                          <span class=k>for</span> <span class=n>pos</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>_positions</span><span class=o>.</span><span class=n>values</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_balance</span> <span class=o>+</span> <span class=n>position_value</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>deposit</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>amount</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;入金&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>amount</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>_balance</span> <span class=o>+=</span> <span class=n>amount</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=kc>True</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=kc>False</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>withdraw</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>amount</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;出金&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=mi>0</span> <span class=o>&lt;</span> <span class=n>amount</span> <span class=o>&lt;=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_balance</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>_balance</span> <span class=o>-=</span> <span class=n>amount</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=kc>True</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=kc>False</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>buy_stock</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>symbol</span><span class=p>,</span> <span class=n>quantity</span><span class=p>,</span> <span class=n>price</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;买入股票&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=n>total_cost</span> <span class=o>=</span> <span class=n>quantity</span> <span class=o>*</span> <span class=n>price</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>total_cost</span> <span class=o>&lt;=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_balance</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>_balance</span> <span class=o>-=</span> <span class=n>total_cost</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>symbol</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>_positions</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>pos</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>_positions</span><span class=p>[</span><span class=n>symbol</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>                <span class=n>total_quantity</span> <span class=o>=</span> <span class=n>pos</span><span class=p>[</span><span class=s1>&#39;quantity&#39;</span><span class=p>]</span> <span class=o>+</span> <span class=n>quantity</span>
+</span></span><span class=line><span class=cl>                <span class=n>total_cost_basis</span> <span class=o>=</span> <span class=n>pos</span><span class=p>[</span><span class=s1>&#39;quantity&#39;</span><span class=p>]</span> <span class=o>*</span> <span class=n>pos</span><span class=p>[</span><span class=s1>&#39;avg_price&#39;</span><span class=p>]</span> <span class=o>+</span> <span class=n>total_cost</span>
+</span></span><span class=line><span class=cl>                <span class=n>pos</span><span class=p>[</span><span class=s1>&#39;avg_price&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>total_cost_basis</span> <span class=o>/</span> <span class=n>total_quantity</span>
+</span></span><span class=line><span class=cl>                <span class=n>pos</span><span class=p>[</span><span class=s1>&#39;quantity&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>total_quantity</span>
+</span></span><span class=line><span class=cl>                <span class=n>pos</span><span class=p>[</span><span class=s1>&#39;current_price&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>price</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=bp>self</span><span class=o>.</span><span class=n>_positions</span><span class=p>[</span><span class=n>symbol</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;quantity&#39;</span><span class=p>:</span> <span class=n>quantity</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;avg_price&#39;</span><span class=p>:</span> <span class=n>price</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;current_price&#39;</span><span class=p>:</span> <span class=n>price</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 记录交易</span>
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>_transactions</span><span class=o>.</span><span class=n>append</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;type&#39;</span><span class=p>:</span> <span class=s1>&#39;BUY&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;symbol&#39;</span><span class=p>:</span> <span class=n>symbol</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;quantity&#39;</span><span class=p>:</span> <span class=n>quantity</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;price&#39;</span><span class=p>:</span> <span class=n>price</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;timestamp&#39;</span><span class=p>:</span> <span class=n>datetime</span><span class=o>.</span><span class=n>now</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>            <span class=p>})</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=kc>True</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=kc>False</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>sell_stock</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>symbol</span><span class=p>,</span> <span class=n>quantity</span><span class=p>,</span> <span class=n>price</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;卖出股票&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>symbol</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>_positions</span> <span class=ow>and</span> <span class=bp>self</span><span class=o>.</span><span class=n>_positions</span><span class=p>[</span><span class=n>symbol</span><span class=p>][</span><span class=s1>&#39;quantity&#39;</span><span class=p>]</span> <span class=o>&gt;=</span> <span class=n>quantity</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>_positions</span><span class=p>[</span><span class=n>symbol</span><span class=p>][</span><span class=s1>&#39;quantity&#39;</span><span class=p>]</span> <span class=o>-=</span> <span class=n>quantity</span>
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>_balance</span> <span class=o>+=</span> <span class=n>quantity</span> <span class=o>*</span> <span class=n>price</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=bp>self</span><span class=o>.</span><span class=n>_positions</span><span class=p>[</span><span class=n>symbol</span><span class=p>][</span><span class=s1>&#39;quantity&#39;</span><span class=p>]</span> <span class=o>==</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=k>del</span> <span class=bp>self</span><span class=o>.</span><span class=n>_positions</span><span class=p>[</span><span class=n>symbol</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 记录交易</span>
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>_transactions</span><span class=o>.</span><span class=n>append</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;type&#39;</span><span class=p>:</span> <span class=s1>&#39;SELL&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;symbol&#39;</span><span class=p>:</span> <span class=n>symbol</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;quantity&#39;</span><span class=p>:</span> <span class=n>quantity</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;price&#39;</span><span class=p>:</span> <span class=n>price</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;timestamp&#39;</span><span class=p>:</span> <span class=n>datetime</span><span class=o>.</span><span class=n>now</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>            <span class=p>})</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=kc>True</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=kc>False</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 使用示例</span>
+</span></span><span class=line><span class=cl><span class=n>account</span> <span class=o>=</span> <span class=n>TradingAccount</span><span class=p>(</span><span class=s2>&#34;123456&#34;</span><span class=p>,</span> <span class=mi>100000</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;初始余额: </span><span class=si>{</span><span class=n>account</span><span class=o>.</span><span class=n>balance</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;总资产: </span><span class=si>{</span><span class=n>account</span><span class=o>.</span><span class=n>total_value</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>account</span><span class=o>.</span><span class=n>buy_stock</span><span class=p>(</span><span class=s2>&#34;000001&#34;</span><span class=p>,</span> <span class=mi>1000</span><span class=p>,</span> <span class=mf>12.50</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;买入后余额: </span><span class=si>{</span><span class=n>account</span><span class=o>.</span><span class=n>balance</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;持仓: </span><span class=si>{</span><span class=n>account</span><span class=o>.</span><span class=n>positions</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;总资产: </span><span class=si>{</span><span class=n>account</span><span class=o>.</span><span class=n>total_value</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h3 id=设置器setter>设置器（Setter）</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>RiskManager</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;风险管理器&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>_max_position_size</span> <span class=o>=</span> <span class=mf>0.1</span>  <span class=c1># 最大仓位限制</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>_stop_loss_pct</span> <span class=o>=</span> <span class=mf>0.05</span>     <span class=c1># 止损百分比</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>_max_drawdown</span> <span class=o>=</span> <span class=mf>0.20</span>      <span class=c1># 最大回撤限制</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=nd>@property</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>max_position_size</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;最大仓位限制&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_max_position_size</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=nd>@max_position_size.setter</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>max_position_size</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>value</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;设置最大仓位限制&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=mi>0</span> <span class=o>&lt;</span> <span class=n>value</span> <span class=o>&lt;=</span> <span class=mf>1.0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>_max_position_size</span> <span class=o>=</span> <span class=n>value</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>raise</span> <span class=ne>ValueError</span><span class=p>(</span><span class=s2>&#34;最大仓位限制必须在0到1之间&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=nd>@property</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>stop_loss_pct</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;止损百分比&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>_stop_loss_pct</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=nd>@stop_loss_pct.setter</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>stop_loss_pct</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>value</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;设置止损百分比&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=mi>0</span> <span class=o>&lt;</span> <span class=n>value</span> <span class=o>&lt;=</span> <span class=mf>0.5</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>_stop_loss_pct</span> <span class=o>=</span> <span class=n>value</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>raise</span> <span class=ne>ValueError</span><span class=p>(</span><span class=s2>&#34;止损百分比必须在0到0.5之间&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>check_position_size</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>position_size</span><span class=p>,</span> <span class=n>total_value</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;检查仓位大小&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>position_size</span> <span class=o>&lt;=</span> <span class=n>total_value</span> <span class=o>*</span> <span class=bp>self</span><span class=o>.</span><span class=n>_max_position_size</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>calculate_stop_loss</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>entry_price</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;计算止损价格&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>entry_price</span> <span class=o>*</span> <span class=p>(</span><span class=mi>1</span> <span class=o>-</span> <span class=bp>self</span><span class=o>.</span><span class=n>_stop_loss_pct</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 使用示例</span>
+</span></span><span class=line><span class=cl><span class=n>risk_mgr</span> <span class=o>=</span> <span class=n>RiskManager</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;默认最大仓位: </span><span class=si>{</span><span class=n>risk_mgr</span><span class=o>.</span><span class=n>max_position_size</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>risk_mgr</span><span class=o>.</span><span class=n>max_position_size</span> <span class=o>=</span> <span class=mf>0.15</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;修改后最大仓位: </span><span class=si>{</span><span class=n>risk_mgr</span><span class=o>.</span><span class=n>max_position_size</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 这会抛出异常</span>
+</span></span><span class=line><span class=cl><span class=c1># risk_mgr.max_position_size = 1.5  # ValueError</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h2 id=特殊方法>特殊方法</h2><h3 id=字符串表示>字符串表示</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>TradingSignal</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;交易信号类&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>symbol</span><span class=p>,</span> <span class=n>signal_type</span><span class=p>,</span> <span class=n>strength</span><span class=p>,</span> <span class=n>timestamp</span><span class=o>=</span><span class=kc>None</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>symbol</span> <span class=o>=</span> <span class=n>symbol</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>signal_type</span> <span class=o>=</span> <span class=n>signal_type</span>  <span class=c1># &#39;BUY&#39; or &#39;SELL&#39;</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>strength</span> <span class=o>=</span> <span class=n>strength</span>        <span class=c1># 信号强度 0-1</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>timestamp</span> <span class=o>=</span> <span class=n>timestamp</span> <span class=ow>or</span> <span class=n>datetime</span><span class=o>.</span><span class=n>now</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__str__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;用户友好的字符串表示&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>signal_type</span><span class=si>}</span><span class=s2>信号 - </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>symbol</span><span class=si>}</span><span class=s2> (强度: </span><span class=si>{</span><span class=bp>self</span><span class=o>.</span><span class=n>strength</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>)&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__repr__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;</span><span class=n>__开发者友好的字符串表示</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>        return f&#34;TradingSignal(symbol=&#39;</span><span class=si>{self.symbol}</span><span class=s2>&#39;, type=&#39;</span><span class=si>{self.signal_type}</span><span class=s2>&#39;, strength=</span><span class=si>{self.strength}</span><span class=s2>)&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    def __eq__(self, other):
+</span></span></span><span class=line><span class=cl><span class=s2>        &#34;&#34;&#34;</span><span class=n>相等性比较</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>        if not isinstance(other, TradingSignal):
+</span></span></span><span class=line><span class=cl><span class=s2>            return False
+</span></span></span><span class=line><span class=cl><span class=s2>        return (self.symbol == other.symbol and 
+</span></span></span><span class=line><span class=cl><span class=s2>                self.signal_type == other.signal_type and
+</span></span></span><span class=line><span class=cl><span class=s2>                abs(self.strength - other.strength) &lt; 0.01)
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    def __lt__(self, other):
+</span></span></span><span class=line><span class=cl><span class=s2>        &#34;&#34;__小于比较（用于排序）&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=ow>not</span> <span class=nb>isinstance</span><span class=p>(</span><span class=n>other</span><span class=p>,</span> <span class=n>TradingSignal</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=bp>NotImplemented</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=bp>self</span><span class=o>.</span><span class=n>strength</span> <span class=o>&lt;</span> <span class=n>other</span><span class=o>.</span><span class=n>strength</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 使用示例</span>
+</span></span><span class=line><span class=cl><span class=n>signal1</span> <span class=o>=</span> <span class=n>TradingSignal</span><span class=p>(</span><span class=s2>&#34;000001&#34;</span><span class=p>,</span> <span class=s2>&#34;BUY&#34;</span><span class=p>,</span> <span class=mf>0.8</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>signal2</span> <span class=o>=</span> <span class=n>TradingSignal</span><span class=p>(</span><span class=s2>&#34;600519&#34;</span><span class=p>,</span> <span class=s2>&#34;SELL&#34;</span><span class=p>,</span> <span class=mf>0.6</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=nb>str</span><span class=p>(</span><span class=n>signal1</span><span class=p>))</span>      <span class=c1># BUY信号 - 000001 (强度: 0.80)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=nb>repr</span><span class=p>(</span><span class=n>signal2</span><span class=p>))</span>     <span class=c1># TradingSignal(symbol=&#39;600519&#39;, type=&#39;SELL&#39;, strength=0.6)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>signal1</span> <span class=o>==</span> <span class=n>signal2</span><span class=p>)</span>  <span class=c1># False</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h3 id=数学运算>数学运算</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>Position</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;</span><span class=n>__持仓类</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    def __init__(self, symbol, quantity, avg_price):
+</span></span></span><span class=line><span class=cl><span class=s2>        self.symbol = symbol
+</span></span></span><span class=line><span class=cl><span class=s2>        self.quantity = quantity
+</span></span></span><span class=line><span class=cl><span class=s2>        self.avg_price = avg_price
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    def __add__(self, other):
+</span></span></span><span class=line><span class=cl><span class=s2>        &#34;&#34;&#34;</span><span class=n>加法运算</span><span class=err>：</span><span class=n>合并持仓</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>        if self.symbol != other.symbol:
+</span></span></span><span class=line><span class=cl><span class=s2>            raise ValueError(&#34;只能合并相同股票的持仓&#34;)
+</span></span></span><span class=line><span class=cl><span class=s2>        
+</span></span></span><span class=line><span class=cl><span class=s2>        total_quantity = self.quantity + other.quantity
+</span></span></span><span class=line><span class=cl><span class=s2>        total_cost = (self.quantity * self.avg_price + 
+</span></span></span><span class=line><span class=cl><span class=s2>                     other.quantity * other.avg_price)
+</span></span></span><span class=line><span class=cl><span class=s2>        new_avg_price = total_cost / total_quantity
+</span></span></span><span class=line><span class=cl><span class=s2>        
+</span></span></span><span class=line><span class=cl><span class=s2>        return Position(self.symbol, total_quantity, new_avg_price)
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    def __mul__(self, multiplier):
+</span></span></span><span class=line><span class=cl><span class=s2>        &#34;&#34;&#34;</span><span class=n>乘法运算</span><span class=err>：</span><span class=n>按比例调整持仓</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>        return Position(self.symbol, 
+</span></span></span><span class=line><span class=cl><span class=s2>                       int(self.quantity * multiplier), 
+</span></span></span><span class=line><span class=cl><span class=s2>                       self.avg_price)
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    def __len__(self):
+</span></span></span><span class=line><span class=cl><span class=s2>        &#34;&#34;&#34;</span><span class=n>长度</span><span class=err>：</span><span class=n>返回持仓数量</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>        return self.quantity
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    def __bool__(self):
+</span></span></span><span class=line><span class=cl><span class=s2>        &#34;&#34;&#34;</span><span class=n>布尔值</span><span class=err>：</span><span class=n>是否有持仓</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>        return self.quantity &gt; 0
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    def get_value(self, current_price):
+</span></span></span><span class=line><span class=cl><span class=s2>        &#34;&#34;&#34;</span><span class=n>计算持仓市值</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>        return self.quantity * current_price
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2># 使用示例
+</span></span></span><span class=line><span class=cl><span class=s2>pos1 = Position(&#34;000001&#34;, 1000, 12.50)
+</span></span></span><span class=line><span class=cl><span class=s2>pos2 = Position(&#34;000001&#34;, 500, 13.00)
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>combined_pos = pos1 + pos2
+</span></span></span><span class=line><span class=cl><span class=s2>print(f&#34;合并后持仓: </span><span class=si>{combined_pos.quantity}</span><span class=s2>股, 均价: </span><span class=si>{combined_pos.avg_price:.2f}</span><span class=s2>&#34;)
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>half_pos = pos1 * 0.5
+</span></span></span><span class=line><span class=cl><span class=s2>print(f&#34;减半持仓: </span><span class=si>{half_pos.quantity}</span><span class=s2>股&#34;)
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>print(f&#34;是否有持仓: {bool(pos1)}&#34;)  # True
+</span></span></span><span class=line><span class=cl><span class=s2>print(f&#34;持仓数量: {len(pos1)}&#34;)     # 1000
+</span></span></span></code></pre></td></tr></table></div></div></div></div><h2 id=量化交易中的应用>量化交易中的应用</h2><h3 id=策略基类与具体策略>策略基类与具体策略</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span><span class=lnt>170
+</span><span class=lnt>171
+</span><span class=lnt>172
+</span><span class=lnt>173
+</span><span class=lnt>174
+</span><span class=lnt>175
+</span><span class=lnt>176
+</span><span class=lnt>177
+</span><span class=lnt>178
+</span><span class=lnt>179
+</span><span class=lnt>180
+</span><span class=lnt>181
+</span><span class=lnt>182
+</span><span class=lnt>183
+</span><span class=lnt>184
+</span><span class=lnt>185
+</span><span class=lnt>186
+</span><span class=lnt>187
+</span><span class=lnt>188
+</span><span class=lnt>189
+</span><span class=lnt>190
+</span><span class=lnt>191
+</span><span class=lnt>192
+</span><span class=lnt>193
+</span><span class=lnt>194
+</span><span class=lnt>195
+</span><span class=lnt>196
+</span><span class=lnt>197
+</span><span class=lnt>198
+</span><span class=lnt>199
+</span><span class=lnt>200
+</span><span class=lnt>201
+</span><span class=lnt>202
+</span><span class=lnt>203
+</span><span class=lnt>204
+</span><span class=lnt>205
+</span><span class=lnt>206
+</span><span class=lnt>207
+</span><span class=lnt>208
+</span><span class=lnt>209
+</span><span class=lnt>210
+</span><span class=lnt>211
+</span><span class=lnt>212
+</span><span class=lnt>213
+</span><span class=lnt>214
+</span><span class=lnt>215
+</span><span class=lnt>216
+</span><span class=lnt>217
+</span><span class=lnt>218
+</span><span class=lnt>219
+</span><span class=lnt>220
+</span><span class=lnt>221
+</span><span class=lnt>222
+</span><span class=lnt>223
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>abc</span> <span class=kn>import</span> <span class=n>ABC</span><span class=p>,</span> <span class=n>abstractmethod</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>TradingStrategy</span><span class=p>(</span><span class=n>ABC</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;</span><span class=n>__交易策略抽象基类</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    def __init__(self, name, params=None):
+</span></span></span><span class=line><span class=cl><span class=s2>        self.name = name
+</span></span></span><span class=line><span class=cl><span class=s2>        self.params = params or </span><span class=si>{}</span><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>        self.signals = []
+</span></span></span><span class=line><span class=cl><span class=s2>        self.performance_metrics = </span><span class=si>{}</span><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    @abstractmethod
+</span></span></span><span class=line><span class=cl><span class=s2>    def generate_signals(self, data):
+</span></span></span><span class=line><span class=cl><span class=s2>        &#34;&#34;&#34;</span><span class=n>生成交易信号</span><span class=err>（</span><span class=n>抽象方法</span><span class=err>）</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>        pass
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    @abstractmethod
+</span></span></span><span class=line><span class=cl><span class=s2>    def calculate_position_size(self, signal, portfolio_value):
+</span></span></span><span class=line><span class=cl><span class=s2>        &#34;&#34;&#34;</span><span class=n>计算仓位大小</span><span class=err>（</span><span class=n>抽象方法</span><span class=err>）</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>        pass
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    def backtest(self, data, initial_capital=100000):
+</span></span></span><span class=line><span class=cl><span class=s2>        &#34;&#34;__回测框架（具体方法）&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=n>capital</span> <span class=o>=</span> <span class=n>initial_capital</span>
+</span></span><span class=line><span class=cl>        <span class=n>positions</span> <span class=o>=</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>        <span class=n>portfolio_values</span> <span class=o>=</span> <span class=p>[</span><span class=n>initial_capital</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=n>signals</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>generate_signals</span><span class=p>(</span><span class=n>data</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>i</span><span class=p>,</span> <span class=n>signal</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>signals</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>signal</span><span class=o>.</span><span class=n>signal_type</span> <span class=o>==</span> <span class=s2>&#34;BUY&#34;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>position_size</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>calculate_position_size</span><span class=p>(</span><span class=n>signal</span><span class=p>,</span> <span class=n>capital</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=n>capital</span> <span class=o>&gt;=</span> <span class=n>position_size</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=n>shares</span> <span class=o>=</span> <span class=nb>int</span><span class=p>(</span><span class=n>position_size</span> <span class=o>/</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>                    <span class=n>positions</span><span class=p>[</span><span class=n>signal</span><span class=o>.</span><span class=n>symbol</span><span class=p>]</span> <span class=o>=</span> <span class=n>shares</span>
+</span></span><span class=line><span class=cl>                    <span class=n>capital</span> <span class=o>-=</span> <span class=n>shares</span> <span class=o>*</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=k>elif</span> <span class=n>signal</span><span class=o>.</span><span class=n>signal_type</span> <span class=o>==</span> <span class=s2>&#34;SELL&#34;</span> <span class=ow>and</span> <span class=n>signal</span><span class=o>.</span><span class=n>symbol</span> <span class=ow>in</span> <span class=n>positions</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>shares</span> <span class=o>=</span> <span class=n>positions</span><span class=p>[</span><span class=n>signal</span><span class=o>.</span><span class=n>symbol</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>                <span class=n>capital</span> <span class=o>+=</span> <span class=n>shares</span> <span class=o>*</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>                <span class=k>del</span> <span class=n>positions</span><span class=p>[</span><span class=n>signal</span><span class=o>.</span><span class=n>symbol</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 计算组合价值</span>
+</span></span><span class=line><span class=cl>            <span class=n>portfolio_value</span> <span class=o>=</span> <span class=n>capital</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=n>symbol</span><span class=p>,</span> <span class=n>shares</span> <span class=ow>in</span> <span class=n>positions</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>                <span class=n>portfolio_value</span> <span class=o>+=</span> <span class=n>shares</span> <span class=o>*</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=n>portfolio_values</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>portfolio_value</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;final_value&#39;</span><span class=p>:</span> <span class=n>portfolio_values</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;total_return&#39;</span><span class=p>:</span> <span class=p>(</span><span class=n>portfolio_values</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>-</span> <span class=n>initial_capital</span><span class=p>)</span> <span class=o>/</span> <span class=n>initial_capital</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;max_drawdown&#39;</span><span class=p>:</span> <span class=bp>self</span><span class=o>.</span><span class=n>calculate_max_drawdown</span><span class=p>(</span><span class=n>portfolio_values</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;signals&#39;</span><span class=p>:</span> <span class=n>signals</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>calculate_max_drawdown</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>portfolio_values</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;</span><span class=n>__计算最大回撤</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>        peak = portfolio_values[0]
+</span></span></span><span class=line><span class=cl><span class=s2>        max_drawdown = 0
+</span></span></span><span class=line><span class=cl><span class=s2>        
+</span></span></span><span class=line><span class=cl><span class=s2>        for value in portfolio_values[1:]:
+</span></span></span><span class=line><span class=cl><span class=s2>            if value &gt; peak:
+</span></span></span><span class=line><span class=cl><span class=s2>                peak = value
+</span></span></span><span class=line><span class=cl><span class=s2>            drawdown = (peak - value) / peak
+</span></span></span><span class=line><span class=cl><span class=s2>            max_drawdown = max(max_drawdown, drawdown)
+</span></span></span><span class=line><span class=cl><span class=s2>        
+</span></span></span><span class=line><span class=cl><span class=s2>        return max_drawdown
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>class MovingAverageStrategy(TradingStrategy):
+</span></span></span><span class=line><span class=cl><span class=s2>    &#34;&#34;__移动平均线策略&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>short_window</span><span class=o>=</span><span class=mi>20</span><span class=p>,</span> <span class=n>long_window</span><span class=o>=</span><span class=mi>50</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=s2>&#34;移动平均线策略&#34;</span><span class=p>,</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;short_window&#39;</span><span class=p>:</span> <span class=n>short_window</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;long_window&#39;</span><span class=p>:</span> <span class=n>long_window</span>
+</span></span><span class=line><span class=cl>        <span class=p>})</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>generate_signals</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>data</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;生成移动平均线信号&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=n>signals</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 计算移动平均线</span>
+</span></span><span class=line><span class=cl>        <span class=n>short_ma</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>rolling</span><span class=p>(</span><span class=n>window</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>params</span><span class=p>[</span><span class=s1>&#39;short_window&#39;</span><span class=p>])</span><span class=o>.</span><span class=n>mean</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=n>long_ma</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>rolling</span><span class=p>(</span><span class=n>window</span><span class=o>=</span><span class=bp>self</span><span class=o>.</span><span class=n>params</span><span class=p>[</span><span class=s1>&#39;long_window&#39;</span><span class=p>])</span><span class=o>.</span><span class=n>mean</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 生成信号</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=nb>len</span><span class=p>(</span><span class=n>data</span><span class=p>)):</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=bp>self</span><span class=o>.</span><span class=n>params</span><span class=p>[</span><span class=s1>&#39;long_window&#39;</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>                <span class=k>continue</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>short_ma</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&gt;</span> <span class=n>long_ma</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=ow>and</span> <span class=n>short_ma</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>&lt;=</span> <span class=n>long_ma</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=o>-</span><span class=mi>1</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>                <span class=c1># 金叉买入</span>
+</span></span><span class=line><span class=cl>                <span class=n>signal</span> <span class=o>=</span> <span class=n>TradingSignal</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                    <span class=n>data</span><span class=p>[</span><span class=s1>&#39;symbol&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=k>if</span> <span class=s1>&#39;symbol&#39;</span> <span class=ow>in</span> <span class=n>data</span> <span class=k>else</span> <span class=s2>&#34;STOCK&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s2>&#34;BUY&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=mf>0.8</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=n>data</span><span class=o>.</span><span class=n>index</span><span class=p>[</span><span class=n>i</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>                <span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=n>signals</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>signal</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=k>elif</span> <span class=n>short_ma</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&lt;</span> <span class=n>long_ma</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=ow>and</span> <span class=n>short_ma</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>&gt;=</span> <span class=n>long_ma</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=o>-</span><span class=mi>1</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>                <span class=c1># 死叉卖出</span>
+</span></span><span class=line><span class=cl>                <span class=n>signal</span> <span class=o>=</span> <span class=n>TradingSignal</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                    <span class=n>data</span><span class=p>[</span><span class=s1>&#39;symbol&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=k>if</span> <span class=s1>&#39;symbol&#39;</span> <span class=ow>in</span> <span class=n>data</span> <span class=k>else</span> <span class=s2>&#34;STOCK&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s2>&#34;SELL&#34;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=mf>0.8</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=n>data</span><span class=o>.</span><span class=n>index</span><span class=p>[</span><span class=n>i</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>                <span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=n>signals</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>signal</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>signals</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>calculate_position_size</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>signal</span><span class=p>,</span> <span class=n>portfolio_value</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;&#34;计算仓位大小：固定比例&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>portfolio_value</span> <span class=o>*</span> <span class=mf>0.1</span>  <span class=c1># 每次投入10%的资金</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>RSIStrategy</span><span class=p>(</span><span class=n>TradingStrategy</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;</span><span class=n>__RSI策略</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    def __init__(self, window=14, oversold=30, overbought=70):
+</span></span></span><span class=line><span class=cl><span class=s2>        super().__init__(&#34;RSI策略&#34;, {
+</span></span></span><span class=line><span class=cl><span class=s2>            &#39;window&#39;: window,
+</span></span></span><span class=line><span class=cl><span class=s2>            &#39;oversold&#39;: oversold,
+</span></span></span><span class=line><span class=cl><span class=s2>            &#39;overbought&#39;: overbought
+</span></span></span><span class=line><span class=cl><span class=s2>        })
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    def generate_signals(self, data):
+</span></span></span><span class=line><span class=cl><span class=s2>        &#34;&#34;&#34;</span><span class=n>生成RSI信号</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>        signals = []
+</span></span></span><span class=line><span class=cl><span class=s2>        
+</span></span></span><span class=line><span class=cl><span class=s2>        # 计算RSI
+</span></span></span><span class=line><span class=cl><span class=s2>        rsi_values = self.calculate_rsi(data[&#39;close&#39;], self.params[&#39;window&#39;])
+</span></span></span><span class=line><span class=cl><span class=s2>        
+</span></span></span><span class=line><span class=cl><span class=s2>        for i in range(len(data)):
+</span></span></span><span class=line><span class=cl><span class=s2>            if rsi_values[i] is None:
+</span></span></span><span class=line><span class=cl><span class=s2>                continue
+</span></span></span><span class=line><span class=cl><span class=s2>            
+</span></span></span><span class=line><span class=cl><span class=s2>            if rsi_values[i] &lt; self.params[&#39;oversold&#39;] and rsi_values[i-1] &gt;= self.params[&#39;oversold&#39;]:
+</span></span></span><span class=line><span class=cl><span class=s2>                # 超卖买入
+</span></span></span><span class=line><span class=cl><span class=s2>                signal = TradingSignal(
+</span></span></span><span class=line><span class=cl><span class=s2>                    data[&#39;symbol&#39;].iloc[i] if &#39;symbol&#39; in data else &#34;STOCK&#34;,
+</span></span></span><span class=line><span class=cl><span class=s2>                    &#34;BUY&#34;,
+</span></span></span><span class=line><span class=cl><span class=s2>                    0.7,
+</span></span></span><span class=line><span class=cl><span class=s2>                    data.index[i]
+</span></span></span><span class=line><span class=cl><span class=s2>                )
+</span></span></span><span class=line><span class=cl><span class=s2>                signals.append(signal)
+</span></span></span><span class=line><span class=cl><span class=s2>            
+</span></span></span><span class=line><span class=cl><span class=s2>            elif rsi_values[i] &gt; self.params[&#39;overbought&#39;] and rsi_values[i-1] &lt;= self.params[&#39;overbought&#39;]:
+</span></span></span><span class=line><span class=cl><span class=s2>                # 超买卖出
+</span></span></span><span class=line><span class=cl><span class=s2>                signal = TradingSignal(
+</span></span></span><span class=line><span class=cl><span class=s2>                    data[&#39;symbol&#39;].iloc[i] if &#39;symbol&#39; in data else &#34;STOCK&#34;,
+</span></span></span><span class=line><span class=cl><span class=s2>                    &#34;SELL&#34;,
+</span></span></span><span class=line><span class=cl><span class=s2>                    0.7,
+</span></span></span><span class=line><span class=cl><span class=s2>                    data.index[i]
+</span></span></span><span class=line><span class=cl><span class=s2>                )
+</span></span></span><span class=line><span class=cl><span class=s2>                signals.append(signal)
+</span></span></span><span class=line><span class=cl><span class=s2>        
+</span></span></span><span class=line><span class=cl><span class=s2>        return signals
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    def calculate_rsi(self, prices, window):
+</span></span></span><span class=line><span class=cl><span class=s2>        &#34;&#34;__计算RSI指标&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=n>rsi_values</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=nb>len</span><span class=p>(</span><span class=n>prices</span><span class=p>)):</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>i</span> <span class=o>&lt;</span> <span class=n>window</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>rsi_values</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=kc>None</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=k>continue</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=n>gains</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>            <span class=n>losses</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=n>j</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>i</span> <span class=o>-</span> <span class=n>window</span> <span class=o>+</span> <span class=mi>1</span><span class=p>,</span> <span class=n>i</span> <span class=o>+</span> <span class=mi>1</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>                <span class=n>change</span> <span class=o>=</span> <span class=n>prices</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>j</span><span class=p>]</span> <span class=o>-</span> <span class=n>prices</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>j</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>                <span class=n>gains</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=nb>max</span><span class=p>(</span><span class=n>change</span><span class=p>,</span> <span class=mi>0</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>                <span class=n>losses</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=nb>max</span><span class=p>(</span><span class=o>-</span><span class=n>change</span><span class=p>,</span> <span class=mi>0</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=n>avg_gain</span> <span class=o>=</span> <span class=nb>sum</span><span class=p>(</span><span class=n>gains</span><span class=p>)</span> <span class=o>/</span> <span class=n>window</span>
+</span></span><span class=line><span class=cl>            <span class=n>avg_loss</span> <span class=o>=</span> <span class=nb>sum</span><span class=p>(</span><span class=n>losses</span><span class=p>)</span> <span class=o>/</span> <span class=n>window</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>avg_loss</span> <span class=o>==</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>rsi_values</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=mi>100</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>rs</span> <span class=o>=</span> <span class=n>avg_gain</span> <span class=o>/</span> <span class=n>avg_loss</span>
+</span></span><span class=line><span class=cl>                <span class=n>rsi_values</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=mi>100</span> <span class=o>-</span> <span class=p>(</span><span class=mi>100</span> <span class=o>/</span> <span class=p>(</span><span class=mi>1</span> <span class=o>+</span> <span class=n>rs</span><span class=p>)))</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>rsi_values</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>calculate_position_size</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>signal</span><span class=p>,</span> <span class=n>portfolio_value</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;</span><span class=n>__计算仓位大小</span><span class=err>：</span><span class=n>根据信号强度</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>        return portfolio_value * signal.strength * 0.15
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2># 使用示例
+</span></span></span><span class=line><span class=cl><span class=s2>import pandas as pd
+</span></span></span><span class=line><span class=cl><span class=s2>import numpy as np
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2># 创建模拟数据
+</span></span></span><span class=line><span class=cl><span class=s2>np.random.seed(42)
+</span></span></span><span class=line><span class=cl><span class=s2>dates = pd.date_range(&#39;2023-01-01&#39;, periods=100, freq=&#39;D&#39;)
+</span></span></span><span class=line><span class=cl><span class=s2>prices = 100 + np.cumsum(np.random.randn(100) * 0.5)
+</span></span></span><span class=line><span class=cl><span class=s2>data = pd.DataFrame({
+</span></span></span><span class=line><span class=cl><span class=s2>    &#39;close&#39;: prices,
+</span></span></span><span class=line><span class=cl><span class=s2>    &#39;symbol&#39;: &#39;TEST&#39;
+</span></span></span><span class=line><span class=cl><span class=s2>}, index=dates)
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2># 创建策略实例
+</span></span></span><span class=line><span class=cl><span class=s2>ma_strategy = MovingAverageStrategy(short_window=10, long_window=30)
+</span></span></span><span class=line><span class=cl><span class=s2>rsi_strategy = RSIStrategy(window=14, oversold=30, overbought=70)
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2># 回测策略
+</span></span></span><span class=line><span class=cl><span class=s2>ma_results = ma_strategy.backtest(data, initial_capital=100000)
+</span></span></span><span class=line><span class=cl><span class=s2>rsi_results = rsi_strategy.backtest(data, initial_capital=100000)
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>print(&#34;移动平均线策略结果:&#34;)
+</span></span></span><span class=line><span class=cl><span class=s2>print(f&#34;最终价值: </span><span class=si>{ma_results[&#39;final_value&#39;]:.2f}</span><span class=s2>&#34;)
+</span></span></span><span class=line><span class=cl><span class=s2>print(f&#34;总收益率: </span><span class=si>{ma_results[&#39;total_return&#39;]:.2%}</span><span class=s2>&#34;)
+</span></span></span><span class=line><span class=cl><span class=s2>print(f&#34;最大回撤: </span><span class=si>{ma_results[&#39;max_drawdown&#39;]:.2%}</span><span class=s2>&#34;)
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>print(&#34;</span><span class=se>\n</span><span class=s2>RSI策略结果:&#34;)
+</span></span></span><span class=line><span class=cl><span class=s2>print(f&#34;最终价值: </span><span class=si>{rsi_results[&#39;final_value&#39;]:.2f}</span><span class=s2>&#34;)
+</span></span></span><span class=line><span class=cl><span class=s2>print(f&#34;总收益率: </span><span class=si>{rsi_results[&#39;total_return&#39;]:.2%}</span><span class=s2>&#34;)
+</span></span></span><span class=line><span class=cl><span class=s2>print(f&#34;最大回撤: </span><span class=si>{rsi_results[&#39;max_drawdown&#39;]:.2%}</span><span class=s2>&#34;)
+</span></span></span></code></pre></td></tr></table></div></div></div></div><h2 id=实践练习>实践练习</h2><h3 id=练习1创建量化交易工具类>练习1：创建量化交易工具类</h3><p>创建一个综合的量化交易工具类，包含以下功能：</p><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>QuantitativeToolkit</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;</span><span class=n>__量化交易工具包</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    def __init__(self):
+</span></span></span><span class=line><span class=cl><span class=s2>        self.version = &#34;1.0.0&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    def calculate_returns(self, prices):
+</span></span></span><span class=line><span class=cl><span class=s2>        &#34;&#34;__计算收益率序列&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=c1># 请实现这个方法</span>
+</span></span><span class=line><span class=cl>        <span class=k>pass</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>calculate_volatility</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>returns</span><span class=p>,</span> <span class=n>window</span><span class=o>=</span><span class=mi>20</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;</span><span class=n>__计算波动率</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>        # 请实现这个方法
+</span></span></span><span class=line><span class=cl><span class=s2>        pass
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    def calculate_sharpe_ratio(self, returns, risk_free_rate=0.03):
+</span></span></span><span class=line><span class=cl><span class=s2>        &#34;&#34;__计算夏普比率&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=c1># 请实现这个方法</span>
+</span></span><span class=line><span class=cl>        <span class=k>pass</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>calculate_beta</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>stock_returns</span><span class=p>,</span> <span class=n>market_returns</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;</span><span class=n>__计算贝塔系数</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>        # 请实现这个方法
+</span></span></span><span class=line><span class=cl><span class=s2>        pass
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2># 测试你的实现
+</span></span></span><span class=line><span class=cl><span class=s2>import numpy as np
+</span></span></span><span class=line><span class=cl><span class=s2>import pandas as pd
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2># 创建测试数据
+</span></span></span><span class=line><span class=cl><span class=s2>np.random.seed(42)
+</span></span></span><span class=line><span class=cl><span class=s2>dates = pd.date_range(&#39;2023-01-01&#39;, periods=252, freq=&#39;D&#39;)
+</span></span></span><span class=line><span class=cl><span class=s2>prices = 100 * np.exp(np.cumsum(np.random.randn(252) * 0.01))
+</span></span></span><span class=line><span class=cl><span class=s2>stock_data = pd.DataFrame({&#39;close&#39;: prices}, index=dates)
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2># 实例化工具包
+</span></span></span><span class=line><span class=cl><span class=s2>qtk = QuantitativeToolkit()
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2># 测试各个方法
+</span></span></span><span class=line><span class=cl><span class=s2>returns = qtk.calculate_returns(stock_data[&#39;close&#39;])
+</span></span></span><span class=line><span class=cl><span class=s2>print(f&#34;收益率序列长度: {len(returns)}&#34;)
+</span></span></span><span class=line><span class=cl><span class=s2>print(f&#34;前5个收益率: {returns.head()}&#34;)
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>volatility = qtk.calculate_volatility(returns)
+</span></span></span><span class=line><span class=cl><span class=s2>print(f&#34;年化波动率: </span><span class=si>{volatility:.2%}</span><span class=s2>&#34;)
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>sharpe = qtk.calculate_sharpe_ratio(returns)
+</span></span></span><span class=line><span class=cl><span class=s2>print(f&#34;夏普比率: </span><span class=si>{sharpe:.2f}</span><span class=s2>&#34;)
+</span></span></span></code></pre></td></tr></table></div></div></div></div><h3 id=练习2扩展交易策略框架>练习2：扩展交易策略框架</h3><p>基于上面的策略基类，创建一个多因子策略：</p><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>MultiFactorStrategy</span><span class=p>(</span><span class=n>TradingStrategy</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;</span><span class=n>__多因子策略</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    def __init__(self, factors=None):
+</span></span></span><span class=line><span class=cl><span class=s2>        &#34;&#34;__初始化多因子策略&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=c1># 请实现初始化方法</span>
+</span></span><span class=line><span class=cl>        <span class=k>pass</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>add_factor</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>factor_name</span><span class=p>,</span> <span class=n>factor_data</span><span class=p>,</span> <span class=n>weight</span><span class=o>=</span><span class=mf>1.0</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;</span><span class=n>__添加因子</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>        # 请实现这个方法
+</span></span></span><span class=line><span class=cl><span class=s2>        pass
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    def calculate_factor_score(self, data):
+</span></span></span><span class=line><span class=cl><span class=s2>        &#34;&#34;__计算因子得分&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=c1># 请实现这个方法</span>
+</span></span><span class=line><span class=cl>        <span class=k>pass</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>generate_signals</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>data</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;</span><span class=n>__生成交易信号</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>        # 请实现这个方法
+</span></span></span><span class=line><span class=cl><span class=s2>        pass
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2># 测试你的多因子策略
+</span></span></span><span class=line><span class=cl><span class=s2>multi_factor_strategy = MultiFactorStrategy()
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2># 添加一些因子（你需要创建模拟因子数据）
+</span></span></span><span class=line><span class=cl><span class=s2># multi_factor_strategy.add_factor(&#34;momentum&#34;, momentum_data, weight=0.4)
+</span></span></span><span class=line><span class=cl><span class=s2># multi_factor_strategy.add_factor(&#34;value&#34;, value_data, weight=0.3)
+</span></span></span><span class=line><span class=cl><span class=s2># multi_factor_strategy.add_factor(&#34;quality&#34;, quality_data, weight=0.3)
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2># 回测策略
+</span></span></span><span class=line><span class=cl><span class=s2># results = multi_factor_strategy.backtest(data)
+</span></span></span><span class=line><span class=cl><span class=s2># print(&#34;多因子策略回测结果:&#34;, results)
+</span></span></span></code></pre></td></tr></table></div></div></div></div><h3 id=练习3创建事件驱动的回测系统>练习3：创建事件驱动的回测系统</h3><p>创建一个简单的事件驱动回测系统：</p><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>Event</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;</span><span class=n>__事件基类</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    def __init__(self, event_type, timestamp):
+</span></span></span><span class=line><span class=cl><span class=s2>        self.event_type = event_type
+</span></span></span><span class=line><span class=cl><span class=s2>        self.timestamp = timestamp
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>class MarketEvent(Event):
+</span></span></span><span class=line><span class=cl><span class=s2>    &#34;&#34;__市场事件&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>timestamp</span><span class=p>,</span> <span class=n>data</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=s2>&#34;MARKET&#34;</span><span class=p>,</span> <span class=n>timestamp</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>data</span> <span class=o>=</span> <span class=n>data</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>SignalEvent</span><span class=p>(</span><span class=n>Event</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;</span><span class=n>__信号事件</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    def __init__(self, timestamp, symbol, signal_type, strength):
+</span></span></span><span class=line><span class=cl><span class=s2>        super().__init__(&#34;SIGNAL&#34;, timestamp)
+</span></span></span><span class=line><span class=cl><span class=s2>        self.symbol = symbol
+</span></span></span><span class=line><span class=cl><span class=s2>        self.signal_type = signal_type
+</span></span></span><span class=line><span class=cl><span class=s2>        self.strength = strength
+</span></span></span><span class=line><span class=cl><span class=s2>
+</span></span></span><span class=line><span class=cl><span class=s2>class OrderEvent(Event):
+</span></span></span><span class=line><span class=cl><span class=s2>    &#34;&#34;__订单事件&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>timestamp</span><span class=p>,</span> <span class=n>symbol</span><span class=p>,</span> <span class=n>order_type</span><span class=p>,</span> <span class=n>quantity</span><span class=p>,</span> <span class=n>price</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>super</span><span class=p>()</span><span class=o>.</span><span class=fm>__init__</span><span class=p>(</span><span class=s2>&#34;ORDER&#34;</span><span class=p>,</span> <span class=n>timestamp</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>symbol</span> <span class=o>=</span> <span class=n>symbol</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>order_type</span> <span class=o>=</span> <span class=n>order_type</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>quantity</span> <span class=o>=</span> <span class=n>quantity</span>
+</span></span><span class=line><span class=cl>        <span class=bp>self</span><span class=o>.</span><span class=n>price</span> <span class=o>=</span> <span class=n>price</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>class</span> <span class=nc>EventDrivenBacktester</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;</span><span class=n>__事件驱动回测器</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    def __init__(self, initial_capital=100000):
+</span></span></span><span class=line><span class=cl><span class=s2>        # 请实现初始化方法
+</span></span></span><span class=line><span class=cl><span class=s2>        pass
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    def add_event(self, event):
+</span></span></span><span class=line><span class=cl><span class=s2>        &#34;&#34;__添加事件&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=c1># 请实现这个方法</span>
+</span></span><span class=line><span class=cl>        <span class=k>pass</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>process_events</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=s2>&#34;&#34;</span><span class=n>__处理事件队列</span><span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>        # 请实现这个方法
+</span></span></span><span class=line><span class=cl><span class=s2>        pass
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    def run_backtest(self, data, strategy):
+</span></span></span><span class=line><span class=cl><span class=s2>        &#34;&#34;__运行回测&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=c1># 请实现这个方法</span>
+</span></span><span class=line><span class=cl>        <span class=k>pass</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 测试你的事件驱动回测系统</span>
+</span></span><span class=line><span class=cl><span class=n>backtester</span> <span class=o>=</span> <span class=n>EventDrivenBacktester</span><span class=p>(</span><span class=n>initial_capital</span><span class=o>=</span><span class=mi>100000</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 创建策略并运行回测</span>
+</span></span><span class=line><span class=cl><span class=c1># strategy = MovingAverageStrategy()</span>
+</span></span><span class=line><span class=cl><span class=c1># results = backtester.run_backtest(data, strategy)</span>
+</span></span><span class=line><span class=cl><span class=c1># print(&#34;事件驱动回测结果:&#34;, results)</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h2 id=小结>小结</h2><p>本章我们深入学习了Python面向对象编程的核心概念：</p><ol><li><strong>类与对象</strong>：理解了类的定义、实例化、类变量与实例变量的区别</li><li><strong>继承与多态</strong>：掌握了单继承、多重继承的使用，以及多态性的实现</li><li><strong>封装与属性</strong>：学会了使用属性装饰器实现封装，保护数据的安全性</li><li><strong>特殊方法</strong>：了解了如何通过特殊方法让类支持Python内置操作</li><li><strong>量化交易应用</strong>：通过交易策略基类、风险管理器等实例，展示了OOP在量化交易中的实际应用</li></ol><p>面向对象编程让我们能够构建更加模块化、可维护和可扩展的量化交易系统。在后续章节中，我们将继续学习NumPy和Pandas等工具，为量化交易打下更坚实的基础。</p><h2 id=参考资料>参考资料</h2><ul><li>《Python编程：从入门到实践》</li><li>《流畅的Python》</li><li>《Python量化投资》</li><li><a href=https://docs.python.org/3/tutorial/classes.html>Python官方文档 - 类</a></li><li><a href=https://realpython.com/python3-object-oriented-programming/>Python面向对象编程指南</a></li></ul></div></article><aside class="lg:w-80 xl:w-96"><div class=space-y-8></div></aside></div><nav class="border-t border-gray-200 mt-12 pt-8"><div class="flex justify-between items-center"><a href=/blog/%E6%8A%95%E8%B5%84%E7%90%86%E8%AE%BA/%E5%AE%8F%E8%A7%82%E5%88%86%E6%9E%90/04-%E6%B1%87%E7%8E%87%E5%AF%B9%E8%82%A1%E5%B8%82%E7%9A%84%E5%BD%B1%E5%93%8D/ class="group flex items-center"><svg class="w-5 h-5 mr-2 text-gray-600 group-hover:text-primary-600" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0 7-7m-7 7h18"/></svg><div><div class="text-sm text-gray-600">上一篇</div><div class="font-medium group-hover:text-primary-600">宏观分析第4讲：汇率对股市的影响机制</div></div></a><a href=/blog/%E6%8A%95%E8%B5%84%E7%90%86%E8%AE%BA/%E5%AE%8F%E8%A7%82%E5%88%86%E6%9E%90/05-%E9%99%8D%E6%81%AF%E5%AF%B9%E8%82%A1%E5%B8%82%E7%9A%84%E5%BD%B1%E5%93%8D/ class="group flex items-center text-right"><div><div class="text-sm text-gray-600">Next Post</div><div class="font-medium group-hover:text-primary-600">宏观分析第5讲：降息对股市的影响机制</div></div><svg class="w-5 h-5 ml-2 text-gray-600 group-hover:text-primary-600" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0-7 7m7-7H3"/></svg></a></div></nav></div></div><footer class="bg-gray-50 py-12 border-t border-gray-200"><div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl"><div class="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0"><div class=flex-1><div class="flex items-center space-x-3 mb-4"><a href=https://sk-quant.github.io/ class=inline-block><img src=/images/logo.svg alt=烧烤量化 class=h-6>
+</a><span class="text-xl font-bold text-gray-900">烧烤量化</span></div><div class="flex space-x-3 p-2"><a href=https://linkedin.com/in/yourusername class="text-gray-600 hover:text-gray-900" target=_blank rel="noopener noreferrer"><span class=sr-only>LinkedIn</span>
+<img src=/images/social/linkedin.svg alt=LinkedIn class="h-5 w-5">
+</a><a href=https://bsky.app/profile/yourblueskyhandle class="text-gray-600 hover:text-gray-900" target=_blank rel="noopener noreferrer"><span class=sr-only>Bluesky</span>
+<img src=/images/social/bluesky.svg alt=Bluesky class="h-5 w-5">
+</a><a href=https://twitter.com/yourusername class="text-gray-600 hover:text-gray-900" target=_blank rel="noopener noreferrer"><span class=sr-only>Twitter (X)</span>
+<img src=/images/social/twitter.svg alt=Twitter class="h-5 w-5">
+</a><a href=https://github.com/yourusername class="text-gray-600 hover:text-gray-900" target=_blank rel="noopener noreferrer"><span class=sr-only>GitHub</span>
+<img src=/images/social/github.svg alt=GitHub class="h-5 w-5"></a></div></div><div class=flex-1><h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4"></h3><ul class=space-y-2></ul></div><div class=flex-1><h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4"></h3><ul class=space-y-2></ul></div><div class=flex-1><h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4"></h3><ul class=space-y-2></ul></div></div><div class="mt-12 pt-8 border-t border-gray-200"><div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0"><p class="text-gray-600 text-sm">© 2025 烧烤量化. All rights reserved.</p><a href=https://chaoming.li class="text-sm text-gray-600 hover:text-primary-600" target=_blank rel="noopener noreferrer">Powered by sk-quant</a></div></div></div></footer><script>const mobileMenuButton=document.getElementById("mobile-menu-button");mobileMenuButton&&mobileMenuButton.addEventListener("click",function(){const e=document.getElementById("mobile-menu");e&&e.classList.toggle("hidden")})</script></body></html>
