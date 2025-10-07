@@ -1,0 +1,317 @@
+<!doctype html><html lang=zh-cn class=h-full><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><script>(function(e,t,n,s,o){e[s]=e[s]||[],e[s].push({"gtm.start":(new Date).getTime(),event:"gtm.js"});var a=t.getElementsByTagName(n)[0],i=t.createElement(n),r=s!="dataLayer"?"&l="+s:"";i.async=!0,i.src="https://www.googletagmanager.com/gtm.js?id="+o+r,a.parentNode.insertBefore(i,a)})(window,document,"script","dataLayer","GTM-XXXXXXX")</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-XXXXXXXXXX")</script><title>技术指标第1讲：MA移动平均线基础 | 烧烤量化</title>
+<meta name=description content="从简单移动平均到指数移动平均，系统解析MA指标的计算原理、应用场景与交易信号，构建基于趋势跟踪的技术分析基础框架"><meta name=author content="Ryan"><meta name=robots content="index, follow"><meta property="og:title" content="技术指标第1讲：MA移动平均线基础 | 烧烤量化"><meta property="og:description" content="从简单移动平均到指数移动平均，系统解析MA指标的计算原理、应用场景与交易信号，构建基于趋势跟踪的技术分析基础框架"><meta property="og:type" content="article"><meta property="og:url" content="https://sk-quant.github.io/blog/%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87/01-ma%E7%A7%BB%E5%8A%A8%E5%B9%B3%E5%9D%87%E7%BA%BF%E5%9F%BA%E7%A1%80/"><meta property="og:site_name" content="烧烤量化"><meta name=twitter:card content="summary_large_image"><meta name=twitter:title content="技术指标第1讲：MA移动平均线基础 | 烧烤量化"><meta name=twitter:description content="从简单移动平均到指数移动平均，系统解析MA指标的计算原理、应用场景与交易信号，构建基于趋势跟踪的技术分析基础框架"><link rel=icon type=image/x-icon href=/images/favicon.ico><link rel=canonical href=https://sk-quant.github.io/blog/%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87/01-ma%E7%A7%BB%E5%8A%A8%E5%B9%B3%E5%9D%87%E7%BA%BF%E5%9F%BA%E7%A1%80/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel=stylesheet><link rel=stylesheet href="/css/main.min.0ec21c03b9f63a8c5e37663a4d2dc1608de61fd749fcfef42ffda7dc5bf34cc4.css"></head><body class="min-h-screen flex flex-col"><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height=0 width=0 style=display:none;visibility:hidden></iframe></noscript><div class="fixed top-0 left-0 right-0 z-50"><div class=mobile-menu-wrapper><input type=checkbox id=nav-toggle class=nav-toggle><header class="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-100"><div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl"><nav class="flex items-center justify-between h-20"><a href=https://sk-quant.github.io/ class="flex items-center space-x-4"><img src=/images/logo.svg alt=烧烤量化 class=h-12>
+<span class="text-3xl font-semibold text-gray-800">烧烤量化</span></a><div class="hidden md:flex items-center space-x-8"><a href=/path class="text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">学习路线</a><div class="relative group"><button class="flex items-center text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">
+量化基础<svg class="ml-2 w-4 h-4" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="absolute left-0 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out"><div class="py-6 bg-white border border-gray-100 shadow-xl rounded-lg"><a href=/categories/%e6%8a%95%e8%b5%84%e7%90%86%e8%ae%ba/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">投资理论</a>
+<a href=/categories/%e4%bb%a3%e7%a0%81%e5%9f%ba%e7%a1%80/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">代码基础</a>
+<a href=/categories/%e6%8a%80%e6%9c%af%e6%8c%87%e6%a0%87/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">技术指标</a>
+<a href=/categories/%e5%9b%9e%e6%b5%8b%e5%b9%b3%e5%8f%b0/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">回测平台</a></div></div></div><div class="relative group"><button class="flex items-center text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">
+量化进阶<svg class="ml-2 w-4 h-4" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="absolute left-0 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out"><div class="py-6 bg-white border border-gray-100 shadow-xl rounded-lg"><a href=/categories/%e7%ad%96%e7%95%a5%e5%88%86%e4%ba%ab/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">策略分享</a>
+<a href=/categories/%e5%ae%9e%e7%9b%98%e5%b7%a5%e5%85%b7/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">实盘工具</a>
+<a href=/categories/%e7%83%ad%e7%82%b9%e9%a3%8e%e5%8f%a3/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">热点风口</a>
+<a href=/categories/%e7%bb%bc%e5%90%88%e5%ae%9e%e6%88%98/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">综合实战</a></div></div></div><div class="relative group"><button class="flex items-center text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">
+量化高手<svg class="ml-2 w-4 h-4" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="absolute left-0 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out"><div class="py-6 bg-white border border-gray-100 shadow-xl rounded-lg"><a href=/categories/%e5%8f%af%e8%bd%ac%e5%80%ba/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">可转债</a>
+<a href=/categories/%e8%9e%8d%e8%b5%84%e8%9e%8d%e5%88%b8/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">融资融券</a>
+<a href=/categories/%e8%82%a1%e7%a5%a8%e6%9c%9f%e6%9d%83/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">股票期权</a>
+<a href=/categories/%e8%82%a1%e6%8c%87%e6%9c%9f%e8%b4%a7/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">股指期货</a></div></div></div><a href=/pricing class="text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">服务套餐</a></div><div class="hidden md:flex items-center space-x-4"><a href=/contact class="inline-flex items-center justify-center px-6 py-3 rounded-lg font-bold transition duration-200 ease-in-out bg-primary-600 text-white hover:bg-primary-700 hover:scale-105">现在加入</a></div><div class=md:hidden><label for=nav-toggle class="p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2 transition-colors cursor-pointer"><svg class="w-6 h-6" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></label></div></nav></div><div class="nav-content md:hidden w-full fixed left-0 right-0 top-20 bg-white border-t border-gray-100 shadow-lg"><div class="w-full px-6 py-4"><a href=/path class="block text-xl text-gray-900 hover:text-primary-600 font-bold transition duration-200 py-2">学习路线</a><div class=py-2><div class="text-xl text-gray-900 font-bold mb-2">量化基础</div><div class=pl-4><a href=/categories/%e6%8a%95%e8%b5%84%e7%90%86%e8%ae%ba/ class="block text-gray-700 hover:text-primary-600 py-2">投资理论</a>
+<a href=/categories/%e4%bb%a3%e7%a0%81%e5%9f%ba%e7%a1%80/ class="block text-gray-700 hover:text-primary-600 py-2">代码基础</a>
+<a href=/categories/%e6%8a%80%e6%9c%af%e6%8c%87%e6%a0%87/ class="block text-gray-700 hover:text-primary-600 py-2">技术指标</a>
+<a href=/categories/%e5%9b%9e%e6%b5%8b%e5%b9%b3%e5%8f%b0/ class="block text-gray-700 hover:text-primary-600 py-2">回测平台</a></div></div><div class=py-2><div class="text-xl text-gray-900 font-bold mb-2">量化进阶</div><div class=pl-4><a href=/categories/%e7%ad%96%e7%95%a5%e5%88%86%e4%ba%ab/ class="block text-gray-700 hover:text-primary-600 py-2">策略分享</a>
+<a href=/categories/%e5%ae%9e%e7%9b%98%e5%b7%a5%e5%85%b7/ class="block text-gray-700 hover:text-primary-600 py-2">实盘工具</a>
+<a href=/categories/%e7%83%ad%e7%82%b9%e9%a3%8e%e5%8f%a3/ class="block text-gray-700 hover:text-primary-600 py-2">热点风口</a>
+<a href=/categories/%e7%bb%bc%e5%90%88%e5%ae%9e%e6%88%98/ class="block text-gray-700 hover:text-primary-600 py-2">综合实战</a></div></div><div class=py-2><div class="text-xl text-gray-900 font-bold mb-2">量化高手</div><div class=pl-4><a href=/categories/%e5%8f%af%e8%bd%ac%e5%80%ba/ class="block text-gray-700 hover:text-primary-600 py-2">可转债</a>
+<a href=/categories/%e8%9e%8d%e8%b5%84%e8%9e%8d%e5%88%b8/ class="block text-gray-700 hover:text-primary-600 py-2">融资融券</a>
+<a href=/categories/%e8%82%a1%e7%a5%a8%e6%9c%9f%e6%9d%83/ class="block text-gray-700 hover:text-primary-600 py-2">股票期权</a>
+<a href=/categories/%e8%82%a1%e6%8c%87%e6%9c%9f%e8%b4%a7/ class="block text-gray-700 hover:text-primary-600 py-2">股指期货</a></div></div><a href=/pricing class="block text-xl text-gray-900 hover:text-primary-600 font-bold transition duration-200 py-2">服务套餐</a><div class="pt-4 space-y-4"><a href=/contact class="block text-center px-6 py-3 rounded-lg font-bold transition duration-200 ease-in-out bg-primary-600 text-white hover:bg-primary-700 hover:scale-105">现在加入</a></div></div></div></header><style>.mobile-menu-wrapper{position:relative}.nav-toggle{display:none}.nav-content{display:none}.nav-toggle:checked~header .nav-content{display:block}</style></div></div><div class=pt-20><div class="container mx-auto px-4 py-12"><div class="flex flex-col lg:flex-row gap-8 mb-12"><article class=flex-1><header class=mb-8><div class=mb-4><a href=/categories/%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87 class="inline-block px-3 py-1 text-sm font-medium text-primary-600 bg-primary-50 rounded-full hover:bg-primary-100 mr-2">技术指标</a></div><h1 class="text-4xl font-bold mb-4">技术指标第1讲：MA移动平均线基础</h1><div class="flex flex-col space-y-4"><div class="flex items-center justify-between text-sm text-gray-500"><div class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7A4 4 0 118 7a4 4 0 018 0zm-4 7a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+<span>Ryan</span></div><div class="flex items-center space-x-6"><div class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747.0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746.0-3.332.477-4.5 1.253"/></svg>
+<span>12 分钟</span></div><div class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5A2 2 0 003 7v12a2 2 0 002 2z"/></svg>
+<time datetime=2025-09-11>September 11, 2025</time></div></div></div><div class="flex items-center flex-wrap gap-2"><a href=/tags/2025 class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors duration-200">#2025</a></div></div></header><div class=mb-8><img src=/images/blog/%e6%8a%80%e6%9c%af%e6%8c%87%e6%a0%87.jpg alt=技术指标第1讲：MA移动平均线基础 class="w-full h-auto rounded-lg" loading=lazy></div><div class="prose prose-lg max-w-none"><div class="bg-gray-50 p-6 rounded-lg mb-8"><h2 class="text-xl font-semibold mb-4">目录</h2><nav id=TableOfContents><ul><li><a href=#ma移动平均线趋势跟踪的技术基石>MA移动平均线：趋势跟踪的技术基石</a></li><li><a href=#ma指标分类从简单算术到指数加权的演进路径>MA指标分类：从简单算术到指数加权的演进路径</a><ul><li><a href=#简单移动平均线sma基础趋势识别工具>简单移动平均线（SMA）：基础趋势识别工具</a></li><li><a href=#指数移动平均线ema动态权重优化方案>指数移动平均线（EMA）：动态权重优化方案</a></li><li><a href=#加权移动平均线wma线性权重分配策略>加权移动平均线（WMA）：线性权重分配策略</a></li></ul></li><li><a href=#ma指标实战应用从单线分析到多线组合>MA指标实战应用：从单线分析到多线组合</a><ul><li><a href=#单条ma线的趋势识别功能>单条MA线的趋势识别功能</a></li><li><a href=#双ma线交叉系统黄金交叉与死亡交叉>双MA线交叉系统：黄金交叉与死亡交叉</a></li><li><a href=#多重ma线排列趋势强度的综合评估>多重MA线排列：趋势强度的综合评估</a></li></ul></li><li><a href=#ma指标参数优化周期选择与品种适配>MA指标参数优化：周期选择与品种适配</a><ul><li><a href=#周期参数的选择逻辑>周期参数的选择逻辑</a></li><li><a href=#品种特性与参数适配>品种特性与参数适配</a></li></ul></li><li><a href=#基于talib的ma指标python实现>基于talib的MA指标Python实现</a><ul><li><a href=#环境配置与数据准备>环境配置与数据准备</a></li><li><a href=#sma简单移动平均线计算>SMA简单移动平均线计算</a></li><li><a href=#ema指数移动平均线计算>EMA指数移动平均线计算</a></li><li><a href=#ma指标可视化分析>MA指标可视化分析</a></li></ul></li><li><a href=#ma指标交易策略优化从单指标到多因子>MA指标交易策略优化：从单指标到多因子</a><ul><li><a href=#多时间框架ma系统>多时间框架MA系统</a></li><li><a href=#ma指标与其他技术指标的组合应用>MA指标与其他技术指标的组合应用</a></li><li><a href=#动态参数调整机制>动态参数调整机制</a></li></ul></li><li><a href=#ma指标优势局限与实战要点>MA指标优势局限与实战要点</a><ul><li><a href=#ma指标的核心优势>MA指标的核心优势</a></li><li><a href=#ma指标的固有局限>MA指标的固有局限</a></li><li><a href=#实战应用要点总结>实战应用要点总结</a></li></ul></li></ul></nav></div><h2 id=ma移动平均线趋势跟踪的技术基石>MA移动平均线：趋势跟踪的技术基石</h2><p>移动平均线（Moving Average，MA）作为技术分析中最基础且最重要的指标之一，通过平滑价格数据来识别市场趋势方向。MA指标的核心价值在于过滤短期价格波动的"噪音"，为投资者提供清晰的趋势信号和支撑阻力位参考。</p><p>从数学本质上讲，移动平均线是价格在特定时间段内的算术平均值，其计算逻辑基于"历史价格包含市场信息"的技术分析前提。当价格持续高于移动平均线时，表明市场处于上升趋势；反之，当价格持续低于移动平均线时，则暗示下跌趋势的形成。</p><h2 id=ma指标分类从简单算术到指数加权的演进路径>MA指标分类：从简单算术到指数加权的演进路径</h2><h3 id=简单移动平均线sma基础趋势识别工具>简单移动平均线（SMA）：基础趋势识别工具</h3><p>简单移动平均线（Simple Moving Average）采用算术平均法计算，对所有历史价格赋予相同权重。SMA的计算公式为：</p><p>SMA(n) = (P₁ + P₂ + P₃ + &mldr; + Pₙ) / n</p><p>其中P代表价格（通常使用收盘价），n为计算周期。SMA的特点是计算简单、趋势平滑，但对近期价格变化的反应相对滞后。</p><h3 id=指数移动平均线ema动态权重优化方案>指数移动平均线（EMA）：动态权重优化方案</h3><p>指数移动平均线（Exponential Moving Average）通过指数衰减权重机制，赋予近期价格更高权重。EMA的计算涉及平滑系数α = 2/(n+1)，其递推公式为：</p><p>EMA(t) = α × P(t) + (1-α) × EMA(t-1)</p><p>EMA指标对价格变化的敏感度显著高于SMA，能够更快地捕捉趋势转折信号，特别适合短线交易和波段操作。</p><h3 id=加权移动平均线wma线性权重分配策略>加权移动平均线（WMA）：线性权重分配策略</h3><p>加权移动平均线（Weighted Moving Average）采用线性递增权重模式，最近期价格获得最高权重。WMA的计算公式为：</p><p>WMA(n) = (n×P₁ + (n-1)×P₂ + &mldr; + 1×Pₙ) / (n×(n+1)/2)</p><p>WMA在趋势响应速度和平滑效果之间取得了平衡，为投资者提供了另一种趋势跟踪选择。</p><h2 id=ma指标实战应用从单线分析到多线组合>MA指标实战应用：从单线分析到多线组合</h2><h3 id=单条ma线的趋势识别功能>单条MA线的趋势识别功能</h3><p>单条移动平均线可用于判断市场趋势方向和强度。当股价持续位于MA线上方且MA线本身呈上升态势时，表明上升趋势确立；反之，当股价持续位于MA线下方且MA线下降时，下跌趋势得到确认。</p><p>MA线的斜率变化具有重要的趋势强度指示意义。MA线斜率越陡峭，表明当前趋势越强劲；MA线斜率趋于平缓，则暗示趋势动能减弱，可能面临方向选择。</p><h3 id=双ma线交叉系统黄金交叉与死亡交叉>双MA线交叉系统：黄金交叉与死亡交叉</h3><p>双移动平均线系统通过快慢两条MA线的交叉关系产生交易信号。常用的参数组合包括(5,20)、(10,30)、(20,60)等，其中短期MA线反映近期价格走势，长期MA线代表整体趋势方向。</p><p>黄金交叉指短期MA线自下而上穿越长期MA线，被视为买入信号；死亡交叉指短期MA线自上而下穿越长期MA线，被视为卖出信号。交叉信号的可靠性取决于MA线参数的选择和市场波动特征。</p><h3 id=多重ma线排列趋势强度的综合评估>多重MA线排列：趋势强度的综合评估</h3><p>多重移动平均线系统采用三条或以上不同周期的MA线，通过观察它们的排列顺序来判断趋势强度。在强势上升趋势中，短期MA线位于长期MA线之上，且各MA线呈多头排列；在下跌趋势中，排列顺序相反。</p><p>MA线之间的乖离率（间距）变化反映了趋势动能的强弱。当各MA线间距扩大时，表明趋势加速；当间距缩小时，暗示趋势可能反转或进入震荡整理阶段。</p><h2 id=ma指标参数优化周期选择与品种适配>MA指标参数优化：周期选择与品种适配</h2><h3 id=周期参数的选择逻辑>周期参数的选择逻辑</h3><p>MA指标周期参数的选择需要平衡趋势跟踪的及时性与稳定性。短周期MA（如5日、10日）对价格变化反应迅速，但容易产生虚假信号；长周期MA（如60日、120日）趋势稳定，但信号滞后明显。</p><p>不同市场环境下MA参数的表现存在显著差异。在趋势明显的市场中，长周期MA表现更佳；在震荡市中，短周期MA能减少滞后性带来的损失。投资者应根据市场特征动态调整MA参数。</p><h3 id=品种特性与参数适配>品种特性与参数适配</h3><p>不同金融品种的波动特征决定了MA参数的选择策略。高波动品种（如小盘股、加密货币）适合使用较短周期的MA参数；低波动品种（如大盘蓝筹股、债券）可采用较长周期的MA参数。</p><p>交易频率也是MA参数选择的重要考虑因素。日内交易者倾向于使用5分钟、15分钟级别的MA指标；波段操作者偏好日线级别的MA系统；长期投资者则关注周线、月线级别的MA趋势。</p><h2 id=基于talib的ma指标python实现>基于talib的MA指标Python实现</h2><h3 id=环境配置与数据准备>环境配置与数据准备</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>talib</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>numpy</span> <span class=k>as</span> <span class=nn>np</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>pandas</span> <span class=k>as</span> <span class=nn>pd</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>matplotlib.pyplot</span> <span class=k>as</span> <span class=nn>plt</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>yfinance</span> <span class=k>as</span> <span class=nn>yf</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 获取股票数据</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>get_stock_data</span><span class=p>(</span><span class=n>symbol</span><span class=p>,</span> <span class=n>period</span><span class=o>=</span><span class=s2>&#34;1y&#34;</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;获取股票历史数据&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>stock</span> <span class=o>=</span> <span class=n>yf</span><span class=o>.</span><span class=n>download</span><span class=p>(</span><span class=n>symbol</span><span class=p>,</span> <span class=n>period</span><span class=o>=</span><span class=n>period</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>stock</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 获取沪深300指数数据</span>
+</span></span><span class=line><span class=cl><span class=n>data</span> <span class=o>=</span> <span class=n>get_stock_data</span><span class=p>(</span><span class=s2>&#34;000300.SS&#34;</span><span class=p>,</span> <span class=n>period</span><span class=o>=</span><span class=s2>&#34;6mo&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>close_prices</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;Close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>values</span>
+</span></span><span class=line><span class=cl><span class=n>high_prices</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;High&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>values</span>
+</span></span><span class=line><span class=cl><span class=n>low_prices</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;Low&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>values</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;数据获取完成，共</span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>data</span><span class=p>)</span><span class=si>}</span><span class=s2>个交易日&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;价格区间: </span><span class=si>{</span><span class=n>data</span><span class=p>[</span><span class=s1>&#39;Close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>min</span><span class=p>()</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2> - </span><span class=si>{</span><span class=n>data</span><span class=p>[</span><span class=s1>&#39;Close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>max</span><span class=p>()</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h3 id=sma简单移动平均线计算>SMA简单移动平均线计算</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 计算不同周期的SMA</span>
+</span></span><span class=line><span class=cl><span class=n>sma_5</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>SMA</span><span class=p>(</span><span class=n>close_prices</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>sma_10</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>SMA</span><span class=p>(</span><span class=n>close_prices</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>10</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>sma_20</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>SMA</span><span class=p>(</span><span class=n>close_prices</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>20</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>sma_60</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>SMA</span><span class=p>(</span><span class=n>close_prices</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>60</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 创建DataFrame便于分析</span>
+</span></span><span class=line><span class=cl><span class=n>ma_df</span> <span class=o>=</span> <span class=n>pd</span><span class=o>.</span><span class=n>DataFrame</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;Close&#39;</span><span class=p>:</span> <span class=n>close_prices</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;SMA_5&#39;</span><span class=p>:</span> <span class=n>sma_5</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;SMA_10&#39;</span><span class=p>:</span> <span class=n>sma_10</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;SMA_20&#39;</span><span class=p>:</span> <span class=n>sma_20</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;SMA_60&#39;</span><span class=p>:</span> <span class=n>sma_60</span>
+</span></span><span class=line><span class=cl><span class=p>},</span> <span class=n>index</span><span class=o>=</span><span class=n>data</span><span class=o>.</span><span class=n>index</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 显示最近10个交易日的MA值</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s2>&#34;最近10个交易日MA值:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>ma_df</span><span class=o>.</span><span class=n>tail</span><span class=p>(</span><span class=mi>10</span><span class=p>)</span><span class=o>.</span><span class=n>round</span><span class=p>(</span><span class=mi>2</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 计算MA交叉信号</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>ma_cross_signal</span><span class=p>(</span><span class=n>fast_ma</span><span class=p>,</span> <span class=n>slow_ma</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;计算MA交叉信号&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>buy_signal</span> <span class=o>=</span> <span class=p>(</span><span class=n>fast_ma</span> <span class=o>&gt;</span> <span class=n>slow_ma</span><span class=p>)</span> <span class=o>&amp;</span> <span class=p>(</span><span class=n>fast_ma</span><span class=o>.</span><span class=n>shift</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span> <span class=o>&lt;=</span> <span class=n>slow_ma</span><span class=o>.</span><span class=n>shift</span><span class=p>(</span><span class=mi>1</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=n>sell_signal</span> <span class=o>=</span> <span class=p>(</span><span class=n>fast_ma</span> <span class=o>&lt;</span> <span class=n>slow_ma</span><span class=p>)</span> <span class=o>&amp;</span> <span class=p>(</span><span class=n>fast_ma</span><span class=o>.</span><span class=n>shift</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span> <span class=o>&gt;=</span> <span class=n>slow_ma</span><span class=o>.</span><span class=n>shift</span><span class=p>(</span><span class=mi>1</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>buy_signal</span><span class=p>,</span> <span class=n>sell_signal</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>buy_5_20</span><span class=p>,</span> <span class=n>sell_5_20</span> <span class=o>=</span> <span class=n>ma_cross_signal</span><span class=p>(</span><span class=n>ma_df</span><span class=p>[</span><span class=s1>&#39;SMA_5&#39;</span><span class=p>],</span> <span class=n>ma_df</span><span class=p>[</span><span class=s1>&#39;SMA_20&#39;</span><span class=p>])</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>5日/20日MA交叉信号统计:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;买入信号次数: </span><span class=si>{</span><span class=n>buy_5_20</span><span class=o>.</span><span class=n>sum</span><span class=p>()</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;卖出信号次数: </span><span class=si>{</span><span class=n>sell_5_20</span><span class=o>.</span><span class=n>sum</span><span class=p>()</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h3 id=ema指数移动平均线计算>EMA指数移动平均线计算</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 计算不同周期的EMA</span>
+</span></span><span class=line><span class=cl><span class=n>ema_5</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>EMA</span><span class=p>(</span><span class=n>close_prices</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>ema_12</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>EMA</span><span class=p>(</span><span class=n>close_prices</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>12</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>ema_26</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>EMA</span><span class=p>(</span><span class=n>close_prices</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>26</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>ema_60</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>EMA</span><span class=p>(</span><span class=n>close_prices</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>60</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 对比SMA与EMA的差异</span>
+</span></span><span class=line><span class=cl><span class=n>comparison_df</span> <span class=o>=</span> <span class=n>pd</span><span class=o>.</span><span class=n>DataFrame</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;Close&#39;</span><span class=p>:</span> <span class=n>close_prices</span><span class=p>[</span><span class=o>-</span><span class=mi>20</span><span class=p>:],</span>  <span class=c1># 最近20天</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;SMA_20&#39;</span><span class=p>:</span> <span class=n>sma_20</span><span class=p>[</span><span class=o>-</span><span class=mi>20</span><span class=p>:],</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;EMA_20&#39;</span><span class=p>:</span> <span class=n>ema_26</span><span class=p>[</span><span class=o>-</span><span class=mi>20</span><span class=p>:]</span>  <span class=c1># talib的EMA26近似20日EMA</span>
+</span></span><span class=line><span class=cl><span class=p>},</span> <span class=n>index</span><span class=o>=</span><span class=n>data</span><span class=o>.</span><span class=n>index</span><span class=p>[</span><span class=o>-</span><span class=mi>20</span><span class=p>:])</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s2>&#34;SMA vs EMA 对比 (最近20个交易日):&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>comparison_df</span><span class=o>.</span><span class=n>round</span><span class=p>(</span><span class=mi>2</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 计算价格相对MA的偏离度</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>price_ma_deviation</span><span class=p>(</span><span class=n>price</span><span class=p>,</span> <span class=n>ma</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;计算价格相对MA的偏离度&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=p>(</span><span class=n>price</span> <span class=o>-</span> <span class=n>ma</span><span class=p>)</span> <span class=o>/</span> <span class=n>ma</span> <span class=o>*</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>deviation_sma20</span> <span class=o>=</span> <span class=n>price_ma_deviation</span><span class=p>(</span><span class=n>close_prices</span><span class=p>,</span> <span class=n>sma_20</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>deviation_ema20</span> <span class=o>=</span> <span class=n>price_ma_deviation</span><span class=p>(</span><span class=n>close_prices</span><span class=p>,</span> <span class=n>ema_26</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>价格偏离度统计:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;相对SMA20偏离度: </span><span class=si>{</span><span class=n>deviation_sma20</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>%&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;相对EMA20偏离度: </span><span class=si>{</span><span class=n>deviation_ema20</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>%&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h3 id=ma指标可视化分析>MA指标可视化分析</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 创建MA指标可视化图表</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>figure</span><span class=p>(</span><span class=n>figsize</span><span class=o>=</span><span class=p>(</span><span class=mi>15</span><span class=p>,</span> <span class=mi>10</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 主图：价格与MA线</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>subplot</span><span class=p>(</span><span class=mi>2</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>1</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>data</span><span class=o>.</span><span class=n>index</span><span class=p>,</span> <span class=n>close_prices</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;收盘价&#39;</span><span class=p>,</span> <span class=n>linewidth</span><span class=o>=</span><span class=mi>2</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;black&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>data</span><span class=o>.</span><span class=n>index</span><span class=p>,</span> <span class=n>sma_20</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;SMA 20&#39;</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;blue&#39;</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.7</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>data</span><span class=o>.</span><span class=n>index</span><span class=p>,</span> <span class=n>sma_60</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;SMA 60&#39;</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;red&#39;</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.7</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>data</span><span class=o>.</span><span class=n>index</span><span class=p>,</span> <span class=n>ema_20</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;EMA 20&#39;</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;green&#39;</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.7</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 标记交叉信号</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=n>buy_5_20</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=o>-</span><span class=mi>20</span><span class=p>:]</span><span class=o>.</span><span class=n>any</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=n>buy_dates</span> <span class=o>=</span> <span class=n>data</span><span class=o>.</span><span class=n>index</span><span class=p>[</span><span class=o>-</span><span class=mi>20</span><span class=p>:][</span><span class=n>buy_5_20</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=o>-</span><span class=mi>20</span><span class=p>:]]</span>
+</span></span><span class=line><span class=cl>    <span class=n>plt</span><span class=o>.</span><span class=n>scatter</span><span class=p>(</span><span class=n>buy_dates</span><span class=p>,</span> <span class=n>ma_df</span><span class=p>[</span><span class=s1>&#39;Close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>loc</span><span class=p>[</span><span class=n>buy_dates</span><span class=p>],</span> 
+</span></span><span class=line><span class=cl>               <span class=n>color</span><span class=o>=</span><span class=s1>&#39;green&#39;</span><span class=p>,</span> <span class=n>marker</span><span class=o>=</span><span class=s1>&#39;^&#39;</span><span class=p>,</span> <span class=n>s</span><span class=o>=</span><span class=mi>100</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;买入信号&#39;</span><span class=p>,</span> <span class=n>zorder</span><span class=o>=</span><span class=mi>5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=n>sell_5_20</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=o>-</span><span class=mi>20</span><span class=p>:]</span><span class=o>.</span><span class=n>any</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=n>sell_dates</span> <span class=o>=</span> <span class=n>data</span><span class=o>.</span><span class=n>index</span><span class=p>[</span><span class=o>-</span><span class=mi>20</span><span class=p>:][</span><span class=n>sell_5_20</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=o>-</span><span class=mi>20</span><span class=p>:]]</span>
+</span></span><span class=line><span class=cl>    <span class=n>plt</span><span class=o>.</span><span class=n>scatter</span><span class=p>(</span><span class=n>sell_dates</span><span class=p>,</span> <span class=n>ma_df</span><span class=p>[</span><span class=s1>&#39;Close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>loc</span><span class=p>[</span><span class=n>sell_dates</span><span class=p>],</span> 
+</span></span><span class=line><span class=cl>               <span class=n>color</span><span class=o>=</span><span class=s1>&#39;red&#39;</span><span class=p>,</span> <span class=n>marker</span><span class=o>=</span><span class=s1>&#39;v&#39;</span><span class=p>,</span> <span class=n>s</span><span class=o>=</span><span class=mi>100</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;卖出信号&#39;</span><span class=p>,</span> <span class=n>zorder</span><span class=o>=</span><span class=mi>5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>title</span><span class=p>(</span><span class=s1>&#39;移动平均线趋势分析&#39;</span><span class=p>,</span> <span class=n>fontsize</span><span class=o>=</span><span class=mi>14</span><span class=p>,</span> <span class=n>fontweight</span><span class=o>=</span><span class=s1>&#39;bold&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>ylabel</span><span class=p>(</span><span class=s1>&#39;价格&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>legend</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>grid</span><span class=p>(</span><span class=kc>True</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.3</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 副图：价格偏离度</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>subplot</span><span class=p>(</span><span class=mi>2</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=mi>2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>data</span><span class=o>.</span><span class=n>index</span><span class=p>,</span> <span class=n>deviation_sma20</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;相对SMA20偏离度&#39;</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;blue&#39;</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.7</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>data</span><span class=o>.</span><span class=n>index</span><span class=p>,</span> <span class=n>deviation_ema20</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;相对EMA20偏离度&#39;</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;green&#39;</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.7</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>axhline</span><span class=p>(</span><span class=n>y</span><span class=o>=</span><span class=mi>0</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;black&#39;</span><span class=p>,</span> <span class=n>linestyle</span><span class=o>=</span><span class=s1>&#39;--&#39;</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>axhline</span><span class=p>(</span><span class=n>y</span><span class=o>=</span><span class=mi>5</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;red&#39;</span><span class=p>,</span> <span class=n>linestyle</span><span class=o>=</span><span class=s1>&#39;--&#39;</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.3</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;+5%偏离&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>axhline</span><span class=p>(</span><span class=n>y</span><span class=o>=-</span><span class=mi>5</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;red&#39;</span><span class=p>,</span> <span class=n>linestyle</span><span class=o>=</span><span class=s1>&#39;--&#39;</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.3</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;-5%偏离&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>title</span><span class=p>(</span><span class=s1>&#39;价格相对移动平均线偏离度&#39;</span><span class=p>,</span> <span class=n>fontsize</span><span class=o>=</span><span class=mi>14</span><span class=p>,</span> <span class=n>fontweight</span><span class=o>=</span><span class=s1>&#39;bold&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>ylabel</span><span class=p>(</span><span class=s1>&#39;偏离度 (%)&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>xlabel</span><span class=p>(</span><span class=s1>&#39;日期&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>legend</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>grid</span><span class=p>(</span><span class=kc>True</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.3</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>tight_layout</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>show</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 生成交易信号总结</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s2>&#34;=== MA移动平均线交易信号总结 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;当前价格: </span><span class=si>{</span><span class=n>close_prices</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;SMA20: </span><span class=si>{</span><span class=n>sma_20</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2> (</span><span class=si>{</span><span class=s1>&#39;上升&#39;</span> <span class=k>if</span> <span class=n>sma_20</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>&gt;</span> <span class=n>sma_20</span><span class=p>[</span><span class=o>-</span><span class=mi>2</span><span class=p>]</span> <span class=k>else</span> <span class=s1>&#39;下降&#39;</span><span class=si>}</span><span class=s2>)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;SMA60: </span><span class=si>{</span><span class=n>sma_60</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2> (</span><span class=si>{</span><span class=s1>&#39;上升&#39;</span> <span class=k>if</span> <span class=n>sma_60</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>&gt;</span> <span class=n>sma_60</span><span class=p>[</span><span class=o>-</span><span class=mi>2</span><span class=p>]</span> <span class=k>else</span> <span class=s1>&#39;下降&#39;</span><span class=si>}</span><span class=s2>)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;EMA20: </span><span class=si>{</span><span class=n>ema_20</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2> (</span><span class=si>{</span><span class=s1>&#39;上升&#39;</span> <span class=k>if</span> <span class=n>ema_20</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>&gt;</span> <span class=n>ema_20</span><span class=p>[</span><span class=o>-</span><span class=mi>2</span><span class=p>]</span> <span class=k>else</span> <span class=s1>&#39;下降&#39;</span><span class=si>}</span><span class=s2>)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 趋势判断</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=n>close_prices</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>&gt;</span> <span class=n>sma_20</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>&gt;</span> <span class=n>sma_60</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>    <span class=n>trend</span> <span class=o>=</span> <span class=s2>&#34;强势上升&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>elif</span> <span class=n>close_prices</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>&gt;</span> <span class=n>sma_20</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>    <span class=n>trend</span> <span class=o>=</span> <span class=s2>&#34;温和上升&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>elif</span> <span class=n>close_prices</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>&lt;</span> <span class=n>sma_20</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>&lt;</span> <span class=n>sma_60</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>    <span class=n>trend</span> <span class=o>=</span> <span class=s2>&#34;强势下跌&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>trend</span> <span class=o>=</span> <span class=s2>&#34;震荡整理&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;当前趋势判断: </span><span class=si>{</span><span class=n>trend</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;建议操作: </span><span class=si>{</span><span class=s1>&#39;持有多头&#39;</span> <span class=k>if</span> <span class=s1>&#39;上升&#39;</span> <span class=ow>in</span> <span class=n>trend</span> <span class=k>else</span> <span class=s1>&#39;观望/空头&#39;</span> <span class=k>if</span> <span class=s1>&#39;下跌&#39;</span> <span class=ow>in</span> <span class=n>trend</span> <span class=k>else</span> <span class=s1>&#39;谨慎观望&#39;</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h2 id=ma指标交易策略优化从单指标到多因子>MA指标交易策略优化：从单指标到多因子</h2><h3 id=多时间框架ma系统>多时间框架MA系统</h3><p>构建多时间框架MA交易系统需要综合考虑不同周期的趋势信号。日线级别MA用于判断主要趋势方向，小时线或30分钟线MA用于选择具体入场时机，而5分钟或15分钟线MA则用于精确化买卖点选择。</p><p>多时间框架分析的核心逻辑是"趋势共振"原理。当长期、中期、短期MA指标同时发出同向信号时，交易成功的概率显著提升。例如，当日线MA显示上升趋势，小时线MA出现黄金交叉，且15分钟线价格突破MA阻力位时，构成高质量买入信号。</p><h3 id=ma指标与其他技术指标的组合应用>MA指标与其他技术指标的组合应用</h3><p>MA指标与成交量指标的结合使用能够有效提升信号可靠性。当MA黄金交叉出现时，若成交量同步放大，表明趋势突破得到资金认可，信号可信度较高；若成交量萎缩，则可能是虚假突破，需要谨慎对待。</p><p>MA指标与震荡指标（如RSI、KDJ）的组合应用有助于优化买卖时机。在上升趋势中，当RSI指标从超卖区域回升且价格突破MA阻力位时，构成理想买入时机；在下跌趋势中，当RSI指标从超买区域回落且价格跌破MA支撑位时，提供卖出信号。</p><h3 id=动态参数调整机制>动态参数调整机制</h3><p>MA指标参数应根据市场环境变化进行动态调整。在趋势明显的行情中，可适当延长MA周期以获得更稳定的信号；在震荡市中，应缩短MA周期以提高敏感度；在市场转折期，可采用多组参数并行验证的方式降低误判风险。</p><p>波动率自适应MA参数调整策略基于市场波动水平动态优化MA周期。当市场波动率上升时，延长MA周期以过滤噪音；当波动率下降时，缩短MA周期以提高敏感度。这种自适应机制能够显著提升MA指标在不同市场环境下的适应性。</p><h2 id=ma指标优势局限与实战要点>MA指标优势局限与实战要点</h2><h3 id=ma指标的核心优势>MA指标的核心优势</h3><p>MA指标的最大优势在于其简单直观和普适性强。无论是股票、期货、外汇还是加密货币市场，MA指标都能提供有效的趋势参考。其计算逻辑透明，信号解读标准化程度高，便于投资者掌握和应用。</p><p>MA指标具有良好的趋势跟踪能力，能够有效识别和跟随主要趋势方向。在趋势性行情中，MA指标能够持续提供正确的方向指引，帮助投资者把握大级别行情机会。</p><h3 id=ma指标的固有局限>MA指标的固有局限</h3><p>MA指标的滞后性是其主要缺陷之一。由于MA指标基于历史价格计算，其信号产生必然滞后于价格变化，导致投资者可能错失部分行情或在趋势反转时反应迟缓。</p><p>在震荡市中，MA指标容易产生虚假信号。当价格在MA线附近频繁穿越时，会产生大量无效的交易信号，增加交易成本和亏损风险。</p><p>MA指标对极端价格敏感，异常价格可能导致MA线出现扭曲，影响信号质量。特别是在小盘股或流动性较差的品种中，个别异常交易可能对MA指标产生过度影响。</p><h3 id=实战应用要点总结>实战应用要点总结</h3><p>成功应用MA指标的关键在于充分理解其特性并选择合适的应用场景。MA指标最适合趋势明显的市场环境，在震荡市中应降低使用频率或结合其他指标进行验证。</p><p>参数优化是提升MA指标效果的重要途径。投资者应根据交易品种的特性、交易周期的要求以及个人风险偏好，通过历史回测确定最优的MA参数组合。</p><p>风险控制在使用MA指标时至关重要。建议投资者设置合理的止损位，通常可将MA线下方一定幅度（如3-5%）作为止损参考，或结合ATR指标设定动态止损位。</p><p>MA指标应作为技术分析体系的重要组成部分，而非唯一决策依据。将MA指标与基本面分析、其他技术指标以及市场情绪分析相结合，能够构建更为 robust 的投资决策框架，提升交易成功率和风险收益比。</p></div></article><aside class="lg:w-80 xl:w-96"><div class=space-y-8></div></aside></div><nav class="border-t border-gray-200 mt-12 pt-8"><div class="flex justify-between items-center"><a href=/blog/%E4%BB%A3%E7%A0%81%E5%9F%BA%E7%A1%80/09-%E7%AD%96%E7%95%A5%E5%9B%9E%E6%B5%8B%E4%B8%8E%E4%BC%98%E5%8C%96/ class="group flex items-center"><svg class="w-5 h-5 mr-2 text-gray-600 group-hover:text-primary-600" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0 7-7m-7 7h18"/></svg><div><div class="text-sm text-gray-600">上一篇</div><div class="font-medium group-hover:text-primary-600">代码基础第9讲：策略回测与优化</div></div></a><a href=/blog/%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87/02-macd%E6%8C%87%E6%95%B0%E5%B9%B3%E6%BB%91%E5%BC%82%E5%90%8C%E7%A7%BB%E5%8A%A8%E5%B9%B3%E5%9D%87%E7%BA%BF/ class="group flex items-center text-right"><div><div class="text-sm text-gray-600">Next Post</div><div class="font-medium group-hover:text-primary-600">技术指标第2讲：MACD指数平滑异同移动平均线</div></div><svg class="w-5 h-5 ml-2 text-gray-600 group-hover:text-primary-600" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0-7 7m7-7H3"/></svg></a></div></nav></div></div><footer class="bg-gray-50 py-12 border-t border-gray-200"><div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl"><div class="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0"><div class=flex-1><div class="flex items-center space-x-3 mb-4"><a href=https://sk-quant.github.io/ class=inline-block><img src=/images/logo.svg alt=烧烤量化 class=h-6>
+</a><span class="text-xl font-bold text-gray-900">烧烤量化</span></div><div class="flex space-x-3 p-2"><a href=https://linkedin.com/in/yourusername class="text-gray-600 hover:text-gray-900" target=_blank rel="noopener noreferrer"><span class=sr-only>LinkedIn</span>
+<img src=/images/social/linkedin.svg alt=LinkedIn class="h-5 w-5">
+</a><a href=https://bsky.app/profile/yourblueskyhandle class="text-gray-600 hover:text-gray-900" target=_blank rel="noopener noreferrer"><span class=sr-only>Bluesky</span>
+<img src=/images/social/bluesky.svg alt=Bluesky class="h-5 w-5">
+</a><a href=https://twitter.com/yourusername class="text-gray-600 hover:text-gray-900" target=_blank rel="noopener noreferrer"><span class=sr-only>Twitter (X)</span>
+<img src=/images/social/twitter.svg alt=Twitter class="h-5 w-5">
+</a><a href=https://github.com/yourusername class="text-gray-600 hover:text-gray-900" target=_blank rel="noopener noreferrer"><span class=sr-only>GitHub</span>
+<img src=/images/social/github.svg alt=GitHub class="h-5 w-5"></a></div></div><div class=flex-1><h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4"></h3><ul class=space-y-2></ul></div><div class=flex-1><h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4"></h3><ul class=space-y-2></ul></div><div class=flex-1><h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4"></h3><ul class=space-y-2></ul></div></div><div class="mt-12 pt-8 border-t border-gray-200"><div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0"><p class="text-gray-600 text-sm">© 2025 烧烤量化. All rights reserved.</p><a href=https://chaoming.li class="text-sm text-gray-600 hover:text-primary-600" target=_blank rel="noopener noreferrer">Powered by sk-quant</a></div></div></div></footer><script>const mobileMenuButton=document.getElementById("mobile-menu-button");mobileMenuButton&&mobileMenuButton.addEventListener("click",function(){const e=document.getElementById("mobile-menu");e&&e.classList.toggle("hidden")})</script></body></html>

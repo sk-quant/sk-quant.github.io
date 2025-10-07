@@ -1,0 +1,1351 @@
+<!doctype html><html lang=zh-cn class=h-full><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><script>(function(e,t,n,s,o){e[s]=e[s]||[],e[s].push({"gtm.start":(new Date).getTime(),event:"gtm.js"});var a=t.getElementsByTagName(n)[0],i=t.createElement(n),r=s!="dataLayer"?"&l="+s:"";i.async=!0,i.src="https://www.googletagmanager.com/gtm.js?id="+o+r,a.parentNode.insertBefore(i,a)})(window,document,"script","dataLayer","GTM-XXXXXXX")</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-XXXXXXXXXX")</script><title>技术指标第6讲：OBV能量潮指标 | 烧烤量化</title>
+<meta name=description content="深度解析OBV能量潮指标的成交量累积机制，通过量价关系识别主力资金动向，构建基于成交量动能的趋势确认与突破预警体系"><meta name=author content="Ryan"><meta name=robots content="index, follow"><meta property="og:title" content="技术指标第6讲：OBV能量潮指标 | 烧烤量化"><meta property="og:description" content="深度解析OBV能量潮指标的成交量累积机制，通过量价关系识别主力资金动向，构建基于成交量动能的趋势确认与突破预警体系"><meta property="og:type" content="article"><meta property="og:url" content="https://sk-quant.github.io/blog/%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87/06-obv%E8%83%BD%E9%87%8F%E6%BD%AE%E6%8C%87%E6%A0%87/"><meta property="og:site_name" content="烧烤量化"><meta name=twitter:card content="summary_large_image"><meta name=twitter:title content="技术指标第6讲：OBV能量潮指标 | 烧烤量化"><meta name=twitter:description content="深度解析OBV能量潮指标的成交量累积机制，通过量价关系识别主力资金动向，构建基于成交量动能的趋势确认与突破预警体系"><link rel=icon type=image/x-icon href=/images/favicon.ico><link rel=canonical href=https://sk-quant.github.io/blog/%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87/06-obv%E8%83%BD%E9%87%8F%E6%BD%AE%E6%8C%87%E6%A0%87/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel=stylesheet><link rel=stylesheet href="/css/main.min.0ec21c03b9f63a8c5e37663a4d2dc1608de61fd749fcfef42ffda7dc5bf34cc4.css"></head><body class="min-h-screen flex flex-col"><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height=0 width=0 style=display:none;visibility:hidden></iframe></noscript><div class="fixed top-0 left-0 right-0 z-50"><div class=mobile-menu-wrapper><input type=checkbox id=nav-toggle class=nav-toggle><header class="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-100"><div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl"><nav class="flex items-center justify-between h-20"><a href=https://sk-quant.github.io/ class="flex items-center space-x-4"><img src=/images/logo.svg alt=烧烤量化 class=h-12>
+<span class="text-3xl font-semibold text-gray-800">烧烤量化</span></a><div class="hidden md:flex items-center space-x-8"><a href=/path class="text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">学习路线</a><div class="relative group"><button class="flex items-center text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">
+量化基础<svg class="ml-2 w-4 h-4" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="absolute left-0 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out"><div class="py-6 bg-white border border-gray-100 shadow-xl rounded-lg"><a href=/categories/%e6%8a%95%e8%b5%84%e7%90%86%e8%ae%ba/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">投资理论</a>
+<a href=/categories/%e4%bb%a3%e7%a0%81%e5%9f%ba%e7%a1%80/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">代码基础</a>
+<a href=/categories/%e6%8a%80%e6%9c%af%e6%8c%87%e6%a0%87/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">技术指标</a>
+<a href=/categories/%e5%9b%9e%e6%b5%8b%e5%b9%b3%e5%8f%b0/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">回测平台</a></div></div></div><div class="relative group"><button class="flex items-center text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">
+量化进阶<svg class="ml-2 w-4 h-4" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="absolute left-0 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out"><div class="py-6 bg-white border border-gray-100 shadow-xl rounded-lg"><a href=/categories/%e7%ad%96%e7%95%a5%e5%88%86%e4%ba%ab/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">策略分享</a>
+<a href=/categories/%e5%ae%9e%e7%9b%98%e5%b7%a5%e5%85%b7/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">实盘工具</a>
+<a href=/categories/%e7%83%ad%e7%82%b9%e9%a3%8e%e5%8f%a3/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">热点风口</a>
+<a href=/categories/%e7%bb%bc%e5%90%88%e5%ae%9e%e6%88%98/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">综合实战</a></div></div></div><div class="relative group"><button class="flex items-center text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">
+量化高手<svg class="ml-2 w-4 h-4" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="absolute left-0 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out"><div class="py-6 bg-white border border-gray-100 shadow-xl rounded-lg"><a href=/categories/%e5%8f%af%e8%bd%ac%e5%80%ba/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">可转债</a>
+<a href=/categories/%e8%9e%8d%e8%b5%84%e8%9e%8d%e5%88%b8/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">融资融券</a>
+<a href=/categories/%e8%82%a1%e7%a5%a8%e6%9c%9f%e6%9d%83/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">股票期权</a>
+<a href=/categories/%e8%82%a1%e6%8c%87%e6%9c%9f%e8%b4%a7/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">股指期货</a></div></div></div><a href=/pricing class="text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">服务套餐</a></div><div class="hidden md:flex items-center space-x-4"><a href=/contact class="inline-flex items-center justify-center px-6 py-3 rounded-lg font-bold transition duration-200 ease-in-out bg-primary-600 text-white hover:bg-primary-700 hover:scale-105">现在加入</a></div><div class=md:hidden><label for=nav-toggle class="p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2 transition-colors cursor-pointer"><svg class="w-6 h-6" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></label></div></nav></div><div class="nav-content md:hidden w-full fixed left-0 right-0 top-20 bg-white border-t border-gray-100 shadow-lg"><div class="w-full px-6 py-4"><a href=/path class="block text-xl text-gray-900 hover:text-primary-600 font-bold transition duration-200 py-2">学习路线</a><div class=py-2><div class="text-xl text-gray-900 font-bold mb-2">量化基础</div><div class=pl-4><a href=/categories/%e6%8a%95%e8%b5%84%e7%90%86%e8%ae%ba/ class="block text-gray-700 hover:text-primary-600 py-2">投资理论</a>
+<a href=/categories/%e4%bb%a3%e7%a0%81%e5%9f%ba%e7%a1%80/ class="block text-gray-700 hover:text-primary-600 py-2">代码基础</a>
+<a href=/categories/%e6%8a%80%e6%9c%af%e6%8c%87%e6%a0%87/ class="block text-gray-700 hover:text-primary-600 py-2">技术指标</a>
+<a href=/categories/%e5%9b%9e%e6%b5%8b%e5%b9%b3%e5%8f%b0/ class="block text-gray-700 hover:text-primary-600 py-2">回测平台</a></div></div><div class=py-2><div class="text-xl text-gray-900 font-bold mb-2">量化进阶</div><div class=pl-4><a href=/categories/%e7%ad%96%e7%95%a5%e5%88%86%e4%ba%ab/ class="block text-gray-700 hover:text-primary-600 py-2">策略分享</a>
+<a href=/categories/%e5%ae%9e%e7%9b%98%e5%b7%a5%e5%85%b7/ class="block text-gray-700 hover:text-primary-600 py-2">实盘工具</a>
+<a href=/categories/%e7%83%ad%e7%82%b9%e9%a3%8e%e5%8f%a3/ class="block text-gray-700 hover:text-primary-600 py-2">热点风口</a>
+<a href=/categories/%e7%bb%bc%e5%90%88%e5%ae%9e%e6%88%98/ class="block text-gray-700 hover:text-primary-600 py-2">综合实战</a></div></div><div class=py-2><div class="text-xl text-gray-900 font-bold mb-2">量化高手</div><div class=pl-4><a href=/categories/%e5%8f%af%e8%bd%ac%e5%80%ba/ class="block text-gray-700 hover:text-primary-600 py-2">可转债</a>
+<a href=/categories/%e8%9e%8d%e8%b5%84%e8%9e%8d%e5%88%b8/ class="block text-gray-700 hover:text-primary-600 py-2">融资融券</a>
+<a href=/categories/%e8%82%a1%e7%a5%a8%e6%9c%9f%e6%9d%83/ class="block text-gray-700 hover:text-primary-600 py-2">股票期权</a>
+<a href=/categories/%e8%82%a1%e6%8c%87%e6%9c%9f%e8%b4%a7/ class="block text-gray-700 hover:text-primary-600 py-2">股指期货</a></div></div><a href=/pricing class="block text-xl text-gray-900 hover:text-primary-600 font-bold transition duration-200 py-2">服务套餐</a><div class="pt-4 space-y-4"><a href=/contact class="block text-center px-6 py-3 rounded-lg font-bold transition duration-200 ease-in-out bg-primary-600 text-white hover:bg-primary-700 hover:scale-105">现在加入</a></div></div></div></header><style>.mobile-menu-wrapper{position:relative}.nav-toggle{display:none}.nav-content{display:none}.nav-toggle:checked~header .nav-content{display:block}</style></div></div><div class=pt-20><div class="container mx-auto px-4 py-12"><div class="flex flex-col lg:flex-row gap-8 mb-12"><article class=flex-1><header class=mb-8><div class=mb-4><a href=/categories/%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87 class="inline-block px-3 py-1 text-sm font-medium text-primary-600 bg-primary-50 rounded-full hover:bg-primary-100 mr-2">技术指标</a></div><h1 class="text-4xl font-bold mb-4">技术指标第6讲：OBV能量潮指标</h1><div class="flex flex-col space-y-4"><div class="flex items-center justify-between text-sm text-gray-500"><div class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7A4 4 0 118 7a4 4 0 018 0zm-4 7a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+<span>Ryan</span></div><div class="flex items-center space-x-6"><div class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747.0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746.0-3.332.477-4.5 1.253"/></svg>
+<span>15 分钟</span></div><div class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5A2 2 0 003 7v12a2 2 0 002 2z"/></svg>
+<time datetime=2025-09-16>September 16, 2025</time></div></div></div><div class="flex items-center flex-wrap gap-2"><a href=/tags/2025 class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors duration-200">#2025</a></div></div></header><div class=mb-8><img src=/images/blog/%e6%8a%80%e6%9c%af%e6%8c%87%e6%a0%87.jpg alt=技术指标第6讲：OBV能量潮指标 class="w-full h-auto rounded-lg" loading=lazy></div><div class="prose prose-lg max-w-none"><div class="bg-gray-50 p-6 rounded-lg mb-8"><h2 class="text-xl font-semibold mb-4">目录</h2><nav id=TableOfContents><ul><li><a href=#obv能量潮指标成交量的价格动能解码器>OBV能量潮指标：成交量的价格动能解码器</a></li><li><a href=#obv计算原理成交量累积的数学模型>OBV计算原理：成交量累积的数学模型</a><ul><li><a href=#基础obv计算公式>基础OBV计算公式</a></li><li><a href=#obv累积机制的技术逻辑>OBV累积机制的技术逻辑</a></li><li><a href=#obv速率与加速度分析>OBV速率与加速度分析</a></li><li><a href=#obv标准化处理>OBV标准化处理</a></li></ul></li><li><a href=#obv信号识别量价关系的趋势解码>OBV信号识别：量价关系的趋势解码</a><ul><li><a href=#obv趋势线突破信号>OBV趋势线突破信号</a></li><li><a href=#obv背离分析技术>OBV背离分析技术</a></li><li><a href=#obv支撑阻力位分析>OBV支撑阻力位分析</a></li><li><a href=#obv形态分析>OBV形态分析</a></li></ul></li><li><a href=#基于talib的obv指标python实现>基于talib的OBV指标Python实现</a><ul><li><a href=#环境配置与数据获取>环境配置与数据获取</a></li><li><a href=#obv指标计算与基础分析>OBV指标计算与基础分析</a></li><li><a href=#obv背离识别与分析>OBV背离识别与分析</a></li></ul></li></ul></nav></div><h2 id=obv能量潮指标成交量的价格动能解码器>OBV能量潮指标：成交量的价格动能解码器</h2><p>OBV能量潮指标（On-Balance Volume）由约瑟夫·格兰维尔（Joseph Granville）于1963年提出，是技术分析领域最具开创性的成交量指标之一。该指标基于"成交量先于价格"的核心假设，通过累积成交量的方式构建一条能量曲线，用于识别价格趋势的内在动力和市场参与者的真实意图。</p><p>OBV指标的理论基础建立在市场行为学的核心原理之上：在健康的上升趋势中，成交量应该随着价格的上涨而增加；在下跌趋势中，成交量应该随着价格的下跌而放大。当价格变动与成交量变化出现背离时，往往预示着当前趋势可能即将发生转变。OBV指标通过量化这种量价关系，为投资者提供了一个领先的价格趋势预警系统。</p><p>OBV指标的独特价值在于其"累积性"特征。与RSI、KDJ等震荡指标不同，OBV指标没有固定的上下边界，而是随着市场的变化不断累积，形成一条相对平滑的能量曲线。这种设计使得OBV指标能够更好地捕捉长期趋势的变化，同时过滤掉短期的价格波动噪音。</p><h2 id=obv计算原理成交量累积的数学模型>OBV计算原理：成交量累积的数学模型</h2><h3 id=基础obv计算公式>基础OBV计算公式</h3><p>OBV指标的计算基于简单而有效的累积逻辑：</p><p><strong>当日OBV计算</strong>：</p><ul><li>如果当日收盘价 > 前日收盘价：OBV = 前日OBV + 当日成交量</li><li>如果当日收盘价 &lt; 前日收盘价：OBV = 前日OBV - 当日成交量</li><li>如果当日收盘价 = 前日收盘价：OBV = 前日OBV</li></ul><p><strong>OBV初始值</strong>：通常设为0，或者设为第一个交易日的成交量</p><h3 id=obv累积机制的技术逻辑>OBV累积机制的技术逻辑</h3><p><strong>正向累积</strong>：当价格上涨时，将当日成交量加到OBV中，表示买方力量增强，市场参与度提升。</p><p><strong>负向累积</strong>：当价格下跌时，将当日成交量从OBV中减去，表示卖方力量增强，市场参与度下降。</p><p><strong>中性处理</strong>：当价格持平时，OBV保持不变，表示市场处于平衡状态，没有明显的主力资金动向。</p><h3 id=obv速率与加速度分析>OBV速率与加速度分析</h3><p><strong>OBV变化率</strong>：计算OBV在一定周期内的变化幅度，用于衡量能量积累的速度：
+OBV变化率 = (当前OBV - N日前OBV) / N日前OBV × 100%</p><p><strong>OBV加速度</strong>：计算OBV变化率的二阶导数，用于识别能量积累的加速或减速：
+OBV加速度 = OBV变化率的变化率</p><h3 id=obv标准化处理>OBV标准化处理</h3><p>为了消除不同股票成交量基数差异的影响，可以对OBV进行标准化处理：</p><p><strong>OBV标准化值</strong> = (当前OBV - OBV最小值) / (OBV最大值 - OBV最小值) × 100</p><p>标准化后的OBV值范围在0-100之间，便于不同股票之间的横向比较。</p><h2 id=obv信号识别量价关系的趋势解码>OBV信号识别：量价关系的趋势解码</h2><h3 id=obv趋势线突破信号>OBV趋势线突破信号</h3><p><strong>上升趋势线突破</strong>：当OBV向上突破下降趋势线时，表明买方力量开始占据主导地位，价格可能即将启动上涨行情。</p><p><strong>下降趋势线突破</strong>：当OBV向下跌破上升趋势线时，表明卖方力量开始增强，价格可能面临回调压力。</p><p><strong>趋势线有效性验证</strong>：趋势线的有效性取决于连接点的数量、时间跨度以及突破时的成交量配合。</p><h3 id=obv背离分析技术>OBV背离分析技术</h3><p><strong>顶背离识别</strong>：价格创新高，但OBV未能同步创新高，暗示上涨动量减弱，可能面临趋势反转。</p><p><strong>底背离识别</strong>：价格创新低，但OBV未能同步创新低，暗示下跌动量减弱，可能迎来趋势反转。</p><p><strong>多重背离</strong>：连续多次背离信号的出现通常比单次背离更可靠，为趋势反转提供更强的预警信号。</p><h3 id=obv支撑阻力位分析>OBV支撑阻力位分析</h3><p><strong>OBV支撑位</strong>：OBV在某些特定水平形成支撑，当OBV回调至这些水平时可能获得支撑并重新上涨。</p><p><strong>OBV阻力位</strong>：OBV在某些特定水平形成阻力，当OBV上涨至这些水平时可能面临压力并回调。</p><p><strong>支撑阻力转换</strong>：OBV突破重要阻力位后，该阻力位可能转换为新的支撑位；反之亦然。</p><h3 id=obv形态分析>OBV形态分析</h3><p><strong>OBV头肩形态</strong>：OBV图表上可能出现头肩顶、头肩底等经典反转形态，这些形态的完成具有重要的技术分析意义。</p><p><strong>OBV三角形形态</strong>：OBV的收敛三角形通常预示着价格即将出现方向性突破。</p><p><strong>OBV双底双顶</strong>：OBV的双底、双顶形态为趋势反转提供重要信号。</p><h2 id=基于talib的obv指标python实现>基于talib的OBV指标Python实现</h2><h3 id=环境配置与数据获取>环境配置与数据获取</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span><span class=lnt>85
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>talib</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>numpy</span> <span class=k>as</span> <span class=nn>np</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>pandas</span> <span class=k>as</span> <span class=nn>pd</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>matplotlib.pyplot</span> <span class=k>as</span> <span class=nn>plt</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>yfinance</span> <span class=k>as</span> <span class=nn>yf</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>datetime</span> <span class=kn>import</span> <span class=n>datetime</span><span class=p>,</span> <span class=n>timedelta</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>warnings</span>
+</span></span><span class=line><span class=cl><span class=n>warnings</span><span class=o>.</span><span class=n>filterwarnings</span><span class=p>(</span><span class=s1>&#39;ignore&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 设置中文字体</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>rcParams</span><span class=p>[</span><span class=s1>&#39;font.sans-serif&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;SimHei&#39;</span><span class=p>,</span> <span class=s1>&#39;Arial Unicode MS&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>rcParams</span><span class=p>[</span><span class=s1>&#39;axes.unicode_minus&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=kc>False</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 获取股票数据</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>get_stock_data</span><span class=p>(</span><span class=n>symbol</span><span class=p>,</span> <span class=n>period</span><span class=o>=</span><span class=s2>&#34;2y&#34;</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;获取股票历史数据&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>try</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>stock</span> <span class=o>=</span> <span class=n>yf</span><span class=o>.</span><span class=n>download</span><span class=p>(</span><span class=n>symbol</span><span class=p>,</span> <span class=n>period</span><span class=o>=</span><span class=n>period</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>stock</span>
+</span></span><span class=line><span class=cl>    <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;获取数据失败: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=kc>None</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 获取沪深300指数数据</span>
+</span></span><span class=line><span class=cl><span class=n>data</span> <span class=o>=</span> <span class=n>get_stock_data</span><span class=p>(</span><span class=s2>&#34;000300.SS&#34;</span><span class=p>,</span> <span class=n>period</span><span class=o>=</span><span class=s2>&#34;2y&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>close_prices</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;Close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>values</span>
+</span></span><span class=line><span class=cl><span class=n>high_prices</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;High&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>values</span>
+</span></span><span class=line><span class=cl><span class=n>low_prices</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;Low&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>values</span>
+</span></span><span class=line><span class=cl><span class=n>volume_data</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;Volume&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>values</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 创建日期索引</span>
+</span></span><span class=line><span class=cl><span class=n>dates</span> <span class=o>=</span> <span class=n>data</span><span class=o>.</span><span class=n>index</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;数据获取完成，共</span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>data</span><span class=p>)</span><span class=si>}</span><span class=s2>个交易日&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;数据时间范围: </span><span class=si>{</span><span class=n>dates</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=s1>&#39;%Y-%m-</span><span class=si>%d</span><span class=s1>&#39;</span><span class=p>)</span><span class=si>}</span><span class=s2> 至 </span><span class=si>{</span><span class=n>dates</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=s1>&#39;%Y-%m-</span><span class=si>%d</span><span class=s1>&#39;</span><span class=p>)</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;价格区间: </span><span class=si>{</span><span class=n>data</span><span class=p>[</span><span class=s1>&#39;Close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>min</span><span class=p>()</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2> - </span><span class=si>{</span><span class=n>data</span><span class=p>[</span><span class=s1>&#39;Close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>max</span><span class=p>()</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;成交量区间: </span><span class=si>{</span><span class=n>data</span><span class=p>[</span><span class=s1>&#39;Volume&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>min</span><span class=p>()</span><span class=si>:</span><span class=s2>,.0f</span><span class=si>}</span><span class=s2> - </span><span class=si>{</span><span class=n>data</span><span class=p>[</span><span class=s1>&#39;Volume&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>max</span><span class=p>()</span><span class=si>:</span><span class=s2>,.0f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 基础量价统计分析</span>
+</span></span><span class=line><span class=cl><span class=n>price_changes</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>diff</span><span class=p>(</span><span class=n>close_prices</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>volume_changes</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>diff</span><span class=p>(</span><span class=n>volume_data</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== 基础量价统计 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;平均日价格变化: </span><span class=si>{</span><span class=n>np</span><span class=o>.</span><span class=n>mean</span><span class=p>(</span><span class=n>price_changes</span><span class=p>)</span><span class=si>:</span><span class=s2>.4f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;价格变化标准差: </span><span class=si>{</span><span class=n>np</span><span class=o>.</span><span class=n>std</span><span class=p>(</span><span class=n>price_changes</span><span class=p>)</span><span class=si>:</span><span class=s2>.4f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;平均日成交量: </span><span class=si>{</span><span class=n>np</span><span class=o>.</span><span class=n>mean</span><span class=p>(</span><span class=n>volume_data</span><span class=p>)</span><span class=si>:</span><span class=s2>,.0f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;成交量标准差: </span><span class=si>{</span><span class=n>np</span><span class=o>.</span><span class=n>std</span><span class=p>(</span><span class=n>volume_data</span><span class=p>)</span><span class=si>:</span><span class=s2>,.0f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 量价相关性分析</span>
+</span></span><span class=line><span class=cl><span class=n>price_volume_corr</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>corrcoef</span><span class=p>(</span><span class=n>price_changes</span><span class=p>,</span> <span class=n>volume_changes</span><span class=p>[:</span><span class=o>-</span><span class=mi>1</span><span class=p>])[</span><span class=mi>0</span><span class=p>,</span> <span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;价格变化与成交量变化相关系数: </span><span class=si>{</span><span class=n>price_volume_corr</span><span class=si>:</span><span class=s2>.4f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 上涨下跌日统计</span>
+</span></span><span class=line><span class=cl><span class=n>up_days</span> <span class=o>=</span> <span class=n>price_changes</span> <span class=o>&gt;</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl><span class=n>down_days</span> <span class=o>=</span> <span class=n>price_changes</span> <span class=o>&lt;</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl><span class=n>flat_days</span> <span class=o>=</span> <span class=n>price_changes</span> <span class=o>==</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== 涨跌日统计 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;上涨交易日: </span><span class=si>{</span><span class=n>up_days</span><span class=o>.</span><span class=n>sum</span><span class=p>()</span><span class=si>}</span><span class=s2> (</span><span class=si>{</span><span class=n>up_days</span><span class=o>.</span><span class=n>mean</span><span class=p>()</span><span class=o>*</span><span class=mi>100</span><span class=si>:</span><span class=s2>.1f</span><span class=si>}</span><span class=s2>%)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;下跌交易日: </span><span class=si>{</span><span class=n>down_days</span><span class=o>.</span><span class=n>sum</span><span class=p>()</span><span class=si>}</span><span class=s2> (</span><span class=si>{</span><span class=n>down_days</span><span class=o>.</span><span class=n>mean</span><span class=p>()</span><span class=o>*</span><span class=mi>100</span><span class=si>:</span><span class=s2>.1f</span><span class=si>}</span><span class=s2>%)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;平盘交易日: </span><span class=si>{</span><span class=n>flat_days</span><span class=o>.</span><span class=n>sum</span><span class=p>()</span><span class=si>}</span><span class=s2> (</span><span class=si>{</span><span class=n>flat_days</span><span class=o>.</span><span class=n>mean</span><span class=p>()</span><span class=o>*</span><span class=mi>100</span><span class=si>:</span><span class=s2>.1f</span><span class=si>}</span><span class=s2>%)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 上涨下跌日平均成交量</span>
+</span></span><span class=line><span class=cl><span class=n>up_volume_avg</span> <span class=o>=</span> <span class=n>volume_data</span><span class=p>[</span><span class=mi>1</span><span class=p>:][</span><span class=n>up_days</span><span class=p>]</span><span class=o>.</span><span class=n>mean</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>down_volume_avg</span> <span class=o>=</span> <span class=n>volume_data</span><span class=p>[</span><span class=mi>1</span><span class=p>:][</span><span class=n>down_days</span><span class=p>]</span><span class=o>.</span><span class=n>mean</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;上涨日平均成交量: </span><span class=si>{</span><span class=n>up_volume_avg</span><span class=si>:</span><span class=s2>,.0f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;下跌日平均成交量: </span><span class=si>{</span><span class=n>down_volume_avg</span><span class=si>:</span><span class=s2>,.0f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;上涨日成交量/下跌日成交量: </span><span class=si>{</span><span class=n>up_volume_avg</span><span class=o>/</span><span class=n>down_volume_avg</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 价格变动幅度分析</span>
+</span></span><span class=line><span class=cl><span class=n>price_change_pct</span> <span class=o>=</span> <span class=p>(</span><span class=n>close_prices</span><span class=p>[</span><span class=mi>1</span><span class=p>:]</span> <span class=o>-</span> <span class=n>close_prices</span><span class=p>[:</span><span class=o>-</span><span class=mi>1</span><span class=p>])</span> <span class=o>/</span> <span class=n>close_prices</span><span class=p>[:</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>*</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== 价格变动幅度分析 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;平均日涨跌幅: </span><span class=si>{</span><span class=n>np</span><span class=o>.</span><span class=n>mean</span><span class=p>(</span><span class=n>price_change_pct</span><span class=p>)</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>%&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;最大单日涨幅: </span><span class=si>{</span><span class=n>np</span><span class=o>.</span><span class=n>max</span><span class=p>(</span><span class=n>price_change_pct</span><span class=p>)</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>%&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;最大单日跌幅: </span><span class=si>{</span><span class=n>np</span><span class=o>.</span><span class=n>min</span><span class=p>(</span><span class=n>price_change_pct</span><span class=p>)</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>%&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;涨跌幅标准差: </span><span class=si>{</span><span class=n>np</span><span class=o>.</span><span class=n>std</span><span class=p>(</span><span class=n>price_change_pct</span><span class=p>)</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>%&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 成交量变动幅度分析</span>
+</span></span><span class=line><span class=cl><span class=n>volume_change_pct</span> <span class=o>=</span> <span class=p>(</span><span class=n>volume_data</span><span class=p>[</span><span class=mi>1</span><span class=p>:]</span> <span class=o>-</span> <span class=n>volume_data</span><span class=p>[:</span><span class=o>-</span><span class=mi>1</span><span class=p>])</span> <span class=o>/</span> <span class=n>volume_data</span><span class=p>[:</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>*</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== 成交量变动幅度分析 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;平均日成交量变化: </span><span class=si>{</span><span class=n>np</span><span class=o>.</span><span class=n>mean</span><span class=p>(</span><span class=n>volume_change_pct</span><span class=p>)</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>%&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;最大单日成交量增长: </span><span class=si>{</span><span class=n>np</span><span class=o>.</span><span class=n>max</span><span class=p>(</span><span class=n>volume_change_pct</span><span class=p>)</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>%&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;最大单日成交量下降: </span><span class=si>{</span><span class=n>np</span><span class=o>.</span><span class=n>min</span><span class=p>(</span><span class=n>volume_change_pct</span><span class=p>)</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>%&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;成交量变化标准差: </span><span class=si>{</span><span class=n>np</span><span class=o>.</span><span class=n>std</span><span class=p>(</span><span class=n>volume_change_pct</span><span class=p>)</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>%&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h3 id=obv指标计算与基础分析>OBV指标计算与基础分析</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 使用talib计算OBV指标</span>
+</span></span><span class=line><span class=cl><span class=n>obv_values</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>OBV</span><span class=p>(</span><span class=n>close_prices</span><span class=p>,</span> <span class=n>volume_data</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 创建OBV分析DataFrame</span>
+</span></span><span class=line><span class=cl><span class=n>obv_df</span> <span class=o>=</span> <span class=n>pd</span><span class=o>.</span><span class=n>DataFrame</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;Close&#39;</span><span class=p>:</span> <span class=n>close_prices</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;Volume&#39;</span><span class=p>:</span> <span class=n>volume_data</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;OBV&#39;</span><span class=p>:</span> <span class=n>obv_values</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;Date&#39;</span><span class=p>:</span> <span class=n>dates</span>
+</span></span><span class=line><span class=cl><span class=p>},</span> <span class=n>index</span><span class=o>=</span><span class=n>dates</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 计算OBV的变化率（5日、10日、20日）</span>
+</span></span><span class=line><span class=cl><span class=n>obv_df</span><span class=p>[</span><span class=s1>&#39;OBV_5d_change&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>obv_df</span><span class=p>[</span><span class=s1>&#39;OBV&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>pct_change</span><span class=p>(</span><span class=n>periods</span><span class=o>=</span><span class=mi>5</span><span class=p>)</span> <span class=o>*</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl><span class=n>obv_df</span><span class=p>[</span><span class=s1>&#39;OBV_10d_change&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>obv_df</span><span class=p>[</span><span class=s1>&#39;OBV&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>pct_change</span><span class=p>(</span><span class=n>periods</span><span class=o>=</span><span class=mi>10</span><span class=p>)</span> <span class=o>*</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl><span class=n>obv_df</span><span class=p>[</span><span class=s1>&#39;OBV_20d_change&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>obv_df</span><span class=p>[</span><span class=s1>&#39;OBV&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>pct_change</span><span class=p>(</span><span class=n>periods</span><span class=o>=</span><span class=mi>20</span><span class=p>)</span> <span class=o>*</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 计算OBV的移动平均线</span>
+</span></span><span class=line><span class=cl><span class=n>obv_df</span><span class=p>[</span><span class=s1>&#39;OBV_MA5&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>SMA</span><span class=p>(</span><span class=n>obv_values</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>obv_df</span><span class=p>[</span><span class=s1>&#39;OBV_MA10&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>SMA</span><span class=p>(</span><span class=n>obv_values</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>10</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>obv_df</span><span class=p>[</span><span class=s1>&#39;OBV_MA20&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>SMA</span><span class=p>(</span><span class=n>obv_values</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>20</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 计算OBV的指数移动平均</span>
+</span></span><span class=line><span class=cl><span class=n>obv_df</span><span class=p>[</span><span class=s1>&#39;OBV_EMA5&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>EMA</span><span class=p>(</span><span class=n>obv_values</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>obv_df</span><span class=p>[</span><span class=s1>&#39;OBV_EMA10&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>EMA</span><span class=p>(</span><span class=n>obv_values</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>10</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>obv_df</span><span class=p>[</span><span class=s1>&#39;OBV_EMA20&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>EMA</span><span class=p>(</span><span class=n>obv_values</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>20</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 计算OBV的标准化值（0-100范围）</span>
+</span></span><span class=line><span class=cl><span class=n>obv_min</span> <span class=o>=</span> <span class=n>obv_values</span><span class=o>.</span><span class=n>min</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>obv_max</span> <span class=o>=</span> <span class=n>obv_values</span><span class=o>.</span><span class=n>max</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>obv_df</span><span class=p>[</span><span class=s1>&#39;OBV_Normalized&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=p>((</span><span class=n>obv_values</span> <span class=o>-</span> <span class=n>obv_min</span><span class=p>)</span> <span class=o>/</span> <span class=p>(</span><span class=n>obv_max</span> <span class=o>-</span> <span class=n>obv_min</span><span class=p>))</span> <span class=o>*</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s2>&#34;OBV指标基础分析:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;OBV当前值: </span><span class=si>{</span><span class=n>obv_values</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>,.0f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;OBV历史最高值: </span><span class=si>{</span><span class=n>obv_max</span><span class=si>:</span><span class=s2>,.0f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;OBV历史最低值: </span><span class=si>{</span><span class=n>obv_min</span><span class=si>:</span><span class=s2>,.0f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;OBV标准化值: </span><span class=si>{</span><span class=n>obv_df</span><span class=p>[</span><span class=s1>&#39;OBV_Normalized&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 显示最近10个交易日的OBV数据</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>最近10个交易日OBV数据:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>display_cols</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;Close&#39;</span><span class=p>,</span> <span class=s1>&#39;Volume&#39;</span><span class=p>,</span> <span class=s1>&#39;OBV&#39;</span><span class=p>,</span> <span class=s1>&#39;OBV_5d_change&#39;</span><span class=p>,</span> <span class=s1>&#39;OBV_Normalized&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>obv_df</span><span class=p>[</span><span class=n>display_cols</span><span class=p>]</span><span class=o>.</span><span class=n>tail</span><span class=p>(</span><span class=mi>10</span><span class=p>)</span><span class=o>.</span><span class=n>round</span><span class=p>(</span><span class=mi>2</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># OBV趋势分析函数</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>analyze_obv_trend</span><span class=p>(</span><span class=n>obv_values</span><span class=p>,</span> <span class=n>price_values</span><span class=p>,</span> <span class=n>window</span><span class=o>=</span><span class=mi>10</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;分析OBV与价格的趋势关系&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=c1># 计算OBV的趋势</span>
+</span></span><span class=line><span class=cl>    <span class=n>obv_trend</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    <span class=n>price_trend</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>window</span><span class=p>,</span> <span class=nb>len</span><span class=p>(</span><span class=n>obv_values</span><span class=p>)):</span>
+</span></span><span class=line><span class=cl>        <span class=c1># OBV趋势</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>obv_values</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&gt;</span> <span class=n>obv_values</span><span class=p>[</span><span class=n>i</span><span class=o>-</span><span class=n>window</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>            <span class=n>obv_trend</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span>  <span class=c1># 上升趋势</span>
+</span></span><span class=line><span class=cl>        <span class=k>elif</span> <span class=n>obv_values</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&lt;</span> <span class=n>obv_values</span><span class=p>[</span><span class=n>i</span><span class=o>-</span><span class=n>window</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>            <span class=n>obv_trend</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=o>-</span><span class=mi>1</span><span class=p>)</span>  <span class=c1># 下降趋势</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>obv_trend</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>   <span class=c1># 横盘趋势</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 价格趋势</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>price_values</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&gt;</span> <span class=n>price_values</span><span class=p>[</span><span class=n>i</span><span class=o>-</span><span class=n>window</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>            <span class=n>price_trend</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span>  <span class=c1># 上升趋势</span>
+</span></span><span class=line><span class=cl>        <span class=k>elif</span> <span class=n>price_values</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&lt;</span> <span class=n>price_values</span><span class=p>[</span><span class=n>i</span><span class=o>-</span><span class=n>window</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>            <span class=n>price_trend</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=o>-</span><span class=mi>1</span><span class=p>)</span>  <span class=c1># 下降趋势</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>price_trend</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=mi>0</span><span class=p>)</span>   <span class=c1># 横盘趋势</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>obv_trend</span><span class=p>,</span> <span class=n>price_trend</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 执行趋势分析</span>
+</span></span><span class=line><span class=cl><span class=n>obv_trend</span><span class=p>,</span> <span class=n>price_trend</span> <span class=o>=</span> <span class=n>analyze_obv_trend</span><span class=p>(</span><span class=n>obv_values</span><span class=p>,</span> <span class=n>close_prices</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 趋势一致性分析</span>
+</span></span><span class=line><span class=cl><span class=n>consistent_trend</span> <span class=o>=</span> <span class=nb>sum</span><span class=p>(</span><span class=mi>1</span> <span class=k>for</span> <span class=n>ot</span><span class=p>,</span> <span class=n>pt</span> <span class=ow>in</span> <span class=nb>zip</span><span class=p>(</span><span class=n>obv_trend</span><span class=p>,</span> <span class=n>price_trend</span><span class=p>)</span> <span class=k>if</span> <span class=n>ot</span> <span class=o>==</span> <span class=n>pt</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>divergent_trend</span> <span class=o>=</span> <span class=nb>sum</span><span class=p>(</span><span class=mi>1</span> <span class=k>for</span> <span class=n>ot</span><span class=p>,</span> <span class=n>pt</span> <span class=ow>in</span> <span class=nb>zip</span><span class=p>(</span><span class=n>obv_trend</span><span class=p>,</span> <span class=n>price_trend</span><span class=p>)</span> <span class=k>if</span> <span class=n>ot</span> <span class=o>!=</span> <span class=n>pt</span> <span class=ow>and</span> <span class=n>ot</span> <span class=o>!=</span> <span class=mi>0</span> <span class=ow>and</span> <span class=n>pt</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>neutral_trend</span> <span class=o>=</span> <span class=nb>len</span><span class=p>(</span><span class=n>obv_trend</span><span class=p>)</span> <span class=o>-</span> <span class=n>consistent_trend</span> <span class=o>-</span> <span class=n>divergent_trend</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== OBV与价格趋势一致性分析 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;总分析周期数: </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>obv_trend</span><span class=p>)</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;趋势一致周期数: </span><span class=si>{</span><span class=n>consistent_trend</span><span class=si>}</span><span class=s2> (</span><span class=si>{</span><span class=n>consistent_trend</span><span class=o>/</span><span class=nb>len</span><span class=p>(</span><span class=n>obv_trend</span><span class=p>)</span><span class=o>*</span><span class=mi>100</span><span class=si>:</span><span class=s2>.1f</span><span class=si>}</span><span class=s2>%)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;趋势背离周期数: </span><span class=si>{</span><span class=n>divergent_trend</span><span class=si>}</span><span class=s2> (</span><span class=si>{</span><span class=n>divergent_trend</span><span class=o>/</span><span class=nb>len</span><span class=p>(</span><span class=n>obv_trend</span><span class=p>)</span><span class=o>*</span><span class=mi>100</span><span class=si>:</span><span class=s2>.1f</span><span class=si>}</span><span class=s2>%)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;中性趋势周期数: </span><span class=si>{</span><span class=n>neutral_trend</span><span class=si>}</span><span class=s2> (</span><span class=si>{</span><span class=n>neutral_trend</span><span class=o>/</span><span class=nb>len</span><span class=p>(</span><span class=n>obv_trend</span><span class=p>)</span><span class=o>*</span><span class=mi>100</span><span class=si>:</span><span class=s2>.1f</span><span class=si>}</span><span class=s2>%)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 当前趋势状态</span>
+</span></span><span class=line><span class=cl><span class=n>current_obv_trend</span> <span class=o>=</span> <span class=n>obv_trend</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=k>if</span> <span class=n>obv_trend</span> <span class=k>else</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl><span class=n>current_price_trend</span> <span class=o>=</span> <span class=n>price_trend</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=k>if</span> <span class=n>price_trend</span> <span class=k>else</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>trend_status_map</span> <span class=o>=</span> <span class=p>{</span><span class=mi>1</span><span class=p>:</span> <span class=s2>&#34;上升&#34;</span><span class=p>,</span> <span class=o>-</span><span class=mi>1</span><span class=p>:</span> <span class=s2>&#34;下降&#34;</span><span class=p>,</span> <span class=mi>0</span><span class=p>:</span> <span class=s2>&#34;横盘&#34;</span><span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>当前趋势状态:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;OBV趋势: </span><span class=si>{</span><span class=n>trend_status_map</span><span class=p>[</span><span class=n>current_obv_trend</span><span class=p>]</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;价格趋势: </span><span class=si>{</span><span class=n>trend_status_map</span><span class=p>[</span><span class=n>current_price_trend</span><span class=p>]</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=n>current_obv_trend</span> <span class=o>==</span> <span class=n>current_price_trend</span> <span class=ow>and</span> <span class=n>current_obv_trend</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;当前状态: 趋势一致 - 健康趋势&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>elif</span> <span class=n>current_obv_trend</span> <span class=o>!=</span> <span class=n>current_price_trend</span> <span class=ow>and</span> <span class=n>current_obv_trend</span> <span class=o>!=</span> <span class=mi>0</span> <span class=ow>and</span> <span class=n>current_price_trend</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;当前状态: 趋势背离 - 需要关注&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;当前状态: 趋势不明朗 - 谨慎观望&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># OBV动量分析</span>
+</span></span><span class=line><span class=cl><span class=n>obv_momentum</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>gradient</span><span class=p>(</span><span class=n>obv_values</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>obv_momentum_ma</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>SMA</span><span class=p>(</span><span class=n>obv_momentum</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== OBV动量分析 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;当前OBV动量: </span><span class=si>{</span><span class=n>obv_momentum</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>,.0f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;OBV动量5日平均: </span><span class=si>{</span><span class=n>obv_momentum_ma</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>,.0f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;OBV动量趋势: </span><span class=si>{</span><span class=s1>&#39;上升&#39;</span> <span class=k>if</span> <span class=n>obv_momentum</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>&gt;</span> <span class=n>obv_momentum_ma</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=k>else</span> <span class=s1>&#39;下降&#39;</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># OBV波动性分析</span>
+</span></span><span class=line><span class=cl><span class=n>obv_volatility</span> <span class=o>=</span> <span class=n>pd</span><span class=o>.</span><span class=n>Series</span><span class=p>(</span><span class=n>obv_values</span><span class=p>)</span><span class=o>.</span><span class=n>rolling</span><span class=p>(</span><span class=n>window</span><span class=o>=</span><span class=mi>20</span><span class=p>)</span><span class=o>.</span><span class=n>std</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>current_obv_volatility</span> <span class=o>=</span> <span class=n>obv_volatility</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>avg_obv_volatility</span> <span class=o>=</span> <span class=n>obv_volatility</span><span class=o>.</span><span class=n>mean</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== OBV波动性分析 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;当前OBV波动性: </span><span class=si>{</span><span class=n>current_obv_volatility</span><span class=si>:</span><span class=s2>,.0f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;平均OBV波动性: </span><span class=si>{</span><span class=n>avg_obv_volatility</span><span class=si>:</span><span class=s2>,.0f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;波动性相对水平: </span><span class=si>{</span><span class=s1>&#39;高&#39;</span> <span class=k>if</span> <span class=n>current_obv_volatility</span> <span class=o>&gt;</span> <span class=n>avg_obv_volatility</span> <span class=k>else</span> <span class=s1>&#39;低&#39;</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># OBV与成交量关系分析</span>
+</span></span><span class=line><span class=cl><span class=n>volume_obv_corr</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>corrcoef</span><span class=p>(</span><span class=n>volume_data</span><span class=p>,</span> <span class=n>obv_values</span><span class=p>)[</span><span class=mi>0</span><span class=p>,</span> <span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== OBV与成交量关系 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;成交量与OBV相关系数: </span><span class=si>{</span><span class=n>volume_obv_corr</span><span class=si>:</span><span class=s2>.4f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;相关系数解释: </span><span class=si>{</span><span class=s1>&#39;强正相关&#39;</span> <span class=k>if</span> <span class=n>volume_obv_corr</span> <span class=o>&gt;</span> <span class=mf>0.7</span> <span class=k>else</span> <span class=s1>&#39;中等正相关&#39;</span> <span class=k>if</span> <span class=n>volume_obv_corr</span> <span class=o>&gt;</span> <span class=mf>0.3</span> <span class=k>else</span> <span class=s1>&#39;弱相关&#39;</span> <span class=k>if</span> <span class=n>volume_obv_corr</span> <span class=o>&gt;</span> <span class=mf>0.1</span> <span class=k>else</span> <span class=s1>&#39;几乎无相关&#39;</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h3 id=obv背离识别与分析>OBV背离识别与分析</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span><span class=lnt>170
+</span><span class=lnt>171
+</span><span class=lnt>172
+</span><span class=lnt>173
+</span><span class=lnt>174
+</span><span class=lnt>175
+</span><span class=lnt>176
+</span><span class=lnt>177
+</span><span class=lnt>178
+</span><span class=lnt>179
+</span><span class=lnt>180
+</span><span class=lnt>181
+</span><span class=lnt>182
+</span><span class=lnt>183
+</span><span class=lnt>184
+</span><span class=lnt>185
+</span><span class=lnt>186
+</span><span class=lnt>187
+</span><span class=lnt>188
+</span><span class=lnt>189
+</span><span class=lnt>190
+</span><span class=lnt>191
+</span><span class=lnt>192
+</span><span class=lnt>193
+</span><span class=lnt>194
+</span><span class=lnt>195
+</span><span class=lnt>196
+</span><span class=lnt>197
+</span><span class=lnt>198
+</span><span class=lnt>199
+</span><span class=lnt>200
+</span><span class=lnt>201
+</span><span class=lnt>202
+</span><span class=lnt>203
+</span><span class=lnt>204
+</span><span class=lnt>205
+</span><span class=lnt>206
+</span><span class=lnt>207
+</span><span class=lnt>208
+</span><span class=lnt>209
+</span><span class=lnt>210
+</span><span class=lnt>211
+</span><span class=lnt>212
+</span><span class=lnt>213
+</span><span class=lnt>214
+</span><span class=lnt>215
+</span><span class=lnt>216
+</span><span class=lnt>217
+</span><span class=lnt>218
+</span><span class=lnt>219
+</span><span class=lnt>220
+</span><span class=lnt>221
+</span><span class=lnt>222
+</span><span class=lnt>223
+</span><span class=lnt>224
+</span><span class=lnt>225
+</span><span class=lnt>226
+</span><span class=lnt>227
+</span><span class=lnt>228
+</span><span class=lnt>229
+</span><span class=lnt>230
+</span><span class=lnt>231
+</span><span class=lnt>232
+</span><span class=lnt>233
+</span><span class=lnt>234
+</span><span class=lnt>235
+</span><span class=lnt>236
+</span><span class=lnt>237
+</span><span class=lnt>238
+</span><span class=lnt>239
+</span><span class=lnt>240
+</span><span class=lnt>241
+</span><span class=lnt>242
+</span><span class=lnt>243
+</span><span class=lnt>244
+</span><span class=lnt>245
+</span><span class=lnt>246
+</span><span class=lnt>247
+</span><span class=lnt>248
+</span><span class=lnt>249
+</span><span class=lnt>250
+</span><span class=lnt>251
+</span><span class=lnt>252
+</span><span class=lnt>253
+</span><span class=lnt>254
+</span><span class=lnt>255
+</span><span class=lnt>256
+</span><span class=lnt>257
+</span><span class=lnt>258
+</span><span class=lnt>259
+</span><span class=lnt>260
+</span><span class=lnt>261
+</span><span class=lnt>262
+</span><span class=lnt>263
+</span><span class=lnt>264
+</span><span class=lnt>265
+</span><span class=lnt>266
+</span><span class=lnt>267
+</span><span class=lnt>268
+</span><span class=lnt>269
+</span><span class=lnt>270
+</span><span class=lnt>271
+</span><span class=lnt>272
+</span><span class=lnt>273
+</span><span class=lnt>274
+</span><span class=lnt>275
+</span><span class=lnt>276
+</span><span class=lnt>277
+</span><span class=lnt>278
+</span><span class=lnt>279
+</span><span class=lnt>280
+</span><span class=lnt>281
+</span><span class=lnt>282
+</span><span class=lnt>283
+</span><span class=lnt>284
+</span><span class=lnt>285
+</span><span class=lnt>286
+</span><span class=lnt>287
+</span><span class=lnt>288
+</span><span class=lnt>289
+</span><span class=lnt>290
+</span><span class=lnt>291
+</span><span class=lnt>292
+</span><span class=lnt>293
+</span><span class=lnt>294
+</span><span class=lnt>295
+</span><span class=lnt>296
+</span><span class=lnt>297
+</span><span class=lnt>298
+</span><span class=lnt>299
+</span><span class=lnt>300
+</span><span class=lnt>301
+</span><span class=lnt>302
+</span><span class=lnt>303
+</span><span class=lnt>304
+</span><span class=lnt>305
+</span><span class=lnt>306
+</span><span class=lnt>307
+</span><span class=lnt>308
+</span><span class=lnt>309
+</span><span class=lnt>310
+</span><span class=lnt>311
+</span><span class=lnt>312
+</span><span class=lnt>313
+</span><span class=lnt>314
+</span><span class=lnt>315
+</span><span class=lnt>316
+</span><span class=lnt>317
+</span><span class=lnt>318
+</span><span class=lnt>319
+</span><span class=lnt>320
+</span><span class=lnt>321
+</span><span class=lnt>322
+</span><span class=lnt>323
+</span><span class=lnt>324
+</span><span class=lnt>325
+</span><span class=lnt>326
+</span><span class=lnt>327
+</span><span class=lnt>328
+</span><span class=lnt>329
+</span><span class=lnt>330
+</span><span class=lnt>331
+</span><span class=lnt>332
+</span><span class=lnt>333
+</span><span class=lnt>334
+</span><span class=lnt>335
+</span><span class=lnt>336
+</span><span class=lnt>337
+</span><span class=lnt>338
+</span><span class=lnt>339
+</span><span class=lnt>340
+</span><span class=lnt>341
+</span><span class=lnt>342
+</span><span class=lnt>343
+</span><span class=lnt>344
+</span><span class=lnt>345
+</span><span class=lnt>346
+</span><span class=lnt>347
+</span><span class=lnt>348
+</span><span class=lnt>349
+</span><span class=lnt>350
+</span><span class=lnt>351
+</span><span class=lnt>352
+</span><span class=lnt>353
+</span><span class=lnt>354
+</span><span class=lnt>355
+</span><span class=lnt>356
+</span><span class=lnt>357
+</span><span class=lnt>358
+</span><span class=lnt>359
+</span><span class=lnt>360
+</span><span class=lnt>361
+</span><span class=lnt>362
+</span><span class=lnt>363
+</span><span class=lnt>364
+</span><span class=lnt>365
+</span><span class=lnt>366
+</span><span class=lnt>367
+</span><span class=lnt>368
+</span><span class=lnt>369
+</span><span class=lnt>370
+</span><span class=lnt>371
+</span><span class=lnt>372
+</span><span class=lnt>373
+</span><span class=lnt>374
+</span><span class=lnt>375
+</span><span class=lnt>376
+</span><span class=lnt>377
+</span><span class=lnt>378
+</span><span class=lnt>379
+</span><span class=lnt>380
+</span><span class=lnt>381
+</span><span class=lnt>382
+</span><span class=lnt>383
+</span><span class=lnt>384
+</span><span class=lnt>385
+</span><span class=lnt>386
+</span><span class=lnt>387
+</span><span class=lnt>388
+</span><span class=lnt>389
+</span><span class=lnt>390
+</span><span class=lnt>391
+</span><span class=lnt>392
+</span><span class=lnt>393
+</span><span class=lnt>394
+</span><span class=lnt>395
+</span><span class=lnt>396
+</span><span class=lnt>397
+</span><span class=lnt>398
+</span><span class=lnt>399
+</span><span class=lnt>400
+</span><span class=lnt>401
+</span><span class=lnt>402
+</span><span class=lnt>403
+</span><span class=lnt>404
+</span><span class=lnt>405
+</span><span class=lnt>406
+</span><span class=lnt>407
+</span><span class=lnt>408
+</span><span class=lnt>409
+</span><span class=lnt>410
+</span><span class=lnt>411
+</span><span class=lnt>412
+</span><span class=lnt>413
+</span><span class=lnt>414
+</span><span class=lnt>415
+</span><span class=lnt>416
+</span><span class=lnt>417
+</span><span class=lnt>418
+</span><span class=lnt>419
+</span><span class=lnt>420
+</span><span class=lnt>421
+</span><span class=lnt>422
+</span><span class=lnt>423
+</span><span class=lnt>424
+</span><span class=lnt>425
+</span><span class=lnt>426
+</span><span class=lnt>427
+</span><span class=lnt>428
+</span><span class=lnt>429
+</span><span class=lnt>430
+</span><span class=lnt>431
+</span><span class=lnt>432
+</span><span class=lnt>433
+</span><span class=lnt>434
+</span><span class=lnt>435
+</span><span class=lnt>436
+</span><span class=lnt>437
+</span><span class=lnt>438
+</span><span class=lnt>439
+</span><span class=lnt>440
+</span><span class=lnt>441
+</span><span class=lnt>442
+</span><span class=lnt>443
+</span><span class=lnt>444
+</span><span class=lnt>445
+</span><span class=lnt>446
+</span><span class=lnt>447
+</span><span class=lnt>448
+</span><span class=lnt>449
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># OBV背离识别函数</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>identify_obv_divergences</span><span class=p>(</span><span class=n>prices</span><span class=p>,</span> <span class=n>obv_values</span><span class=p>,</span> <span class=n>lookback_period</span><span class=o>=</span><span class=mi>20</span><span class=p>,</span> <span class=n>min_change_pct</span><span class=o>=</span><span class=mi>2</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;识别OBV背离信号&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>divergences</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>lookback_period</span><span class=p>,</span> <span class=nb>len</span><span class=p>(</span><span class=n>prices</span><span class=p>)):</span>
+</span></span><span class=line><span class=cl>        <span class=c1># 价格区间</span>
+</span></span><span class=line><span class=cl>        <span class=n>price_window</span> <span class=o>=</span> <span class=n>prices</span><span class=p>[</span><span class=n>i</span><span class=o>-</span><span class=n>lookback_period</span><span class=p>:</span><span class=n>i</span><span class=o>+</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>        <span class=n>current_price</span> <span class=o>=</span> <span class=n>prices</span><span class=p>[</span><span class=n>i</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># OBV区间</span>
+</span></span><span class=line><span class=cl>        <span class=n>obv_window</span> <span class=o>=</span> <span class=n>obv_values</span><span class=p>[</span><span class=n>i</span><span class=o>-</span><span class=n>lookback_period</span><span class=p>:</span><span class=n>i</span><span class=o>+</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>        <span class=n>current_obv</span> <span class=o>=</span> <span class=n>obv_values</span><span class=p>[</span><span class=n>i</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 检查价格是否创新高（需要超过最小变化幅度）</span>
+</span></span><span class=line><span class=cl>        <span class=n>price_max</span> <span class=o>=</span> <span class=nb>max</span><span class=p>(</span><span class=n>price_window</span><span class=p>[:</span><span class=o>-</span><span class=mi>1</span><span class=p>])</span>  <span class=c1># 排除当前价格</span>
+</span></span><span class=line><span class=cl>        <span class=n>price_change_pct</span> <span class=o>=</span> <span class=p>(</span><span class=n>current_price</span> <span class=o>-</span> <span class=n>price_max</span><span class=p>)</span> <span class=o>/</span> <span class=n>price_max</span> <span class=o>*</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 检查OBV是否创新高</span>
+</span></span><span class=line><span class=cl>        <span class=n>obv_max</span> <span class=o>=</span> <span class=nb>max</span><span class=p>(</span><span class=n>obv_window</span><span class=p>[:</span><span class=o>-</span><span class=mi>1</span><span class=p>])</span>  <span class=c1># 排除当前OBV</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 顶背离：价格创新高，OBV未创新高</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>price_change_pct</span> <span class=o>&gt;</span> <span class=n>min_change_pct</span> <span class=ow>and</span> <span class=n>current_obv</span> <span class=o>&lt;</span> <span class=n>obv_max</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>divergences</span><span class=o>.</span><span class=n>append</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;type&#39;</span><span class=p>:</span> <span class=s1>&#39;顶背离&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;date&#39;</span><span class=p>:</span> <span class=n>dates</span><span class=p>[</span><span class=n>i</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;price&#39;</span><span class=p>:</span> <span class=n>current_price</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;obv&#39;</span><span class=p>:</span> <span class=n>current_obv</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;price_change_pct&#39;</span><span class=p>:</span> <span class=n>price_change_pct</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;obv_vs_max_pct&#39;</span><span class=p>:</span> <span class=p>(</span><span class=n>current_obv</span> <span class=o>-</span> <span class=n>obv_max</span><span class=p>)</span> <span class=o>/</span> <span class=n>obv_max</span> <span class=o>*</span> <span class=mi>100</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;description&#39;</span><span class=p>:</span> <span class=s1>&#39;价格上涨但OBV走弱，可能反转下跌&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;severity&#39;</span><span class=p>:</span> <span class=nb>abs</span><span class=p>(</span><span class=n>price_change_pct</span><span class=p>)</span>  <span class=c1># 背离严重程度</span>
+</span></span><span class=line><span class=cl>            <span class=p>})</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 检查价格是否创新低（需要超过最小变化幅度）</span>
+</span></span><span class=line><span class=cl>        <span class=n>price_min</span> <span class=o>=</span> <span class=nb>min</span><span class=p>(</span><span class=n>price_window</span><span class=p>[:</span><span class=o>-</span><span class=mi>1</span><span class=p>])</span>  <span class=c1># 排除当前价格</span>
+</span></span><span class=line><span class=cl>        <span class=n>price_change_pct</span> <span class=o>=</span> <span class=p>(</span><span class=n>current_price</span> <span class=o>-</span> <span class=n>price_min</span><span class=p>)</span> <span class=o>/</span> <span class=n>price_min</span> <span class=o>*</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 检查OBV是否创新低</span>
+</span></span><span class=line><span class=cl>        <span class=n>obv_min</span> <span class=o>=</span> <span class=nb>min</span><span class=p>(</span><span class=n>obv_window</span><span class=p>[:</span><span class=o>-</span><span class=mi>1</span><span class=p>])</span>  <span class=c1># 排除当前OBV</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 底背离：价格创新低，OBV未创新低</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>price_change_pct</span> <span class=o>&lt;</span> <span class=o>-</span><span class=n>min_change_pct</span> <span class=ow>and</span> <span class=n>current_obv</span> <span class=o>&gt;</span> <span class=n>obv_min</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>divergences</span><span class=o>.</span><span class=n>append</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;type&#39;</span><span class=p>:</span> <span class=s1>&#39;底背离&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;date&#39;</span><span class=p>:</span> <span class=n>dates</span><span class=p>[</span><span class=n>i</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;price&#39;</span><span class=p>:</span> <span class=n>current_price</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;obv&#39;</span><span class=p>:</span> <span class=n>current_obv</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;price_change_pct&#39;</span><span class=p>:</span> <span class=n>price_change_pct</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;obv_vs_min_pct&#39;</span><span class=p>:</span> <span class=p>(</span><span class=n>current_obv</span> <span class=o>-</span> <span class=n>obv_min</span><span class=p>)</span> <span class=o>/</span> <span class=n>obv_min</span> <span class=o>*</span> <span class=mi>100</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;description&#39;</span><span class=p>:</span> <span class=s1>&#39;价格下跌但OBV走强，可能反转上涨&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;severity&#39;</span><span class=p>:</span> <span class=nb>abs</span><span class=p>(</span><span class=n>price_change_pct</span><span class=p>)</span>  <span class=c1># 背离严重程度</span>
+</span></span><span class=line><span class=cl>            <span class=p>})</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>divergences</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 识别OBV背离信号</span>
+</span></span><span class=line><span class=cl><span class=n>obv_divergences</span> <span class=o>=</span> <span class=n>identify_obv_divergences</span><span class=p>(</span><span class=n>close_prices</span><span class=p>,</span> <span class=n>obv_values</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== OBV背离信号分析 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;识别到的背离信号总数: </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>obv_divergences</span><span class=p>)</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 按类型统计背离信号</span>
+</span></span><span class=line><span class=cl><span class=n>top_divergences</span> <span class=o>=</span> <span class=p>[</span><span class=n>d</span> <span class=k>for</span> <span class=n>d</span> <span class=ow>in</span> <span class=n>obv_divergences</span> <span class=k>if</span> <span class=n>d</span><span class=p>[</span><span class=s1>&#39;type&#39;</span><span class=p>]</span> <span class=o>==</span> <span class=s1>&#39;顶背离&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>bottom_divergences</span> <span class=o>=</span> <span class=p>[</span><span class=n>d</span> <span class=k>for</span> <span class=n>d</span> <span class=ow>in</span> <span class=n>obv_divergences</span> <span class=k>if</span> <span class=n>d</span><span class=p>[</span><span class=s1>&#39;type&#39;</span><span class=p>]</span> <span class=o>==</span> <span class=s1>&#39;底背离&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;顶背离信号: </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>top_divergences</span><span class=p>)</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;底背离信号: </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>bottom_divergences</span><span class=p>)</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 显示最近5次背离（按严重程度排序）</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=n>obv_divergences</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>最近5次严重背离信号:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>recent_divergences</span> <span class=o>=</span> <span class=nb>sorted</span><span class=p>(</span><span class=n>obv_divergences</span><span class=p>[</span><span class=o>-</span><span class=mi>10</span><span class=p>:],</span> <span class=n>key</span><span class=o>=</span><span class=k>lambda</span> <span class=n>x</span><span class=p>:</span> <span class=n>x</span><span class=p>[</span><span class=s1>&#39;severity&#39;</span><span class=p>],</span> <span class=n>reverse</span><span class=o>=</span><span class=kc>True</span><span class=p>)[:</span><span class=mi>5</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>i</span><span class=p>,</span> <span class=n>div</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>recent_divergences</span><span class=p>,</span> <span class=mi>1</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=n>i</span><span class=si>}</span><span class=s2>. </span><span class=si>{</span><span class=n>div</span><span class=p>[</span><span class=s1>&#39;date&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=s1>&#39;%Y-%m-</span><span class=si>%d</span><span class=s1>&#39;</span><span class=p>)</span><span class=si>}</span><span class=s2>: </span><span class=si>{</span><span class=n>div</span><span class=p>[</span><span class=s1>&#39;type&#39;</span><span class=p>]</span><span class=si>}</span><span class=s2> - &#34;</span>
+</span></span><span class=line><span class=cl>              <span class=sa>f</span><span class=s2>&#34;价格: </span><span class=si>{</span><span class=n>div</span><span class=p>[</span><span class=s1>&#39;price&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>, OBV: </span><span class=si>{</span><span class=n>div</span><span class=p>[</span><span class=s1>&#39;obv&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>,.0f</span><span class=si>}</span><span class=s2> - &#34;</span>
+</span></span><span class=line><span class=cl>              <span class=sa>f</span><span class=s2>&#34;价格变化: </span><span class=si>{</span><span class=n>div</span><span class=p>[</span><span class=s1>&#39;price_change_pct&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>%, &#34;</span>
+</span></span><span class=line><span class=cl>              <span class=sa>f</span><span class=s2>&#34;严重程度: </span><span class=si>{</span><span class=n>div</span><span class=p>[</span><span class=s1>&#39;severity&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;近期未识别到明显的OBV背离信号&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># OBV与价格相关性分析函数</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>analyze_obv_price_correlation</span><span class=p>(</span><span class=n>prices</span><span class=p>,</span> <span class=n>obv_values</span><span class=p>,</span> <span class=n>window</span><span class=o>=</span><span class=mi>20</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;分析OBV与价格的相关性&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>correlations</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>window</span><span class=p>,</span> <span class=nb>len</span><span class=p>(</span><span class=n>prices</span><span class=p>)):</span>
+</span></span><span class=line><span class=cl>        <span class=n>price_segment</span> <span class=o>=</span> <span class=n>prices</span><span class=p>[</span><span class=n>i</span><span class=o>-</span><span class=n>window</span><span class=p>:</span><span class=n>i</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>        <span class=n>obv_segment</span> <span class=o>=</span> <span class=n>obv_values</span><span class=p>[</span><span class=n>i</span><span class=o>-</span><span class=n>window</span><span class=p>:</span><span class=n>i</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 计算相关系数</span>
+</span></span><span class=line><span class=cl>        <span class=n>corr</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>corrcoef</span><span class=p>(</span><span class=n>price_segment</span><span class=p>,</span> <span class=n>obv_segment</span><span class=p>)[</span><span class=mi>0</span><span class=p>,</span> <span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>        <span class=n>correlations</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>corr</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>correlations</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 执行相关性分析</span>
+</span></span><span class=line><span class=cl><span class=n>obv_price_correlations</span> <span class=o>=</span> <span class=n>analyze_obv_price_correlation</span><span class=p>(</span><span class=n>close_prices</span><span class=p>,</span> <span class=n>obv_values</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 当前相关性状态</span>
+</span></span><span class=line><span class=cl><span class=n>current_correlation</span> <span class=o>=</span> <span class=n>obv_price_correlations</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=k>if</span> <span class=n>obv_price_correlations</span> <span class=k>else</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl><span class=n>correlation_trend</span> <span class=o>=</span> <span class=s2>&#34;上升&#34;</span> <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>obv_price_correlations</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mi>1</span> <span class=ow>and</span> <span class=n>obv_price_correlations</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>&gt;</span> <span class=n>obv_price_correlations</span><span class=p>[</span><span class=o>-</span><span class=mi>2</span><span class=p>]</span> <span class=k>else</span> <span class=s2>&#34;下降&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== OBV与价格相关性分析 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;当前相关系数: </span><span class=si>{</span><span class=n>current_correlation</span><span class=si>:</span><span class=s2>.4f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;相关系数趋势: </span><span class=si>{</span><span class=n>correlation_trend</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;相关性解释: </span><span class=si>{</span><span class=n>get_correlation_interpretation</span><span class=p>(</span><span class=n>current_correlation</span><span class=p>)</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>get_correlation_interpretation</span><span class=p>(</span><span class=n>corr</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;解释相关系数&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>corr</span> <span class=o>&gt;</span> <span class=mf>0.7</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=s2>&#34;强正相关 - OBV与价格高度同步&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>elif</span> <span class=n>corr</span> <span class=o>&gt;</span> <span class=mf>0.3</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=s2>&#34;中等正相关 - OBV与价格基本同步&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>elif</span> <span class=n>corr</span> <span class=o>&gt;</span> <span class=mf>0.1</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=s2>&#34;弱正相关 - OBV与价格轻微同步&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>elif</span> <span class=n>corr</span> <span class=o>&gt;</span> <span class=o>-</span><span class=mf>0.1</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=s2>&#34;几乎无相关 - OBV与价格无明显关系&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>elif</span> <span class=n>corr</span> <span class=o>&gt;</span> <span class=o>-</span><span class=mf>0.3</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=s2>&#34;弱负相关 - OBV与价格轻微背离&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>elif</span> <span class=n>corr</span> <span class=o>&gt;</span> <span class=o>-</span><span class=mf>0.7</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=s2>&#34;中等负相关 - OBV与价格明显背离&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=s2>&#34;强负相关 - OBV与价格严重背离&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># OBV动量背离分析</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>analyze_obv_momentum_divergence</span><span class=p>(</span><span class=n>prices</span><span class=p>,</span> <span class=n>obv_values</span><span class=p>,</span> <span class=n>momentum_window</span><span class=o>=</span><span class=mi>5</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;分析OBV动量与价格的背离&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=c1># 计算价格动量</span>
+</span></span><span class=line><span class=cl>    <span class=n>price_momentum</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>gradient</span><span class=p>(</span><span class=n>prices</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 计算OBV动量</span>
+</span></span><span class=line><span class=cl>    <span class=n>obv_momentum</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>gradient</span><span class=p>(</span><span class=n>obv_values</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 计算动量变化率</span>
+</span></span><span class=line><span class=cl>    <span class=n>price_momentum_change</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>gradient</span><span class=p>(</span><span class=n>price_momentum</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>obv_momentum_change</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>gradient</span><span class=p>(</span><span class=n>obv_momentum</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 识别动量背离</span>
+</span></span><span class=line><span class=cl>    <span class=n>momentum_divergences</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>momentum_window</span><span class=p>,</span> <span class=nb>len</span><span class=p>(</span><span class=n>prices</span><span class=p>)):</span>
+</span></span><span class=line><span class=cl>        <span class=c1># 价格动量方向</span>
+</span></span><span class=line><span class=cl>        <span class=n>price_mom_direction</span> <span class=o>=</span> <span class=mi>1</span> <span class=k>if</span> <span class=n>price_momentum_change</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=k>else</span> <span class=o>-</span><span class=mi>1</span> <span class=k>if</span> <span class=n>price_momentum_change</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&lt;</span> <span class=mi>0</span> <span class=k>else</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># OBV动量方向</span>
+</span></span><span class=line><span class=cl>        <span class=n>obv_mom_direction</span> <span class=o>=</span> <span class=mi>1</span> <span class=k>if</span> <span class=n>obv_momentum_change</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=k>else</span> <span class=o>-</span><span class=mi>1</span> <span class=k>if</span> <span class=n>obv_momentum_change</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&lt;</span> <span class=mi>0</span> <span class=k>else</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 动量背离</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>price_mom_direction</span> <span class=o>!=</span> <span class=mi>0</span> <span class=ow>and</span> <span class=n>obv_mom_direction</span> <span class=o>!=</span> <span class=mi>0</span> <span class=ow>and</span> <span class=n>price_mom_direction</span> <span class=o>!=</span> <span class=n>obv_mom_direction</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>momentum_divergences</span><span class=o>.</span><span class=n>append</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;date&#39;</span><span class=p>:</span> <span class=n>dates</span><span class=p>[</span><span class=n>i</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;type&#39;</span><span class=p>:</span> <span class=s1>&#39;动量背离&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;price_momentum&#39;</span><span class=p>:</span> <span class=n>price_momentum_change</span><span class=p>[</span><span class=n>i</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;obv_momentum&#39;</span><span class=p>:</span> <span class=n>obv_momentum_change</span><span class=p>[</span><span class=n>i</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;description&#39;</span><span class=p>:</span> <span class=sa>f</span><span class=s2>&#34;价格动量</span><span class=si>{</span><span class=s1>&#39;加速&#39;</span> <span class=k>if</span> <span class=n>price_mom_direction</span> <span class=o>==</span> <span class=mi>1</span> <span class=k>else</span> <span class=s1>&#39;减速&#39;</span><span class=si>}</span><span class=s2>，&#34;</span>
+</span></span><span class=line><span class=cl>                           <span class=sa>f</span><span class=s2>&#34;OBV动量</span><span class=si>{</span><span class=s1>&#39;加速&#39;</span> <span class=k>if</span> <span class=n>obv_mom_direction</span> <span class=o>==</span> <span class=mi>1</span> <span class=k>else</span> <span class=s1>&#39;减速&#39;</span><span class=si>}</span><span class=s2>&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=p>})</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>momentum_divergences</span><span class=p>,</span> <span class=n>price_momentum</span><span class=p>,</span> <span class=n>obv_momentum</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 执行动量背离分析</span>
+</span></span><span class=line><span class=cl><span class=n>mom_divergences</span><span class=p>,</span> <span class=n>price_mom</span><span class=p>,</span> <span class=n>obv_mom</span> <span class=o>=</span> <span class=n>analyze_obv_momentum_divergence</span><span class=p>(</span><span class=n>close_prices</span><span class=p>,</span> <span class=n>obv_values</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== OBV动量背离分析 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;识别到的动量背离次数: </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>mom_divergences</span><span class=p>)</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;最近动量背离: </span><span class=si>{</span><span class=n>mom_divergences</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>][</span><span class=s1>&#39;date&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=s1>&#39;%Y-%m-</span><span class=si>%d</span><span class=s1>&#39;</span><span class=p>)</span> <span class=k>if</span> <span class=n>mom_divergences</span> <span class=k>else</span> <span class=s1>&#39;无&#39;</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 当前动量状态</span>
+</span></span><span class=line><span class=cl><span class=n>current_price_mom</span> <span class=o>=</span> <span class=n>price_mom</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>price_mom</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=k>else</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl><span class=n>current_obv_mom</span> <span class=o>=</span> <span class=n>obv_mom</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>obv_mom</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=k>else</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;当前价格动量: </span><span class=si>{</span><span class=n>current_price_mom</span><span class=si>:</span><span class=s2>.4f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;当前OBV动量: </span><span class=si>{</span><span class=n>current_obv_mom</span><span class=si>:</span><span class=s2>.4f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;动量同步性: </span><span class=si>{</span><span class=s1>&#39;同步&#39;</span> <span class=k>if</span> <span class=n>current_price_mom</span> <span class=o>*</span> <span class=n>current_obv_mom</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=k>else</span> <span class=s1>&#39;背离&#39;</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># OBV支撑阻力位分析</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>identify_obv_support_resistance</span><span class=p>(</span><span class=n>obv_values</span><span class=p>,</span> <span class=n>window</span><span class=o>=</span><span class=mi>20</span><span class=p>,</span> <span class=n>tolerance</span><span class=o>=</span><span class=mf>0.02</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;识别OBV支撑阻力位&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=c1># 计算OBV的局部极值</span>
+</span></span><span class=line><span class=cl>    <span class=n>obv_series</span> <span class=o>=</span> <span class=n>pd</span><span class=o>.</span><span class=n>Series</span><span class=p>(</span><span class=n>obv_values</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 局部最大值（阻力位）</span>
+</span></span><span class=line><span class=cl>    <span class=n>local_max</span> <span class=o>=</span> <span class=n>obv_series</span><span class=o>.</span><span class=n>rolling</span><span class=p>(</span><span class=n>window</span><span class=o>=</span><span class=n>window</span><span class=p>,</span> <span class=n>center</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span><span class=o>.</span><span class=n>max</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>resistance_levels</span> <span class=o>=</span> <span class=n>obv_series</span><span class=p>[</span><span class=n>obv_series</span> <span class=o>==</span> <span class=n>local_max</span><span class=p>]</span><span class=o>.</span><span class=n>dropna</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 局部最小值（支撑位）</span>
+</span></span><span class=line><span class=cl>    <span class=n>local_min</span> <span class=o>=</span> <span class=n>obv_series</span><span class=o>.</span><span class=n>rolling</span><span class=p>(</span><span class=n>window</span><span class=o>=</span><span class=n>window</span><span class=p>,</span> <span class=n>center</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span><span class=o>.</span><span class=n>min</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>support_levels</span> <span class=o>=</span> <span class=n>obv_series</span><span class=p>[</span><span class=n>obv_series</span> <span class=o>==</span> <span class=n>local_min</span><span class=p>]</span><span class=o>.</span><span class=n>dropna</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 合并相近的水平</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>merge_levels</span><span class=p>(</span><span class=n>levels</span><span class=p>,</span> <span class=n>tolerance</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>levels</span><span class=p>)</span> <span class=o>==</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=n>merged</span> <span class=o>=</span> <span class=p>[</span><span class=n>levels</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=mi>0</span><span class=p>]]</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>level</span> <span class=ow>in</span> <span class=n>levels</span><span class=p>[</span><span class=mi>1</span><span class=p>:]:</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=nb>abs</span><span class=p>(</span><span class=n>level</span> <span class=o>-</span> <span class=n>merged</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>])</span> <span class=o>/</span> <span class=n>merged</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>&gt;</span> <span class=n>tolerance</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>merged</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>level</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>merged</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=n>resistance_merged</span> <span class=o>=</span> <span class=n>merge_levels</span><span class=p>(</span><span class=n>resistance_levels</span><span class=p>,</span> <span class=n>tolerance</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>support_merged</span> <span class=o>=</span> <span class=n>merge_levels</span><span class=p>(</span><span class=n>support_levels</span><span class=p>,</span> <span class=n>tolerance</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 当前OBV相对于支撑阻力的位置</span>
+</span></span><span class=line><span class=cl>    <span class=n>current_obv</span> <span class=o>=</span> <span class=n>obv_values</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 找到最近的支撑和阻力</span>
+</span></span><span class=line><span class=cl>    <span class=n>nearest_resistance</span> <span class=o>=</span> <span class=nb>min</span><span class=p>([</span><span class=n>r</span> <span class=k>for</span> <span class=n>r</span> <span class=ow>in</span> <span class=n>resistance_merged</span> <span class=k>if</span> <span class=n>r</span> <span class=o>&gt;</span> <span class=n>current_obv</span><span class=p>],</span> <span class=n>default</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>nearest_support</span> <span class=o>=</span> <span class=nb>max</span><span class=p>([</span><span class=n>s</span> <span class=k>for</span> <span class=n>s</span> <span class=ow>in</span> <span class=n>support_merged</span> <span class=k>if</span> <span class=n>s</span> <span class=o>&lt;</span> <span class=n>current_obv</span><span class=p>],</span> <span class=n>default</span><span class=o>=</span><span class=kc>None</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;resistance_levels&#39;</span><span class=p>:</span> <span class=n>resistance_merged</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;support_levels&#39;</span><span class=p>:</span> <span class=n>support_merged</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;current_obv&#39;</span><span class=p>:</span> <span class=n>current_obv</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;nearest_resistance&#39;</span><span class=p>:</span> <span class=n>nearest_resistance</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;nearest_support&#39;</span><span class=p>:</span> <span class=n>nearest_support</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 执行支撑阻力分析</span>
+</span></span><span class=line><span class=cl><span class=n>sr_analysis</span> <span class=o>=</span> <span class=n>identify_obv_support_resistance</span><span class=p>(</span><span class=n>obv_values</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== OBV支撑阻力位分析 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;识别到的阻力位数量: </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>sr_analysis</span><span class=p>[</span><span class=s1>&#39;resistance_levels&#39;</span><span class=p>])</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;识别到的支撑位数量: </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>sr_analysis</span><span class=p>[</span><span class=s1>&#39;support_levels&#39;</span><span class=p>])</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;当前OBV值: </span><span class=si>{</span><span class=n>sr_analysis</span><span class=p>[</span><span class=s1>&#39;current_obv&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>,.0f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=n>sr_analysis</span><span class=p>[</span><span class=s1>&#39;nearest_resistance&#39;</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>    <span class=n>resistance_distance</span> <span class=o>=</span> <span class=p>(</span><span class=n>sr_analysis</span><span class=p>[</span><span class=s1>&#39;nearest_resistance&#39;</span><span class=p>]</span> <span class=o>-</span> <span class=n>sr_analysis</span><span class=p>[</span><span class=s1>&#39;current_obv&#39;</span><span class=p>])</span> <span class=o>/</span> <span class=n>sr_analysis</span><span class=p>[</span><span class=s1>&#39;current_obv&#39;</span><span class=p>]</span> <span class=o>*</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;最近阻力位: </span><span class=si>{</span><span class=n>sr_analysis</span><span class=p>[</span><span class=s1>&#39;nearest_resistance&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>,.0f</span><span class=si>}</span><span class=s2> (距离: </span><span class=si>{</span><span class=n>resistance_distance</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>%)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=n>sr_analysis</span><span class=p>[</span><span class=s1>&#39;nearest_support&#39;</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>    <span class=n>support_distance</span> <span class=o>=</span> <span class=p>(</span><span class=n>sr_analysis</span><span class=p>[</span><span class=s1>&#39;current_obv&#39;</span><span class=p>]</span> <span class=o>-</span> <span class=n>sr_analysis</span><span class=p>[</span><span class=s1>&#39;nearest_support&#39;</span><span class=p>])</span> <span class=o>/</span> <span class=n>sr_analysis</span><span class=p>[</span><span class=s1>&#39;current_obv&#39;</span><span class=p>]</span> <span class=o>*</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;最近支撑位: </span><span class=si>{</span><span class=n>sr_analysis</span><span class=p>[</span><span class=s1>&#39;nearest_support&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>,.0f</span><span class=si>}</span><span class=s2> (距离: </span><span class=si>{</span><span class=n>support_distance</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>%)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 当前位置分析</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=n>sr_analysis</span><span class=p>[</span><span class=s1>&#39;nearest_resistance&#39;</span><span class=p>]</span> <span class=ow>and</span> <span class=n>sr_analysis</span><span class=p>[</span><span class=s1>&#39;nearest_support&#39;</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>    <span class=n>resistance_distance</span> <span class=o>=</span> <span class=p>(</span><span class=n>sr_analysis</span><span class=p>[</span><span class=s1>&#39;nearest_resistance&#39;</span><span class=p>]</span> <span class=o>-</span> <span class=n>sr_analysis</span><span class=p>[</span><span class=s1>&#39;current_obv&#39;</span><span class=p>])</span> <span class=o>/</span> <span class=n>sr_analysis</span><span class=p>[</span><span class=s1>&#39;current_obv&#39;</span><span class=p>]</span> <span class=o>*</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl>    <span class=n>support_distance</span> <span class=o>=</span> <span class=p>(</span><span class=n>sr_analysis</span><span class=p>[</span><span class=s1>&#39;current_obv&#39;</span><span class=p>]</span> <span class=o>-</span> <span class=n>sr_analysis</span><span class=p>[</span><span class=s1>&#39;nearest_support&#39;</span><span class=p>])</span> <span class=o>/</span> <span class=n>sr_analysis</span><span class=p>[</span><span class=s1>&#39;current_obv&#39;</span><span class=p>]</span> <span class=o>*</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>resistance_distance</span> <span class=o>&lt;</span> <span class=n>support_distance</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>position_status</span> <span class=o>=</span> <span class=s2>&#34;接近阻力位 - 关注回调风险&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>position_status</span> <span class=o>=</span> <span class=s2>&#34;接近支撑位 - 关注反弹机会&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>position_status</span> <span class=o>=</span> <span class=s2>&#34;位置相对中性&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;当前位置状态: </span><span class=si>{</span><span class=n>position_status</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># OBV形态分析</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>analyze_obv_patterns</span><span class=p>(</span><span class=n>obv_values</span><span class=p>,</span> <span class=n>window</span><span class=o>=</span><span class=mi>30</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;分析OBV形态&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>obv_series</span> <span class=o>=</span> <span class=n>pd</span><span class=o>.</span><span class=n>Series</span><span class=p>(</span><span class=n>obv_values</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>patterns</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 计算OBV的高点和低点</span>
+</span></span><span class=line><span class=cl>    <span class=n>highs</span> <span class=o>=</span> <span class=n>obv_series</span><span class=o>.</span><span class=n>rolling</span><span class=p>(</span><span class=n>window</span><span class=o>=</span><span class=n>window</span><span class=p>,</span> <span class=n>center</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span><span class=o>.</span><span class=n>max</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=n>lows</span> <span class=o>=</span> <span class=n>obv_series</span><span class=o>.</span><span class=n>rolling</span><span class=p>(</span><span class=n>window</span><span class=o>=</span><span class=n>window</span><span class=p>,</span> <span class=n>center</span><span class=o>=</span><span class=kc>True</span><span class=p>)</span><span class=o>.</span><span class=n>min</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 识别双底形态</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>find_double_bottoms</span><span class=p>(</span><span class=n>series</span><span class=p>,</span> <span class=n>window</span><span class=o>=</span><span class=mi>20</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=n>bottoms</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>window</span><span class=p>,</span> <span class=nb>len</span><span class=p>(</span><span class=n>series</span><span class=p>)</span> <span class=o>-</span> <span class=n>window</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>series</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>==</span> <span class=n>lows</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=p>]:</span>  <span class=c1># 局部低点</span>
+</span></span><span class=line><span class=cl>                <span class=c1># 向前寻找相似的低点</span>
+</span></span><span class=line><span class=cl>                <span class=k>for</span> <span class=n>j</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>i</span> <span class=o>-</span> <span class=n>window</span><span class=p>,</span> <span class=nb>max</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=n>i</span> <span class=o>-</span> <span class=mi>5</span><span class=p>)):</span>
+</span></span><span class=line><span class=cl>                    <span class=k>if</span> <span class=nb>abs</span><span class=p>(</span><span class=n>series</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>-</span> <span class=n>series</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>j</span><span class=p>])</span> <span class=o>/</span> <span class=n>series</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>j</span><span class=p>]</span> <span class=o>&lt;</span> <span class=mf>0.05</span><span class=p>:</span>  <span class=c1># 5%容差</span>
+</span></span><span class=line><span class=cl>                        <span class=c1># 检查中间是否有更高的点</span>
+</span></span><span class=line><span class=cl>                        <span class=n>middle_high</span> <span class=o>=</span> <span class=n>series</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>j</span><span class=o>+</span><span class=mi>1</span><span class=p>:</span><span class=n>i</span><span class=p>]</span><span class=o>.</span><span class=n>max</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>                        <span class=k>if</span> <span class=n>middle_high</span> <span class=o>&gt;</span> <span class=n>series</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>*</span> <span class=mf>1.02</span><span class=p>:</span>  <span class=c1># 中间高至少2%</span>
+</span></span><span class=line><span class=cl>                            <span class=n>bottoms</span><span class=o>.</span><span class=n>append</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>                                <span class=s1>&#39;type&#39;</span><span class=p>:</span> <span class=s1>&#39;双底&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                                <span class=s1>&#39;date&#39;</span><span class=p>:</span> <span class=n>dates</span><span class=p>[</span><span class=n>i</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                                <span class=s1>&#39;value&#39;</span><span class=p>:</span> <span class=n>series</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                                <span class=s1>&#39;first_bottom_date&#39;</span><span class=p>:</span> <span class=n>dates</span><span class=p>[</span><span class=n>j</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                                <span class=s1>&#39;first_bottom_value&#39;</span><span class=p>:</span> <span class=n>series</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>j</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                                <span class=s1>&#39;middle_high&#39;</span><span class=p>:</span> <span class=n>middle_high</span>
+</span></span><span class=line><span class=cl>                            <span class=p>})</span>
+</span></span><span class=line><span class=cl>                            <span class=k>break</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>bottoms</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 识别双顶形态</span>
+</span></span><span class=line><span class=cl>    <span class=k>def</span> <span class=nf>find_double_tops</span><span class=p>(</span><span class=n>series</span><span class=p>,</span> <span class=n>window</span><span class=o>=</span><span class=mi>20</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=n>tops</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>window</span><span class=p>,</span> <span class=nb>len</span><span class=p>(</span><span class=n>series</span><span class=p>)</span> <span class=o>-</span> <span class=n>window</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>series</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>==</span> <span class=n>highs</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=p>]:</span>  <span class=c1># 局部高点</span>
+</span></span><span class=line><span class=cl>                <span class=c1># 向前寻找相似的高点</span>
+</span></span><span class=line><span class=cl>                <span class=k>for</span> <span class=n>j</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>i</span> <span class=o>-</span> <span class=n>window</span><span class=p>,</span> <span class=nb>max</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=n>i</span> <span class=o>-</span> <span class=mi>5</span><span class=p>)):</span>
+</span></span><span class=line><span class=cl>                    <span class=k>if</span> <span class=nb>abs</span><span class=p>(</span><span class=n>series</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>-</span> <span class=n>series</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>j</span><span class=p>])</span> <span class=o>/</span> <span class=n>series</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>j</span><span class=p>]</span> <span class=o>&lt;</span> <span class=mf>0.05</span><span class=p>:</span>  <span class=c1># 5%容差</span>
+</span></span><span class=line><span class=cl>                        <span class=c1># 检查中间是否有更低的点</span>
+</span></span><span class=line><span class=cl>                        <span class=n>middle_low</span> <span class=o>=</span> <span class=n>series</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>j</span><span class=o>+</span><span class=mi>1</span><span class=p>:</span><span class=n>i</span><span class=p>]</span><span class=o>.</span><span class=n>min</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>                        <span class=k>if</span> <span class=n>middle_low</span> <span class=o>&lt;</span> <span class=n>series</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>*</span> <span class=mf>0.98</span><span class=p>:</span>  <span class=c1># 中间低至少2%</span>
+</span></span><span class=line><span class=cl>                            <span class=n>tops</span><span class=o>.</span><span class=n>append</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>                                <span class=s1>&#39;type&#39;</span><span class=p>:</span> <span class=s1>&#39;双顶&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                                <span class=s1>&#39;date&#39;</span><span class=p>:</span> <span class=n>dates</span><span class=p>[</span><span class=n>i</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                                <span class=s1>&#39;value&#39;</span><span class=p>:</span> <span class=n>series</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                                <span class=s1>&#39;first_top_date&#39;</span><span class=p>:</span> <span class=n>dates</span><span class=p>[</span><span class=n>j</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                                <span class=s1>&#39;first_top_value&#39;</span><span class=p>:</span> <span class=n>series</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>j</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                                <span class=s1>&#39;middle_low&#39;</span><span class=p>:</span> <span class=n>middle_low</span>
+</span></span><span class=line><span class=cl>                            <span class=p>})</span>
+</span></span><span class=line><span class=cl>                            <span class=k>break</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>tops</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=n>double_bottoms</span> <span class=o>=</span> <span class=n>find_double_bottoms</span><span class=p>(</span><span class=n>obv_series</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>double_tops</span> <span class=o>=</span> <span class=n>find_double_tops</span><span class=p>(</span><span class=n>obv_series</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>double_bottoms</span><span class=p>,</span> <span class=n>double_tops</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 执行形态分析</span>
+</span></span><span class=line><span class=cl><span class=n>double_bottoms</span><span class=p>,</span> <span class=n>double_tops</span> <span class=o>=</span> <span class=n>analyze_obv_patterns</span><span class=p>(</span><span class=n>obv_values</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== OBV形态分析 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;识别的双底形态: </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>double_bottoms</span><span class=p>)</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;识别的双顶形态: </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>double_tops</span><span class=p>)</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 显示最近的形态</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=n>double_bottoms</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>最近的双底形态:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>bottom</span> <span class=ow>in</span> <span class=n>double_bottoms</span><span class=p>[</span><span class=o>-</span><span class=mi>3</span><span class=p>:]:</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=n>bottom</span><span class=p>[</span><span class=s1>&#39;date&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=s1>&#39;%Y-%m-</span><span class=si>%d</span><span class=s1>&#39;</span><span class=p>)</span><span class=si>}</span><span class=s2>: 双底 - &#34;</span>
+</span></span><span class=line><span class=cl>              <span class=sa>f</span><span class=s2>&#34;值: </span><span class=si>{</span><span class=n>bottom</span><span class=p>[</span><span class=s1>&#39;value&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>,.0f</span><span class=si>}</span><span class=s2>, &#34;</span>
+</span></span><span class=line><span class=cl>              <span class=sa>f</span><span class=s2>&#34;首个底部: </span><span class=si>{</span><span class=n>bottom</span><span class=p>[</span><span class=s1>&#39;first_bottom_date&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=s1>&#39;%Y-%m-</span><span class=si>%d</span><span class=s1>&#39;</span><span class=p>)</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=n>double_tops</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>最近的双顶形态:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>top</span> <span class=ow>in</span> <span class=n>double_tops</span><span class=p>[</span><span class=o>-</span><span class=mi>3</span><span class=p>:]:</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=n>top</span><span class=p>[</span><span class=s1>&#39;date&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=s1>&#39;%Y-%m-</span><span class=si>%d</span><span class=s1>&#39;</span><span class=p>)</span><span class=si>}</span><span class=s2>: 双顶 - &#34;</span>
+</span></span><span class=line><span class=cl>              <span class=sa>f</span><span class=s2>&#34;值: </span><span class=si>{</span><span class=n>top</span><span class=p>[</span><span class=s1>&#39;value&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>,.0f</span><span class=si>}</span><span class=s2>, &#34;</span>
+</span></span><span class=line><span class=cl>              <span class=sa>f</span><span class=s2>&#34;首个顶部: </span><span class=si>{</span><span class=n>top</span><span class=p>[</span><span class=s1>&#39;first_top_date&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=s1>&#39;%Y-%m-</span><span class=si>%d</span><span class=s1>&#39;</span><span class=p>)</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 当前形态状态</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=n>double_bottoms</span> <span class=ow>and</span> <span class=ow>not</span> <span class=n>double_tops</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>pattern_status</span> <span class=o>=</span> <span class=s2>&#34;最近出现双底形态 - 看涨信号&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>elif</span> <span class=n>double_tops</span> <span class=ow>and</span> <span class=ow>not</span> <span class=n>double_bottoms</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>pattern_status</span> <span class=o>=</span> <span class=s2>&#34;最近出现双顶形态 - 看跌信号&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>elif</span> <span class=n>double_bottoms</span> <span class=ow>and</span> <span class=n>double_tops</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=c1># 比较最近的形态</span>
+</span></span><span class=line><span class=cl>    <span class=n>last_bottom</span> <span class=o>=</span> <span class=nb>max</span><span class=p>(</span><span class=n>double_bottoms</span><span class=p>,</span> <span class=n>key</span><span class=o>=</span><span class=k>lambda</span> <span class=n>x</span><span class=p>:</span> <span class=n>x</span><span class=p>[</span><span class=s1>&#39;date&#39;</span><span class=p>])</span> <span class=k>if</span> <span class=n>double_bottoms</span> <span class=k>else</span> <span class=kc>None</span>
+</span></span><span class=line><span class=cl>    <span class=n>last_top</span> <span class=o>=</span> <span class=nb>max</span><span class=p>(</span><span class=n>double_tops</span><span class=p>,</span> <span class=n>key</span><span class=o>=</span><span class=k>lambda</span> <span class=n>x</span><span class=p>:</span> <span class=n>x</span><span class=p>[</span><span class=s1>&#39;date&#39;</span><span class=p>])</span> <span class=k>if</span> <span class=n>double_tops</span> <span class=k>else</span> <span class=kc>None</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>last_bottom</span> <span class=ow>and</span> <span class=n>last_top</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>last_bottom</span><span class=p>[</span><span class=s1>&#39;date&#39;</span><span class=p>]</span> <span class=o>&gt;</span> <span class=n>last_top</span><span class=p>[</span><span class=s1>&#39;date&#39;</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>            <span class=n>pattern_status</span> <span class=o>=</span> <span class=s2>&#34;最近出现双底形态 - 看涨信号&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>pattern_status</span> <span class=o>=</span> <span class=s2>&#34;最近出现双顶形态 - 看跌信号&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>pattern_status</span> <span class=o>=</span> <span class=s2>&#34;形态信号不明确&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>pattern_status</span> <span class=o>=</span> <span class=s2>&#34;未识别到明显形态 - 中性状态&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>当前形态状态: </span><span class=si>{</span><span class=n>pattern_status</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># OBV综合评分系统</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>calculate_obv_score</span><span class=p>(</span><span class=n>obv_values</span><span class=p>,</span> <span class=n>prices</span><span class=p>,</span> <span class=n>volume_data</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;计算OBV综合评分&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>current_obv</span> <span class=o>=</span> <span class=n>obv_values</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=n>current_price</span> <span class=o>=</span> <span class=n>prices</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=n>score</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>    <span class=n>max_score</span> <span class=o>=</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 1. OBV趋势评分 (25分)</span>
+</span></span><span class=line><span class=cl>    <span class=n>obv_trend_score</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>obv_values</span><span class=p>)</span> <span class=o>&gt;=</span> <span class=mi>20</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>obv_change_20d</span> <span class=o>=</span> <span class=p>(</span><span class=n>current_obv</span> <span class=o>-</span> <span class=n>obv_values</span><span class=p>[</span><span class=o>-</span><span class=mi>20</span><span class=p>])</span> <span class=o>/</span> <span class=n>obv_values</span><span class=p>[</span><span class=o>-</span><span class=mi>20</span><span class=p>]</span> <span class=o>*</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>obv_change_20d</span> <span class=o>&gt;</span> <span class=mi>5</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>obv_trend_score</span> <span class=o>=</span> <span class=mi>25</span>
+</span></span><span class=line><span class=cl>        <span class=k>elif</span> <span class=n>obv_change_20d</span> <span class=o>&gt;</span> <span class=mi>2</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>obv_trend_score</span> <span class=o>=</span> <span class=mi>15</span>
+</span></span><span class=line><span class=cl>        <span class=k>elif</span> <span class=n>obv_change_20d</span> <span class=o>&gt;</span> <span class=o>-</span><span class=mi>2</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>obv_trend_score</span> <span class=o>=</span> <span class=mi>10</span>
+</span></span><span class=line><span class=cl>        <span class=k>elif</span> <span class=n>obv_change_20d</span> <span class=o>&gt;</span> <span class=o>-</span><span class=mi>5</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>obv_trend_score</span> <span class=o>=</span> <span class=mi>5</span>
+</span></span><span class=line><span class=cl>    <span class=n>score</span> <span class=o>+=</span> <span class=n>obv_trend_score</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 2. 价格趋势一致性评分 (25分)</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>prices</span><span class=p>)</span> <span class=o>&gt;=</span> <span class=mi>20</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>price_change_20d</span> <span class=o>=</span> <span class=p>(</span><span class=n>current_price</span> <span class=o>-</span> <span class=n>prices</span><span class=p>[</span><span class=o>-</span><span class=mi>20</span><span class=p>])</span> <span class=o>/</span> <span class=n>prices</span><span class=p>[</span><span class=o>-</span><span class=mi>20</span><span class=p>]</span> <span class=o>*</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>obv_change_20d</span> <span class=o>*</span> <span class=n>price_change_20d</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span>  <span class=c1># 同向变化</span>
+</span></span><span class=line><span class=cl>            <span class=n>consistency_score</span> <span class=o>=</span> <span class=mi>25</span> <span class=k>if</span> <span class=nb>abs</span><span class=p>(</span><span class=n>obv_change_20d</span> <span class=o>-</span> <span class=n>price_change_20d</span><span class=p>)</span> <span class=o>&lt;</span> <span class=mi>10</span> <span class=k>else</span> <span class=mi>15</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>  <span class=c1># 反向变化</span>
+</span></span><span class=line><span class=cl>            <span class=n>consistency_score</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>consistency_score</span> <span class=o>=</span> <span class=mi>10</span>
+</span></span><span class=line><span class=cl>    <span class=n>score</span> <span class=o>+=</span> <span class=n>consistency_score</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 3. 当前位置评分 (25分)</span>
+</span></span><span class=line><span class=cl>    <span class=n>obv_normalized</span> <span class=o>=</span> <span class=p>((</span><span class=n>current_obv</span> <span class=o>-</span> <span class=n>obv_values</span><span class=o>.</span><span class=n>min</span><span class=p>())</span> <span class=o>/</span> 
+</span></span><span class=line><span class=cl>                     <span class=p>(</span><span class=n>obv_values</span><span class=o>.</span><span class=n>max</span><span class=p>()</span> <span class=o>-</span> <span class=n>obv_values</span><span class=o>.</span><span class=n>min</span><span class=p>()))</span> <span class=o>*</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>obv_normalized</span> <span class=o>&gt;</span> <span class=mi>70</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>position_score</span> <span class=o>=</span> <span class=mi>25</span> <span class=k>if</span> <span class=n>obv_trend_score</span> <span class=o>&gt;=</span> <span class=mi>15</span> <span class=k>else</span> <span class=mi>10</span>
+</span></span><span class=line><span class=cl>    <span class=k>elif</span> <span class=n>obv_normalized</span> <span class=o>&gt;</span> <span class=mi>50</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>position_score</span> <span class=o>=</span> <span class=mi>20</span>
+</span></span><span class=line><span class=cl>    <span class=k>elif</span> <span class=n>obv_normalized</span> <span class=o>&gt;</span> <span class=mi>30</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>position_score</span> <span class=o>=</span> <span class=mi>15</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>position_score</span> <span class=o>=</span> <span class=mi>10</span> <span class=k>if</span> <span class=n>obv_trend_score</span> <span class=o>&gt;=</span> <span class=mi>15</span> <span class=k>else</span> <span class=mi>5</span>
+</span></span><span class=line><span class=cl>    <span class=n>score</span> <span class=o>+=</span> <span class=n>position_score</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 4. 动量评分 (25分)</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>obv_values</span><span class=p>)</span> <span class=o>&gt;=</span> <span class=mi>5</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>obv_momentum</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>gradient</span><span class=p>(</span><span class=n>obv_values</span><span class=p>[</span><span class=o>-</span><span class=mi>5</span><span class=p>:])[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>        <span class=n>avg_momentum</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>mean</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>abs</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>gradient</span><span class=p>(</span><span class=n>obv_values</span><span class=p>)))</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>obv_momentum</span> <span class=o>&gt;</span> <span class=n>avg_momentum</span> <span class=o>*</span> <span class=mf>0.5</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>momentum_score</span> <span class=o>=</span> <span class=mi>25</span>
+</span></span><span class=line><span class=cl>        <span class=k>elif</span> <span class=n>obv_momentum</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>momentum_score</span> <span class=o>=</span> <span class=mi>15</span>
+</span></span><span class=line><span class=cl>        <span class=k>elif</span> <span class=n>obv_momentum</span> <span class=o>&gt;</span> <span class=o>-</span><span class=n>avg_momentum</span> <span class=o>*</span> <span class=mf>0.5</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>momentum_score</span> <span class=o>=</span> <span class=mi>10</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>momentum_score</span> <span class=o>=</span> <span class=mi>5</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>momentum_score</span> <span class=o>=</span> <span class=mi>10</span>
+</span></span><span class=line><span class=cl>    <span class=n>score</span> <span class=o>+=</span> <span class=n>momentum_score</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>score</span><span class=p>,</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;trend&#39;</span><span class=p>:</span> <span class=n>obv_trend_score</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;consistency&#39;</span><span class=p>:</span> <span class=n>consistency_score</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;position&#39;</span><span class=p>:</span> <span class=n>position_score</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;momentum&#39;</span><span class=p>:</span> <span class=n>momentum_score</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 计算综合评分</span>
+</span></span><span class=line><span class=cl><span class=n>obv_score</span><span class=p>,</span> <span class=n>score_breakdown</span> <span class=o>=</span> <span class=n>calculate_obv_score</span><span class=p>(</span><span class=n>obv_values</span><span class=p>,</span> <span class=n>close_prices</span><span class=p>,</span> <span class=n>volume_data</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== OBV综合评分系统 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;OBV综合评分: </span><span class=si>{</span><span class=n>obv_score</span><span class=si>}</span><span class=s2>/100&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;评分明细:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;  趋势评分: </span><span class=si>{</span><span class=n>score_breakdown</span><span class=p>[</span><span class=s1>&#39;trend&#39;</span><span class=p>]</span><span class=si>}</span><span class=s2>/25&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;  一致性评分: </span><span class=si>{</span><span class=n>score_breakdown</span><span class=p>[</span><span class=s1>&#39;consistency&#39;</span><span class=p>]</span><span class=si>}</span><span class=s2>/25&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;  位置评分: </span><span class=si>{</span><span class=n>score_breakdown</span><span class=p>[</span><span class=s1>&#39;position&#39;</span><span class=p>]</span><span class=si>}</span><span class=s2>/25&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;  动量评分: </span><span class=si>{</span><span class=n>score_breakdown</span><span class=p>[</span><span class=s1>&#39;momentum&#39;</span><span class=p>]</span><span class=si>}</span><span class=s2>/25&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 评分等级</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=n>obv_score</span> <span class=o>&gt;=</span> <span class=mi>80</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>score_grade</span> <span class=o>=</span> <span class=s2>&#34;优秀 (强烈推荐)&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>elif</span> <span class=n>obv_score</span> <span class=o>&gt;=</span> <span class=mi>60</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>score_grade</span> <span class=o>=</span> <span class=s2>&#34;良好 (推荐)&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>elif</span> <span class=n>obv_score</span> <span class=o>&gt;=</span> <span class=mi>40</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>score_grade</span> <span class=o>=</span> <span class=s2>&#34;一般 (中性)&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>elif</span> <span class=n>obv_score</span> <span class=o>&gt;=</span> <span class=mi>20</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>score_grade</span> <span class=o>=</span> <span class=s2>&#34;较差 (谨慎)&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>score_grade</span> <span class=o>=</span> <span class=s2>&#34;很差 (不推荐)&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;评分等级: </span><span class=si>{</span><span class=n>score_grade</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></div></div></div></article><aside class="lg:w-80 xl:w-96"><div class=space-y-8></div></aside></div><nav class="border-t border-gray-200 mt-12 pt-8"><div class="flex justify-between items-center"><a href=/blog/%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87/05-kdj%E9%9A%8F%E6%9C%BA%E6%8C%87%E6%A0%87/ class="group flex items-center"><svg class="w-5 h-5 mr-2 text-gray-600 group-hover:text-primary-600" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0 7-7m-7 7h18"/></svg><div><div class="text-sm text-gray-600">上一篇</div><div class="font-medium group-hover:text-primary-600">技术指标第5讲：KDJ随机指标</div></div></a><a href=/blog/%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87/07-adx%E5%B9%B3%E5%9D%87%E8%B6%8B%E5%90%91%E6%8C%87%E6%95%B0/ class="group flex items-center text-right"><div><div class="text-sm text-gray-600">Next Post</div><div class="font-medium group-hover:text-primary-600">技术指标第7讲：ADX平均趋向指数</div></div><svg class="w-5 h-5 ml-2 text-gray-600 group-hover:text-primary-600" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0-7 7m7-7H3"/></svg></a></div></nav></div></div><footer class="bg-gray-50 py-12 border-t border-gray-200"><div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl"><div class="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0"><div class=flex-1><div class="flex items-center space-x-3 mb-4"><a href=https://sk-quant.github.io/ class=inline-block><img src=/images/logo.svg alt=烧烤量化 class=h-6>
+</a><span class="text-xl font-bold text-gray-900">烧烤量化</span></div><div class="flex space-x-3 p-2"><a href=https://linkedin.com/in/yourusername class="text-gray-600 hover:text-gray-900" target=_blank rel="noopener noreferrer"><span class=sr-only>LinkedIn</span>
+<img src=/images/social/linkedin.svg alt=LinkedIn class="h-5 w-5">
+</a><a href=https://bsky.app/profile/yourblueskyhandle class="text-gray-600 hover:text-gray-900" target=_blank rel="noopener noreferrer"><span class=sr-only>Bluesky</span>
+<img src=/images/social/bluesky.svg alt=Bluesky class="h-5 w-5">
+</a><a href=https://twitter.com/yourusername class="text-gray-600 hover:text-gray-900" target=_blank rel="noopener noreferrer"><span class=sr-only>Twitter (X)</span>
+<img src=/images/social/twitter.svg alt=Twitter class="h-5 w-5">
+</a><a href=https://github.com/yourusername class="text-gray-600 hover:text-gray-900" target=_blank rel="noopener noreferrer"><span class=sr-only>GitHub</span>
+<img src=/images/social/github.svg alt=GitHub class="h-5 w-5"></a></div></div><div class=flex-1><h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4"></h3><ul class=space-y-2></ul></div><div class=flex-1><h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4"></h3><ul class=space-y-2></ul></div><div class=flex-1><h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4"></h3><ul class=space-y-2></ul></div></div><div class="mt-12 pt-8 border-t border-gray-200"><div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0"><p class="text-gray-600 text-sm">© 2025 烧烤量化. All rights reserved.</p><a href=https://chaoming.li class="text-sm text-gray-600 hover:text-primary-600" target=_blank rel="noopener noreferrer">Powered by sk-quant</a></div></div></div></footer><script>const mobileMenuButton=document.getElementById("mobile-menu-button");mobileMenuButton&&mobileMenuButton.addEventListener("click",function(){const e=document.getElementById("mobile-menu");e&&e.classList.toggle("hidden")})</script></body></html>

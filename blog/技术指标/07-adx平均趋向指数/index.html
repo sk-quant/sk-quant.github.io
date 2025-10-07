@@ -1,0 +1,722 @@
+<!doctype html><html lang=zh-cn class=h-full><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><script>(function(e,t,n,s,o){e[s]=e[s]||[],e[s].push({"gtm.start":(new Date).getTime(),event:"gtm.js"});var a=t.getElementsByTagName(n)[0],i=t.createElement(n),r=s!="dataLayer"?"&l="+s:"";i.async=!0,i.src="https://www.googletagmanager.com/gtm.js?id="+o+r,a.parentNode.insertBefore(i,a)})(window,document,"script","dataLayer","GTM-XXXXXXX")</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-XXXXXXXXXX")</script><title>技术指标第7讲：ADX平均趋向指数 | 烧烤量化</title>
+<meta name=description content="深入解析ADX平均趋向指数的趋势强度量化机制，通过+DI与-DI方向指标构建趋势强弱识别体系，打造基于趋势动能的交易时机精准捕捉系统"><meta name=author content="Ryan"><meta name=robots content="index, follow"><meta property="og:title" content="技术指标第7讲：ADX平均趋向指数 | 烧烤量化"><meta property="og:description" content="深入解析ADX平均趋向指数的趋势强度量化机制，通过+DI与-DI方向指标构建趋势强弱识别体系，打造基于趋势动能的交易时机精准捕捉系统"><meta property="og:type" content="article"><meta property="og:url" content="https://sk-quant.github.io/blog/%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87/07-adx%E5%B9%B3%E5%9D%87%E8%B6%8B%E5%90%91%E6%8C%87%E6%95%B0/"><meta property="og:site_name" content="烧烤量化"><meta name=twitter:card content="summary_large_image"><meta name=twitter:title content="技术指标第7讲：ADX平均趋向指数 | 烧烤量化"><meta name=twitter:description content="深入解析ADX平均趋向指数的趋势强度量化机制，通过+DI与-DI方向指标构建趋势强弱识别体系，打造基于趋势动能的交易时机精准捕捉系统"><link rel=icon type=image/x-icon href=/images/favicon.ico><link rel=canonical href=https://sk-quant.github.io/blog/%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87/07-adx%E5%B9%B3%E5%9D%87%E8%B6%8B%E5%90%91%E6%8C%87%E6%95%B0/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel=stylesheet><link rel=stylesheet href="/css/main.min.0ec21c03b9f63a8c5e37663a4d2dc1608de61fd749fcfef42ffda7dc5bf34cc4.css"></head><body class="min-h-screen flex flex-col"><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height=0 width=0 style=display:none;visibility:hidden></iframe></noscript><div class="fixed top-0 left-0 right-0 z-50"><div class=mobile-menu-wrapper><input type=checkbox id=nav-toggle class=nav-toggle><header class="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-100"><div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl"><nav class="flex items-center justify-between h-20"><a href=https://sk-quant.github.io/ class="flex items-center space-x-4"><img src=/images/logo.svg alt=烧烤量化 class=h-12>
+<span class="text-3xl font-semibold text-gray-800">烧烤量化</span></a><div class="hidden md:flex items-center space-x-8"><a href=/path class="text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">学习路线</a><div class="relative group"><button class="flex items-center text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">
+量化基础<svg class="ml-2 w-4 h-4" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="absolute left-0 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out"><div class="py-6 bg-white border border-gray-100 shadow-xl rounded-lg"><a href=/categories/%e6%8a%95%e8%b5%84%e7%90%86%e8%ae%ba/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">投资理论</a>
+<a href=/categories/%e4%bb%a3%e7%a0%81%e5%9f%ba%e7%a1%80/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">代码基础</a>
+<a href=/categories/%e6%8a%80%e6%9c%af%e6%8c%87%e6%a0%87/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">技术指标</a>
+<a href=/categories/%e5%9b%9e%e6%b5%8b%e5%b9%b3%e5%8f%b0/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">回测平台</a></div></div></div><div class="relative group"><button class="flex items-center text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">
+量化进阶<svg class="ml-2 w-4 h-4" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="absolute left-0 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out"><div class="py-6 bg-white border border-gray-100 shadow-xl rounded-lg"><a href=/categories/%e7%ad%96%e7%95%a5%e5%88%86%e4%ba%ab/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">策略分享</a>
+<a href=/categories/%e5%ae%9e%e7%9b%98%e5%b7%a5%e5%85%b7/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">实盘工具</a>
+<a href=/categories/%e7%83%ad%e7%82%b9%e9%a3%8e%e5%8f%a3/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">热点风口</a>
+<a href=/categories/%e7%bb%bc%e5%90%88%e5%ae%9e%e6%88%98/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">综合实战</a></div></div></div><div class="relative group"><button class="flex items-center text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">
+量化高手<svg class="ml-2 w-4 h-4" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="absolute left-0 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out"><div class="py-6 bg-white border border-gray-100 shadow-xl rounded-lg"><a href=/categories/%e5%8f%af%e8%bd%ac%e5%80%ba/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">可转债</a>
+<a href=/categories/%e8%9e%8d%e8%b5%84%e8%9e%8d%e5%88%b8/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">融资融券</a>
+<a href=/categories/%e8%82%a1%e7%a5%a8%e6%9c%9f%e6%9d%83/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">股票期权</a>
+<a href=/categories/%e8%82%a1%e6%8c%87%e6%9c%9f%e8%b4%a7/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">股指期货</a></div></div></div><a href=/pricing class="text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">服务套餐</a></div><div class="hidden md:flex items-center space-x-4"><a href=/contact class="inline-flex items-center justify-center px-6 py-3 rounded-lg font-bold transition duration-200 ease-in-out bg-primary-600 text-white hover:bg-primary-700 hover:scale-105">现在加入</a></div><div class=md:hidden><label for=nav-toggle class="p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2 transition-colors cursor-pointer"><svg class="w-6 h-6" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></label></div></nav></div><div class="nav-content md:hidden w-full fixed left-0 right-0 top-20 bg-white border-t border-gray-100 shadow-lg"><div class="w-full px-6 py-4"><a href=/path class="block text-xl text-gray-900 hover:text-primary-600 font-bold transition duration-200 py-2">学习路线</a><div class=py-2><div class="text-xl text-gray-900 font-bold mb-2">量化基础</div><div class=pl-4><a href=/categories/%e6%8a%95%e8%b5%84%e7%90%86%e8%ae%ba/ class="block text-gray-700 hover:text-primary-600 py-2">投资理论</a>
+<a href=/categories/%e4%bb%a3%e7%a0%81%e5%9f%ba%e7%a1%80/ class="block text-gray-700 hover:text-primary-600 py-2">代码基础</a>
+<a href=/categories/%e6%8a%80%e6%9c%af%e6%8c%87%e6%a0%87/ class="block text-gray-700 hover:text-primary-600 py-2">技术指标</a>
+<a href=/categories/%e5%9b%9e%e6%b5%8b%e5%b9%b3%e5%8f%b0/ class="block text-gray-700 hover:text-primary-600 py-2">回测平台</a></div></div><div class=py-2><div class="text-xl text-gray-900 font-bold mb-2">量化进阶</div><div class=pl-4><a href=/categories/%e7%ad%96%e7%95%a5%e5%88%86%e4%ba%ab/ class="block text-gray-700 hover:text-primary-600 py-2">策略分享</a>
+<a href=/categories/%e5%ae%9e%e7%9b%98%e5%b7%a5%e5%85%b7/ class="block text-gray-700 hover:text-primary-600 py-2">实盘工具</a>
+<a href=/categories/%e7%83%ad%e7%82%b9%e9%a3%8e%e5%8f%a3/ class="block text-gray-700 hover:text-primary-600 py-2">热点风口</a>
+<a href=/categories/%e7%bb%bc%e5%90%88%e5%ae%9e%e6%88%98/ class="block text-gray-700 hover:text-primary-600 py-2">综合实战</a></div></div><div class=py-2><div class="text-xl text-gray-900 font-bold mb-2">量化高手</div><div class=pl-4><a href=/categories/%e5%8f%af%e8%bd%ac%e5%80%ba/ class="block text-gray-700 hover:text-primary-600 py-2">可转债</a>
+<a href=/categories/%e8%9e%8d%e8%b5%84%e8%9e%8d%e5%88%b8/ class="block text-gray-700 hover:text-primary-600 py-2">融资融券</a>
+<a href=/categories/%e8%82%a1%e7%a5%a8%e6%9c%9f%e6%9d%83/ class="block text-gray-700 hover:text-primary-600 py-2">股票期权</a>
+<a href=/categories/%e8%82%a1%e6%8c%87%e6%9c%9f%e8%b4%a7/ class="block text-gray-700 hover:text-primary-600 py-2">股指期货</a></div></div><a href=/pricing class="block text-xl text-gray-900 hover:text-primary-600 font-bold transition duration-200 py-2">服务套餐</a><div class="pt-4 space-y-4"><a href=/contact class="block text-center px-6 py-3 rounded-lg font-bold transition duration-200 ease-in-out bg-primary-600 text-white hover:bg-primary-700 hover:scale-105">现在加入</a></div></div></div></header><style>.mobile-menu-wrapper{position:relative}.nav-toggle{display:none}.nav-content{display:none}.nav-toggle:checked~header .nav-content{display:block}</style></div></div><div class=pt-20><div class="container mx-auto px-4 py-12"><div class="flex flex-col lg:flex-row gap-8 mb-12"><article class=flex-1><header class=mb-8><div class=mb-4><a href=/categories/%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87 class="inline-block px-3 py-1 text-sm font-medium text-primary-600 bg-primary-50 rounded-full hover:bg-primary-100 mr-2">技术指标</a></div><h1 class="text-4xl font-bold mb-4">技术指标第7讲：ADX平均趋向指数</h1><div class="flex flex-col space-y-4"><div class="flex items-center justify-between text-sm text-gray-500"><div class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7A4 4 0 118 7a4 4 0 018 0zm-4 7a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+<span>Ryan</span></div><div class="flex items-center space-x-6"><div class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747.0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746.0-3.332.477-4.5 1.253"/></svg>
+<span>16 分钟</span></div><div class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5A2 2 0 003 7v12a2 2 0 002 2z"/></svg>
+<time datetime=2025-09-17>September 17, 2025</time></div></div></div><div class="flex items-center flex-wrap gap-2"><a href=/tags/2025 class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors duration-200">#2025</a></div></div></header><div class=mb-8><img src=/images/blog/%e6%8a%80%e6%9c%af%e6%8c%87%e6%a0%87.jpg alt=技术指标第7讲：ADX平均趋向指数 class="w-full h-auto rounded-lg" loading=lazy></div><div class="prose prose-lg max-w-none"><div class="bg-gray-50 p-6 rounded-lg mb-8"><h2 class="text-xl font-semibold mb-4">目录</h2><nav id=TableOfContents><ul><li><a href=#adx平均趋向指数趋势强度的量化标尺>ADX平均趋向指数：趋势强度的量化标尺</a></li><li><a href=#adx计算原理方向性运动的数学建模>ADX计算原理：方向性运动的数学建模</a><ul><li><a href=#价格区间与方向性运动定义>价格区间与方向性运动定义</a></li><li><a href=#方向性指标计算>方向性指标计算</a></li><li><a href=#adx平均趋向指数计算>ADX平均趋向指数计算</a></li><li><a href=#多周期adx系统>多周期ADX系统</a></li></ul></li><li><a href=#adx信号识别趋势强度的量化分析>ADX信号识别：趋势强度的量化分析</a><ul><li><a href=#adx趋势强度分级系统>ADX趋势强度分级系统</a></li><li><a href=#di与-di交叉信号系统>+DI与-DI交叉信号系统</a></li><li><a href=#adx转折点分析>ADX转折点分析</a></li><li><a href=#adx背离分析技术>ADX背离分析技术</a></li></ul></li><li><a href=#基于talib的adx指标python实现>基于talib的ADX指标Python实现</a><ul><li><a href=#环境配置与数据准备>环境配置与数据准备</a></li><li><a href=#adx指标计算与基础分析>ADX指标计算与基础分析</a></li></ul></li></ul></nav></div><h2 id=adx平均趋向指数趋势强度的量化标尺>ADX平均趋向指数：趋势强度的量化标尺</h2><p>ADX平均趋向指数（Average Directional Index）由威尔斯·威尔德（Welles Wilder）于1978年在其经典著作《技术交易系统新概念》中提出，是技术分析领域最具权威性的趋势强度测量工具。该指标通过量化价格变动的方向性和强度，为投资者提供了一个客观、精确的趋势判断标准，有效解决了传统趋势分析中主观性强、信号滞后等核心问题。</p><p>ADX指标的理论基础建立在市场行为学的核心原理之上：趋势的存在性和持续性。威尔德认为，市场的价格运动可以分解为三个基本组成部分：上升趋势（+DI）、下降趋势（-DI）和趋势强度（ADX）。通过数学建模这三个维度，ADX指标能够准确识别市场是否处于趋势状态，以及当前趋势的强弱程度，为交易决策提供科学依据。</p><p>ADX指标的独特价值在于其"趋势强度量化"能力。与MACD、RSI等方向性指标不同，ADX专注于测量趋势的"强度"而非"方向"。当ADX值上升时，表明市场趋势正在加强，无论价格是上涨还是下跌；当ADX值下降时，表明市场趋势正在减弱，可能进入震荡整理阶段。这种设计使得ADX指标在趋势跟踪和震荡识别方面具有显著优势。</p><h2 id=adx计算原理方向性运动的数学建模>ADX计算原理：方向性运动的数学建模</h2><h3 id=价格区间与方向性运动定义>价格区间与方向性运动定义</h3><p>ADX指标的计算始于对价格区间的精确定义：</p><p><strong>真实波幅（TR）</strong>：衡量价格波动的最大范围
+TR = max(当日最高价-当日最低价, |当日最高价-前日收盘价|, |当日最低价-前日收盘价|)</p><p><strong>方向性运动（DM）</strong>：量化价格运动的趋向性</p><ul><li>正向方向性运动（+DM）：当日价格区间向上扩展的幅度</li><li>负向方向性运动（-DM）：当日价格区间向下扩展的幅度</li></ul><h3 id=方向性指标计算>方向性指标计算</h3><p><strong>+DI（正向方向性指标）</strong>：衡量上升趋势的强度
++DI = (+DM的N日移动平均 / TR的N日移动平均) × 100</p><p><strong>-DI（负向方向性指标）</strong>：衡量下降趋势的强度
+-DI = (-DM的N日移动平均 / TR的N日移动平均) × 100</p><p><strong>DX（方向性指数）</strong>：量化方向性运动的相对强度
+DX = |(+DI) - (-DI)| / |(+DI) + (-DI)| × 100</p><h3 id=adx平均趋向指数计算>ADX平均趋向指数计算</h3><p><strong>ADX计算</strong>：DX的N日移动平均
+ADX = DX的N日移动平均</p><p><strong>标准化处理</strong>：所有指标值都标准化到0-100区间，便于比较和分析。</p><h3 id=多周期adx系统>多周期ADX系统</h3><p><strong>短期ADX（7日）</strong>：适用于高频交易和短线分析，对价格变化极其敏感。</p><p><strong>标准ADX（14日）</strong>：平衡了敏感性和稳定性，适用于大多数交易场景。</p><p><strong>长期ADX（21日）</strong>：过滤短期波动，主要用于长期趋势分析和投资策略制定。</p><h2 id=adx信号识别趋势强度的量化分析>ADX信号识别：趋势强度的量化分析</h2><h3 id=adx趋势强度分级系统>ADX趋势强度分级系统</h3><p><strong>极强趋势区（ADX > 50）</strong>：表明市场处于极强的趋势状态，趋势延续概率极高。在此区域，顺势交易策略的成功率显著提升。</p><p><strong>强趋势区（ADX 30-50）</strong>：表明市场处于明显的趋势状态，趋势具有较强的持续性。这是趋势跟踪策略的黄金操作区间。</p><p><strong>弱趋势区（ADX 20-30）</strong>：表明市场趋势强度一般，趋势可能随时中断或反转。在此区域需要谨慎操作，严格控制风险。</p><p><strong>无趋势区（ADX &lt; 20）</strong>：表明市场缺乏明确趋势，处于震荡整理状态。在此区域，趋势跟踪策略效果较差，应考虑采用震荡交易策略。</p><h3 id=di与-di交叉信号系统>+DI与-DI交叉信号系统</h3><p><strong>黄金交叉</strong>：当+DI从下向上突破-DI时，形成黄金交叉，通常被视为买入信号。特别是在ADX上升的配合下，信号的可靠性更高。</p><p><strong>死亡交叉</strong>：当+DI从上向下跌破-DI时，形成死亡交叉，通常被视为卖出信号。在ADX上升的配合下，信号的预测效果更强。</p><p><strong>交叉确认机制</strong>：+DI与-DI的交叉需要ADX的上升来确认，只有当ADX处于上升趋势时，交叉信号才具有较高的可信度。</p><h3 id=adx转折点分析>ADX转折点分析</h3><p><strong>ADX底部转折</strong>：当ADX从低位（通常&lt;20）开始上升时，表明市场可能从震荡状态转向趋势状态，新的趋势正在形成。</p><p><strong>ADX顶部转折</strong>：当ADX从高位（通常>40）开始下降时，表明当前趋势可能正在减弱，市场可能进入震荡或反转阶段。</p><p><strong>ADX平台整理</strong>：当ADX在某一水平附近横向整理时，表明市场趋势强度保持稳定，当前趋势可能延续。</p><h3 id=adx背离分析技术>ADX背离分析技术</h3><p><strong>顶背离识别</strong>：价格创新高，但ADX未能同步创新高，暗示上涨动量减弱，可能面临趋势反转。</p><p><strong>底背离识别</strong>：价格创新低，但ADX未能同步创新低，暗示下跌动量减弱，可能迎来趋势反转。</p><p><strong>多重背离</strong>：连续多次背离信号的出现通常比单次背离更可靠，为趋势反转提供更强的预警信号。</p><h2 id=基于talib的adx指标python实现>基于talib的ADX指标Python实现</h2><h3 id=环境配置与数据准备>环境配置与数据准备</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>talib</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>numpy</span> <span class=k>as</span> <span class=nn>np</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>pandas</span> <span class=k>as</span> <span class=nn>pd</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>matplotlib.pyplot</span> <span class=k>as</span> <span class=nn>plt</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>yfinance</span> <span class=k>as</span> <span class=nn>yf</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>datetime</span> <span class=kn>import</span> <span class=n>datetime</span><span class=p>,</span> <span class=n>timedelta</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>warnings</span>
+</span></span><span class=line><span class=cl><span class=n>warnings</span><span class=o>.</span><span class=n>filterwarnings</span><span class=p>(</span><span class=s1>&#39;ignore&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 获取股票数据</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>get_stock_data</span><span class=p>(</span><span class=n>symbol</span><span class=p>,</span> <span class=n>period</span><span class=o>=</span><span class=s2>&#34;2y&#34;</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;获取股票历史数据&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>try</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>stock</span> <span class=o>=</span> <span class=n>yf</span><span class=o>.</span><span class=n>download</span><span class=p>(</span><span class=n>symbol</span><span class=p>,</span> <span class=n>period</span><span class=o>=</span><span class=n>period</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>stock</span>
+</span></span><span class=line><span class=cl>    <span class=k>except</span> <span class=ne>Exception</span> <span class=k>as</span> <span class=n>e</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;获取数据失败: </span><span class=si>{</span><span class=n>e</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=kc>None</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 获取沪深300指数数据</span>
+</span></span><span class=line><span class=cl><span class=n>data</span> <span class=o>=</span> <span class=n>get_stock_data</span><span class=p>(</span><span class=s2>&#34;000300.SS&#34;</span><span class=p>,</span> <span class=n>period</span><span class=o>=</span><span class=s2>&#34;2y&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>high_prices</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;High&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>values</span>
+</span></span><span class=line><span class=cl><span class=n>low_prices</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;Low&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>values</span>
+</span></span><span class=line><span class=cl><span class=n>close_prices</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;Close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>values</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 创建日期索引</span>
+</span></span><span class=line><span class=cl><span class=n>dates</span> <span class=o>=</span> <span class=n>data</span><span class=o>.</span><span class=n>index</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;数据获取完成，共</span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>data</span><span class=p>)</span><span class=si>}</span><span class=s2>个交易日&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;数据时间范围: </span><span class=si>{</span><span class=n>dates</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=s1>&#39;%Y-%m-</span><span class=si>%d</span><span class=s1>&#39;</span><span class=p>)</span><span class=si>}</span><span class=s2> 至 </span><span class=si>{</span><span class=n>dates</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=s1>&#39;%Y-%m-</span><span class=si>%d</span><span class=s1>&#39;</span><span class=p>)</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;价格区间: </span><span class=si>{</span><span class=n>data</span><span class=p>[</span><span class=s1>&#39;Close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>min</span><span class=p>()</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2> - </span><span class=si>{</span><span class=n>data</span><span class=p>[</span><span class=s1>&#39;Close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>max</span><span class=p>()</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 基础价格统计分析</span>
+</span></span><span class=line><span class=cl><span class=n>price_range</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;High&#39;</span><span class=p>]</span> <span class=o>-</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;Low&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>price_change</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;Close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>pct_change</span><span class=p>()</span> <span class=o>*</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== 基础价格统计 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;平均日波动幅度: </span><span class=si>{</span><span class=n>price_range</span><span class=o>.</span><span class=n>mean</span><span class=p>()</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>点&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;最大日波动幅度: </span><span class=si>{</span><span class=n>price_range</span><span class=o>.</span><span class=n>max</span><span class=p>()</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>点&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;最小日波动幅度: </span><span class=si>{</span><span class=n>price_range</span><span class=o>.</span><span class=n>min</span><span class=p>()</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>点&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;平均日涨跌幅: </span><span class=si>{</span><span class=n>price_change</span><span class=o>.</span><span class=n>mean</span><span class=p>()</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>%&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;日涨跌幅标准差: </span><span class=si>{</span><span class=n>price_change</span><span class=o>.</span><span class=n>std</span><span class=p>()</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>%&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 趋势性分析（基于价格变化方向）</span>
+</span></span><span class=line><span class=cl><span class=n>trend_days</span> <span class=o>=</span> <span class=n>price_change</span><span class=o>.</span><span class=n>abs</span><span class=p>()</span> <span class=o>&gt;</span> <span class=n>price_change</span><span class=o>.</span><span class=n>std</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;明显趋势交易日: </span><span class=si>{</span><span class=n>trend_days</span><span class=o>.</span><span class=n>sum</span><span class=p>()</span><span class=si>}</span><span class=s2> (</span><span class=si>{</span><span class=n>trend_days</span><span class=o>.</span><span class=n>mean</span><span class=p>()</span><span class=o>*</span><span class=mi>100</span><span class=si>:</span><span class=s2>.1f</span><span class=si>}</span><span class=s2>%)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 价格动量分析</span>
+</span></span><span class=line><span class=cl><span class=n>price_momentum_5d</span> <span class=o>=</span> <span class=n>close_prices</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>-</span> <span class=n>close_prices</span><span class=p>[</span><span class=o>-</span><span class=mi>5</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>price_momentum_20d</span> <span class=o>=</span> <span class=n>close_prices</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>-</span> <span class=n>close_prices</span><span class=p>[</span><span class=o>-</span><span class=mi>20</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== 价格动量分析 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;5日价格动量: </span><span class=si>{</span><span class=n>price_momentum_5d</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>点 (</span><span class=si>{</span><span class=n>price_momentum_5d</span><span class=o>/</span><span class=n>close_prices</span><span class=p>[</span><span class=o>-</span><span class=mi>5</span><span class=p>]</span><span class=o>*</span><span class=mi>100</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>%)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;20日价格动量: </span><span class=si>{</span><span class=n>price_momentum_20d</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>点 (</span><span class=si>{</span><span class=n>price_momentum_20d</span><span class=o>/</span><span class=n>close_prices</span><span class=p>[</span><span class=o>-</span><span class=mi>20</span><span class=p>]</span><span class=o>*</span><span class=mi>100</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>%)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 价格波动率分析</span>
+</span></span><span class=line><span class=cl><span class=n>volatility_20d</span> <span class=o>=</span> <span class=n>price_change</span><span class=o>.</span><span class=n>rolling</span><span class=p>(</span><span class=mi>20</span><span class=p>)</span><span class=o>.</span><span class=n>std</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>current_volatility</span> <span class=o>=</span> <span class=n>volatility_20d</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>avg_volatility</span> <span class=o>=</span> <span class=n>volatility_20d</span><span class=o>.</span><span class=n>mean</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== 价格波动率分析 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;当前20日波动率: </span><span class=si>{</span><span class=n>current_volatility</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>%&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;平均20日波动率: </span><span class=si>{</span><span class=n>avg_volatility</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>%&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;波动率相对水平: </span><span class=si>{</span><span class=s1>&#39;高&#39;</span> <span class=k>if</span> <span class=n>current_volatility</span> <span class=o>&gt;</span> <span class=n>avg_volatility</span> <span class=k>else</span> <span class=s1>&#39;低&#39;</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 价格趋势状态判断</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>analyze_price_trend</span><span class=p>(</span><span class=n>prices</span><span class=p>,</span> <span class=n>short_period</span><span class=o>=</span><span class=mi>5</span><span class=p>,</span> <span class=n>long_period</span><span class=o>=</span><span class=mi>20</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;分析价格趋势状态&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>prices</span><span class=p>)</span> <span class=o>&lt;</span> <span class=n>long_period</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=s2>&#34;数据不足&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=n>short_ma</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>SMA</span><span class=p>(</span><span class=n>prices</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=n>short_period</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>long_ma</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>SMA</span><span class=p>(</span><span class=n>prices</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=n>long_period</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=n>current_price</span> <span class=o>=</span> <span class=n>prices</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=n>current_short_ma</span> <span class=o>=</span> <span class=n>short_ma</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=n>current_long_ma</span> <span class=o>=</span> <span class=n>long_ma</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 趋势方向判断</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>current_price</span> <span class=o>&gt;</span> <span class=n>current_short_ma</span> <span class=o>&gt;</span> <span class=n>current_long_ma</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=s2>&#34;上升趋势&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>elif</span> <span class=n>current_price</span> <span class=o>&lt;</span> <span class=n>current_short_ma</span> <span class=o>&lt;</span> <span class=n>current_long_ma</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=s2>&#34;下降趋势&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=s2>&#34;震荡趋势&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>current_trend</span> <span class=o>=</span> <span class=n>analyze_price_trend</span><span class=p>(</span><span class=n>close_prices</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>当前价格趋势: </span><span class=si>{</span><span class=n>current_trend</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 价格相对位置分析</span>
+</span></span><span class=line><span class=cl><span class=n>current_price</span> <span class=o>=</span> <span class=n>close_prices</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>price_52w_high</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;Close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>tail</span><span class=p>(</span><span class=mi>252</span><span class=p>)</span><span class=o>.</span><span class=n>max</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>price_52w_low</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;Close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>tail</span><span class=p>(</span><span class=mi>252</span><span class=p>)</span><span class=o>.</span><span class=n>min</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>price_position</span> <span class=o>=</span> <span class=p>(</span><span class=n>current_price</span> <span class=o>-</span> <span class=n>price_52w_low</span><span class=p>)</span> <span class=o>/</span> <span class=p>(</span><span class=n>price_52w_high</span> <span class=o>-</span> <span class=n>price_52w_low</span><span class=p>)</span> <span class=o>*</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== 价格相对位置分析 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;当前价格: </span><span class=si>{</span><span class=n>current_price</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;52周最高价: </span><span class=si>{</span><span class=n>price_52w_high</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;52周最低价: </span><span class=si>{</span><span class=n>price_52w_low</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;相对52周区间位置: </span><span class=si>{</span><span class=n>price_position</span><span class=si>:</span><span class=s2>.1f</span><span class=si>}</span><span class=s2>%&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;位置状态: </span><span class=si>{</span><span class=s1>&#39;高位&#39;</span> <span class=k>if</span> <span class=n>price_position</span> <span class=o>&gt;</span> <span class=mi>80</span> <span class=k>else</span> <span class=s1>&#39;低位&#39;</span> <span class=k>if</span> <span class=n>price_position</span> <span class=o>&lt;</span> <span class=mi>20</span> <span class=k>else</span> <span class=s1>&#39;中位&#39;</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h3 id=adx指标计算与基础分析>ADX指标计算与基础分析</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span><span class=lnt>170
+</span><span class=lnt>171
+</span><span class=lnt>172
+</span><span class=lnt>173
+</span><span class=lnt>174
+</span><span class=lnt>175
+</span><span class=lnt>176
+</span><span class=lnt>177
+</span><span class=lnt>178
+</span><span class=lnt>179
+</span><span class=lnt>180
+</span><span class=lnt>181
+</span><span class=lnt>182
+</span><span class=lnt>183
+</span><span class=lnt>184
+</span><span class=lnt>185
+</span><span class=lnt>186
+</span><span class=lnt>187
+</span><span class=lnt>188
+</span><span class=lnt>189
+</span><span class=lnt>190
+</span><span class=lnt>191
+</span><span class=lnt>192
+</span><span class=lnt>193
+</span><span class=lnt>194
+</span><span class=lnt>195
+</span><span class=lnt>196
+</span><span class=lnt>197
+</span><span class=lnt>198
+</span><span class=lnt>199
+</span><span class=lnt>200
+</span><span class=lnt>201
+</span><span class=lnt>202
+</span><span class=lnt>203
+</span><span class=lnt>204
+</span><span class=lnt>205
+</span><span class=lnt>206
+</span><span class=lnt>207
+</span><span class=lnt>208
+</span><span class=lnt>209
+</span><span class=lnt>210
+</span><span class=lnt>211
+</span><span class=lnt>212
+</span><span class=lnt>213
+</span><span class=lnt>214
+</span><span class=lnt>215
+</span><span class=lnt>216
+</span><span class=lnt>217
+</span><span class=lnt>218
+</span><span class=lnt>219
+</span><span class=lnt>220
+</span><span class=lnt>221
+</span><span class=lnt>222
+</span><span class=lnt>223
+</span><span class=lnt>224
+</span><span class=lnt>225
+</span><span class=lnt>226
+</span><span class=lnt>227
+</span><span class=lnt>228
+</span><span class=lnt>229
+</span><span class=lnt>230
+</span><span class=lnt>231
+</span><span class=lnt>232
+</span><span class=lnt>233
+</span><span class=lnt>234
+</span><span class=lnt>235
+</span><span class=lnt>236
+</span><span class=lnt>237
+</span><span class=lnt>238
+</span><span class=lnt>239
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 使用talib计算ADX指标</span>
+</span></span><span class=line><span class=cl><span class=n>adx_values</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>ADX</span><span class=p>(</span><span class=n>high_prices</span><span class=p>,</span> <span class=n>low_prices</span><span class=p>,</span> <span class=n>close_prices</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>14</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plus_di_values</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>PLUS_DI</span><span class=p>(</span><span class=n>high_prices</span><span class=p>,</span> <span class=n>low_prices</span><span class=p>,</span> <span class=n>close_prices</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>14</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>minus_di_values</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>MINUS_DI</span><span class=p>(</span><span class=n>high_prices</span><span class=p>,</span> <span class=n>low_prices</span><span class=p>,</span> <span class=n>close_prices</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>14</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 计算不同周期的ADX进行对比</span>
+</span></span><span class=line><span class=cl><span class=n>adx_7</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>ADX</span><span class=p>(</span><span class=n>high_prices</span><span class=p>,</span> <span class=n>low_prices</span><span class=p>,</span> <span class=n>close_prices</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>7</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>adx_14</span> <span class=o>=</span> <span class=n>adx_values</span>  <span class=c1># 标准周期</span>
+</span></span><span class=line><span class=cl><span class=n>adx_21</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>ADX</span><span class=p>(</span><span class=n>high_prices</span><span class=p>,</span> <span class=n>low_prices</span><span class=p>,</span> <span class=n>close_prices</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>21</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 计算+DI和-DI的不同周期</span>
+</span></span><span class=line><span class=cl><span class=n>plus_di_7</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>PLUS_DI</span><span class=p>(</span><span class=n>high_prices</span><span class=p>,</span> <span class=n>low_prices</span><span class=p>,</span> <span class=n>close_prices</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>7</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>plus_di_14</span> <span class=o>=</span> <span class=n>plus_di_values</span>
+</span></span><span class=line><span class=cl><span class=n>plus_di_21</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>PLUS_DI</span><span class=p>(</span><span class=n>high_prices</span><span class=p>,</span> <span class=n>low_prices</span><span class=p>,</span> <span class=n>close_prices</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>21</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>minus_di_7</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>MINUS_DI</span><span class=p>(</span><span class=n>high_prices</span><span class=p>,</span> <span class=n>low_prices</span><span class=p>,</span> <span class=n>close_prices</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>7</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>minus_di_14</span> <span class=o>=</span> <span class=n>minus_di_values</span>
+</span></span><span class=line><span class=cl><span class=n>minus_di_21</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>MINUS_DI</span><span class=p>(</span><span class=n>high_prices</span><span class=p>,</span> <span class=n>low_prices</span><span class=p>,</span> <span class=n>close_prices</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>21</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 创建ADX分析DataFrame</span>
+</span></span><span class=line><span class=cl><span class=n>adx_df</span> <span class=o>=</span> <span class=n>pd</span><span class=o>.</span><span class=n>DataFrame</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;Close&#39;</span><span class=p>:</span> <span class=n>close_prices</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;ADX&#39;</span><span class=p>:</span> <span class=n>adx_values</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;ADX_7&#39;</span><span class=p>:</span> <span class=n>adx_7</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;ADX_21&#39;</span><span class=p>:</span> <span class=n>adx_21</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;Plus_DI&#39;</span><span class=p>:</span> <span class=n>plus_di_values</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;Minus_DI&#39;</span><span class=p>:</span> <span class=n>minus_di_values</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;Plus_DI_7&#39;</span><span class=p>:</span> <span class=n>plus_di_7</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;Plus_DI_21&#39;</span><span class=p>:</span> <span class=n>plus_di_21</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;Minus_DI_7&#39;</span><span class=p>:</span> <span class=n>minus_di_7</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;Minus_DI_21&#39;</span><span class=p>:</span> <span class=n>minus_di_21</span>
+</span></span><span class=line><span class=cl><span class=p>},</span> <span class=n>index</span><span class=o>=</span><span class=n>dates</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 计算DI差值</span>
+</span></span><span class=line><span class=cl><span class=n>adx_df</span><span class=p>[</span><span class=s1>&#39;DI_Diff&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>plus_di_values</span> <span class=o>-</span> <span class=n>minus_di_values</span>
+</span></span><span class=line><span class=cl><span class=n>adx_df</span><span class=p>[</span><span class=s1>&#39;DI_Sum&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>plus_di_values</span> <span class=o>+</span> <span class=n>minus_di_values</span>
+</span></span><span class=line><span class=cl><span class=n>adx_df</span><span class=p>[</span><span class=s1>&#39;DI_Ratio&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>where</span><span class=p>(</span><span class=n>adx_df</span><span class=p>[</span><span class=s1>&#39;DI_Sum&#39;</span><span class=p>]</span> <span class=o>!=</span> <span class=mi>0</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                             <span class=n>adx_df</span><span class=p>[</span><span class=s1>&#39;DI_Diff&#39;</span><span class=p>]</span> <span class=o>/</span> <span class=n>adx_df</span><span class=p>[</span><span class=s1>&#39;DI_Sum&#39;</span><span class=p>]</span> <span class=o>*</span> <span class=mi>100</span><span class=p>,</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 计算ADX的变化率</span>
+</span></span><span class=line><span class=cl><span class=n>adx_df</span><span class=p>[</span><span class=s1>&#39;ADX_Change&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>adx_df</span><span class=p>[</span><span class=s1>&#39;ADX&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>pct_change</span><span class=p>()</span> <span class=o>*</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl><span class=n>adx_df</span><span class=p>[</span><span class=s1>&#39;ADX_MA5&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>SMA</span><span class=p>(</span><span class=n>adx_values</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s2>&#34;ADX指标基础分析:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;当前ADX值: </span><span class=si>{</span><span class=n>adx_values</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;当前+DI值: </span><span class=si>{</span><span class=n>plus_di_values</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;当前-DI值: </span><span class=si>{</span><span class=n>minus_di_values</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;当前DI差值: </span><span class=si>{</span><span class=n>adx_df</span><span class=p>[</span><span class=s1>&#39;DI_Diff&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;当前DI比率: </span><span class=si>{</span><span class=n>adx_df</span><span class=p>[</span><span class=s1>&#39;DI_Ratio&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>%&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 显示最近10个交易日的ADX数据</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>最近10个交易日ADX数据:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>display_cols</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;Close&#39;</span><span class=p>,</span> <span class=s1>&#39;ADX&#39;</span><span class=p>,</span> <span class=s1>&#39;Plus_DI&#39;</span><span class=p>,</span> <span class=s1>&#39;Minus_DI&#39;</span><span class=p>,</span> <span class=s1>&#39;DI_Diff&#39;</span><span class=p>,</span> <span class=s1>&#39;DI_Ratio&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>adx_df</span><span class=p>[</span><span class=n>display_cols</span><span class=p>]</span><span class=o>.</span><span class=n>tail</span><span class=p>(</span><span class=mi>10</span><span class=p>)</span><span class=o>.</span><span class=n>round</span><span class=p>(</span><span class=mi>2</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># ADX趋势强度分析函数</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>analyze_adx_strength</span><span class=p>(</span><span class=n>adx_values</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;分析ADX趋势强度&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>current_adx</span> <span class=o>=</span> <span class=n>adx_values</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 趋势强度分级</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>current_adx</span> <span class=o>&gt;</span> <span class=mi>50</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>strength</span> <span class=o>=</span> <span class=s2>&#34;极强趋势&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=n>color</span> <span class=o>=</span> <span class=s2>&#34;红色&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>elif</span> <span class=n>current_adx</span> <span class=o>&gt;</span> <span class=mi>40</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>strength</span> <span class=o>=</span> <span class=s2>&#34;强趋势&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=n>color</span> <span class=o>=</span> <span class=s2>&#34;橙色&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>elif</span> <span class=n>current_adx</span> <span class=o>&gt;</span> <span class=mi>30</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>strength</span> <span class=o>=</span> <span class=s2>&#34;中等趋势&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=n>color</span> <span class=o>=</span> <span class=s2>&#34;黄色&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>elif</span> <span class=n>current_adx</span> <span class=o>&gt;</span> <span class=mi>20</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>strength</span> <span class=o>=</span> <span class=s2>&#34;弱趋势&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=n>color</span> <span class=o>=</span> <span class=s2>&#34;蓝色&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>strength</span> <span class=o>=</span> <span class=s2>&#34;无趋势&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=n>color</span> <span class=o>=</span> <span class=s2>&#34;灰色&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># ADX趋势方向</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>adx_values</span><span class=p>)</span> <span class=o>&gt;=</span> <span class=mi>5</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>adx_trend</span> <span class=o>=</span> <span class=s2>&#34;上升&#34;</span> <span class=k>if</span> <span class=n>adx_values</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>&gt;</span> <span class=n>adx_values</span><span class=p>[</span><span class=o>-</span><span class=mi>5</span><span class=p>]</span> <span class=k>else</span> <span class=s2>&#34;下降&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>adx_trend</span> <span class=o>=</span> <span class=s2>&#34;不明&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;current_adx&#39;</span><span class=p>:</span> <span class=n>current_adx</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;strength&#39;</span><span class=p>:</span> <span class=n>strength</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;color&#39;</span><span class=p>:</span> <span class=n>color</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;trend&#39;</span><span class=p>:</span> <span class=n>adx_trend</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 执行ADX强度分析</span>
+</span></span><span class=line><span class=cl><span class=n>adx_analysis</span> <span class=o>=</span> <span class=n>analyze_adx_strength</span><span class=p>(</span><span class=n>adx_values</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== ADX趋势强度分析 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;当前ADX值: </span><span class=si>{</span><span class=n>adx_analysis</span><span class=p>[</span><span class=s1>&#39;current_adx&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;趋势强度: </span><span class=si>{</span><span class=n>adx_analysis</span><span class=p>[</span><span class=s1>&#39;strength&#39;</span><span class=p>]</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;强度颜色: </span><span class=si>{</span><span class=n>adx_analysis</span><span class=p>[</span><span class=s1>&#39;color&#39;</span><span class=p>]</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;ADX趋势: </span><span class=si>{</span><span class=n>adx_analysis</span><span class=p>[</span><span class=s1>&#39;trend&#39;</span><span class=p>]</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># ADX历史统计</span>
+</span></span><span class=line><span class=cl><span class=n>adx_stats</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;max&#39;</span><span class=p>:</span> <span class=n>np</span><span class=o>.</span><span class=n>nanmax</span><span class=p>(</span><span class=n>adx_values</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;min&#39;</span><span class=p>:</span> <span class=n>np</span><span class=o>.</span><span class=n>nanmin</span><span class=p>(</span><span class=n>adx_values</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;mean&#39;</span><span class=p>:</span> <span class=n>np</span><span class=o>.</span><span class=n>nanmean</span><span class=p>(</span><span class=n>adx_values</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;std&#39;</span><span class=p>:</span> <span class=n>np</span><span class=o>.</span><span class=n>nanstd</span><span class=p>(</span><span class=n>adx_values</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;median&#39;</span><span class=p>:</span> <span class=n>np</span><span class=o>.</span><span class=n>nanmedian</span><span class=p>(</span><span class=n>adx_values</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== ADX历史统计 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;ADX历史最高值: </span><span class=si>{</span><span class=n>adx_stats</span><span class=p>[</span><span class=s1>&#39;max&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;ADX历史最低值: </span><span class=si>{</span><span class=n>adx_stats</span><span class=p>[</span><span class=s1>&#39;min&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;ADX历史平均值: </span><span class=si>{</span><span class=n>adx_stats</span><span class=p>[</span><span class=s1>&#39;mean&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;ADX历史标准差: </span><span class=si>{</span><span class=n>adx_stats</span><span class=p>[</span><span class=s1>&#39;std&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;ADX历史中位数: </span><span class=si>{</span><span class=n>adx_stats</span><span class=p>[</span><span class=s1>&#39;median&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># ADX区间分布分析</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>analyze_adx_distribution</span><span class=p>(</span><span class=n>adx_values</span><span class=p>,</span> <span class=n>bins</span><span class=o>=</span><span class=p>[</span><span class=mi>20</span><span class=p>,</span> <span class=mi>30</span><span class=p>,</span> <span class=mi>40</span><span class=p>,</span> <span class=mi>50</span><span class=p>]):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;分析ADX在不同区间的分布&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>distribution</span> <span class=o>=</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 定义区间</span>
+</span></span><span class=line><span class=cl>    <span class=n>ranges</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;无趋势(&lt;20)&#39;</span><span class=p>,</span> <span class=s1>&#39;弱趋势(20-30)&#39;</span><span class=p>,</span> <span class=s1>&#39;中等趋势(30-40)&#39;</span><span class=p>,</span> <span class=s1>&#39;强趋势(40-50)&#39;</span><span class=p>,</span> <span class=s1>&#39;极强趋势(&gt;50)&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>i</span><span class=p>,</span> <span class=n>range_name</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>ranges</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>i</span> <span class=o>==</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>mask</span> <span class=o>=</span> <span class=n>adx_values</span> <span class=o>&lt;</span> <span class=n>bins</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>        <span class=k>elif</span> <span class=n>i</span> <span class=o>==</span> <span class=nb>len</span><span class=p>(</span><span class=n>ranges</span><span class=p>)</span> <span class=o>-</span> <span class=mi>1</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>mask</span> <span class=o>=</span> <span class=n>adx_values</span> <span class=o>&gt;</span> <span class=n>bins</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>mask</span> <span class=o>=</span> <span class=p>(</span><span class=n>adx_values</span> <span class=o>&gt;</span> <span class=n>bins</span><span class=p>[</span><span class=n>i</span><span class=o>-</span><span class=mi>1</span><span class=p>])</span> <span class=o>&amp;</span> <span class=p>(</span><span class=n>adx_values</span> <span class=o>&lt;=</span> <span class=n>bins</span><span class=p>[</span><span class=n>i</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=n>count</span> <span class=o>=</span> <span class=n>mask</span><span class=o>.</span><span class=n>sum</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=n>percentage</span> <span class=o>=</span> <span class=p>(</span><span class=n>count</span> <span class=o>/</span> <span class=nb>len</span><span class=p>(</span><span class=n>adx_values</span><span class=p>))</span> <span class=o>*</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl>        <span class=n>avg_adx</span> <span class=o>=</span> <span class=n>adx_values</span><span class=p>[</span><span class=n>mask</span><span class=p>]</span><span class=o>.</span><span class=n>mean</span><span class=p>()</span> <span class=k>if</span> <span class=n>count</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=k>else</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=n>distribution</span><span class=p>[</span><span class=n>range_name</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;count&#39;</span><span class=p>:</span> <span class=n>count</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;percentage&#39;</span><span class=p>:</span> <span class=n>percentage</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;avg_adx&#39;</span><span class=p>:</span> <span class=n>avg_adx</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>distribution</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 执行ADX分布分析</span>
+</span></span><span class=line><span class=cl><span class=n>adx_distribution</span> <span class=o>=</span> <span class=n>analyze_adx_distribution</span><span class=p>(</span><span class=n>adx_values</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== ADX区间分布分析 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>range_name</span><span class=p>,</span> <span class=n>stats</span> <span class=ow>in</span> <span class=n>adx_distribution</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=n>range_name</span><span class=si>}</span><span class=s2>: </span><span class=si>{</span><span class=n>stats</span><span class=p>[</span><span class=s1>&#39;count&#39;</span><span class=p>]</span><span class=si>}</span><span class=s2>天 (</span><span class=si>{</span><span class=n>stats</span><span class=p>[</span><span class=s1>&#39;percentage&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>.1f</span><span class=si>}</span><span class=s2>%), &#34;</span>
+</span></span><span class=line><span class=cl>          <span class=sa>f</span><span class=s2>&#34;平均ADX: </span><span class=si>{</span><span class=n>stats</span><span class=p>[</span><span class=s1>&#39;avg_adx&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># +DI与-DI关系分析</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>analyze_di_relationship</span><span class=p>(</span><span class=n>plus_di</span><span class=p>,</span> <span class=n>minus_di</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;分析+DI与-DI的关系&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>current_plus_di</span> <span class=o>=</span> <span class=n>plus_di</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=n>current_minus_di</span> <span class=o>=</span> <span class=n>minus_di</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 当前关系</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>current_plus_di</span> <span class=o>&gt;</span> <span class=n>current_minus_di</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>di_relationship</span> <span class=o>=</span> <span class=s2>&#34;+DI &gt; -DI (偏多)&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=n>di_strength</span> <span class=o>=</span> <span class=n>current_plus_di</span> <span class=o>-</span> <span class=n>current_minus_di</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>di_relationship</span> <span class=o>=</span> <span class=s2>&#34;+DI &lt; -DI (偏空)&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=n>di_strength</span> <span class=o>=</span> <span class=n>current_minus_di</span> <span class=o>-</span> <span class=n>current_plus_di</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 历史平均关系</span>
+</span></span><span class=line><span class=cl>    <span class=n>avg_plus_di</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>nanmean</span><span class=p>(</span><span class=n>plus_di</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>avg_minus_di</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>nanmean</span><span class=p>(</span><span class=n>minus_di</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 关系变化</span>
+</span></span><span class=line><span class=cl>    <span class=n>recent_change</span> <span class=o>=</span> <span class=s2>&#34;上升&#34;</span> <span class=k>if</span> <span class=n>current_plus_di</span> <span class=o>&gt;</span> <span class=n>plus_di</span><span class=p>[</span><span class=o>-</span><span class=mi>5</span><span class=p>]</span> <span class=k>else</span> <span class=s2>&#34;下降&#34;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;relationship&#39;</span><span class=p>:</span> <span class=n>di_relationship</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;strength&#39;</span><span class=p>:</span> <span class=n>di_strength</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;avg_plus_di&#39;</span><span class=p>:</span> <span class=n>avg_plus_di</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;avg_minus_di&#39;</span><span class=p>:</span> <span class=n>avg_minus_di</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;change&#39;</span><span class=p>:</span> <span class=n>recent_change</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 执行DI关系分析</span>
+</span></span><span class=line><span class=cl><span class=n>di_analysis</span> <span class=o>=</span> <span class=n>analyze_di_relationship</span><span class=p>(</span><span class=n>plus_di_values</span><span class=p>,</span> <span class=n>minus_di_values</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== +DI与-DI关系分析 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;当前关系: </span><span class=si>{</span><span class=n>di_analysis</span><span class=p>[</span><span class=s1>&#39;relationship&#39;</span><span class=p>]</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;DI强度差值: </span><span class=si>{</span><span class=n>di_analysis</span><span class=p>[</span><span class=s1>&#39;strength&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;历史平均+DI: </span><span class=si>{</span><span class=n>di_analysis</span><span class=p>[</span><span class=s1>&#39;avg_plus_di&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;历史平均-DI: </span><span class=si>{</span><span class=n>di_analysis</span><span class=p>[</span><span class=s1>&#39;avg_minus_di&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;近期+DI变化: </span><span class=si>{</span><span class=n>di_analysis</span><span class=p>[</span><span class=s1>&#39;change&#39;</span><span class=p>]</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># ADX动量分析</span>
+</span></span><span class=line><span class=cl><span class=n>adx_momentum</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>gradient</span><span class=p>(</span><span class=n>adx_values</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>current_adx_momentum</span> <span class=o>=</span> <span class=n>adx_momentum</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>adx_momentum</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=k>else</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl><span class=n>adx_momentum_ma</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>SMA</span><span class=p>(</span><span class=n>adx_momentum</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== ADX动量分析 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;当前ADX动量: </span><span class=si>{</span><span class=n>current_adx_momentum</span><span class=si>:</span><span class=s2>.4f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;ADX动量趋势: </span><span class=si>{</span><span class=s1>&#39;加速&#39;</span> <span class=k>if</span> <span class=n>current_adx_momentum</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=k>else</span> <span class=s1>&#39;减速&#39;</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;ADX动量5日平均: </span><span class=si>{</span><span class=n>adx_momentum_ma</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.4f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;ADX动量相对强度: </span><span class=si>{</span><span class=s1>&#39;强&#39;</span> <span class=k>if</span> <span class=nb>abs</span><span class=p>(</span><span class=n>current_adx_momentum</span><span class=p>)</span> <span class=o>&gt;</span> <span class=n>np</span><span class=o>.</span><span class=n>std</span><span class=p>(</span><span class=n>adx_momentum</span><span class=p>)</span> <span class=k>else</span> <span class=s1>&#39;弱&#39;</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># ADX与价格相关性分析</span>
+</span></span><span class=line><span class=cl><span class=n>adx_price_correlation</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>corrcoef</span><span class=p>(</span><span class=n>adx_values</span><span class=p>[</span><span class=mi>20</span><span class=p>:],</span> <span class=n>close_prices</span><span class=p>[</span><span class=mi>20</span><span class=p>:])[</span><span class=mi>0</span><span class=p>,</span> <span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== ADX与价格相关性 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;ADX与价格相关系数: </span><span class=si>{</span><span class=n>adx_price_correlation</span><span class=si>:</span><span class=s2>.4f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;相关性解释: </span><span class=si>{</span><span class=s1>&#39;正相关&#39;</span> <span class=k>if</span> <span class=n>adx_price_correlation</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=k>else</span> <span class=s1>&#39;负相关&#39;</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;相关强度: </span><span class=si>{</span><span class=s1>&#39;强&#39;</span> <span class=k>if</span> <span class=nb>abs</span><span class=p>(</span><span class=n>adx_price_correlation</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mf>0.5</span> <span class=k>else</span> <span class=s1>&#39;中等&#39;</span> <span class=k>if</span> <span class=nb>abs</span><span class=p>(</span><span class=n>adx_price_correlation</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mf>0.3</span> <span class=k>else</span> <span class=s1>&#39;弱&#39;</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 综合ADX状态判断</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>get_adx_summary_status</span><span class=p>(</span><span class=n>adx_analysis</span><span class=p>,</span> <span class=n>di_analysis</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;获取ADX综合状态&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>current_adx</span> <span class=o>=</span> <span class=n>adx_analysis</span><span class=p>[</span><span class=s1>&#39;current_adx&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=n>adx_trend</span> <span class=o>=</span> <span class=n>adx_analysis</span><span class=p>[</span><span class=s1>&#39;trend&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=n>di_relationship</span> <span class=o>=</span> <span class=n>di_analysis</span><span class=p>[</span><span class=s1>&#39;relationship&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 趋势强度判断</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>current_adx</span> <span class=o>&gt;</span> <span class=mi>40</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>adx_trend</span> <span class=o>==</span> <span class=s2>&#34;上升&#34;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=s2>&#34;强趋势加速期 - 顺势操作&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=s2>&#34;强趋势减速期 - 谨慎操作&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>elif</span> <span class=n>current_adx</span> <span class=o>&gt;</span> <span class=mi>25</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>adx_trend</span> <span class=o>==</span> <span class=s2>&#34;上升&#34;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=s2>&#34;趋势形成期 - 积极关注&#34;</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=s2>&#34;趋势减弱期 - 准备离场&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=s2>&#34;无趋势震荡期 - 观望等待&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>adx_summary</span> <span class=o>=</span> <span class=n>get_adx_summary_status</span><span class=p>(</span><span class=n>adx_analysis</span><span class=p>,</span> <span class=n>di_analysis</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== ADX综合状态 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;ADX综合状态: </span><span class=si>{</span><span class=n>adx_summary</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;操作建议: </span><span class=si>{</span><span class=n>adx_summary</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 当前市场环境评估</span>
+</span></span><span class=line><span class=cl><span class=n>current_market_env</span> <span class=o>=</span> <span class=s2>&#34;趋势市场&#34;</span> <span class=k>if</span> <span class=n>adx_analysis</span><span class=p>[</span><span class=s1>&#39;current_adx&#39;</span><span class=p>]</span> <span class=o>&gt;</span> <span class=mi>25</span> <span class=k>else</span> <span class=s2>&#34;震荡市场&#34;</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>当前市场环境: </span><span class=si>{</span><span class=n>current_market_env</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;环境特征: </span><span class=si>{</span><span class=s1>&#39;适合趋势跟踪策略&#39;</span> <span class=k>if</span> <span class=n>current_market_env</span> <span class=o>==</span> <span class=s1>&#39;趋势市场&#39;</span> <span class=k>else</span> <span class=s1>&#39;适合震荡交易策略&#39;</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></div></div></div></article><aside class="lg:w-80 xl:w-96"><div class=space-y-8></div></aside></div><nav class="border-t border-gray-200 mt-12 pt-8"><div class="flex justify-between items-center"><a href=/blog/%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87/06-obv%E8%83%BD%E9%87%8F%E6%BD%AE%E6%8C%87%E6%A0%87/ class="group flex items-center"><svg class="w-5 h-5 mr-2 text-gray-600 group-hover:text-primary-600" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0 7-7m-7 7h18"/></svg><div><div class="text-sm text-gray-600">上一篇</div><div class="font-medium group-hover:text-primary-600">技术指标第6讲：OBV能量潮指标</div></div></a><a href=/blog/%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87/08-sar%E6%8A%9B%E7%89%A9%E7%BA%BF%E8%BD%AC%E5%90%91%E6%8C%87%E6%A0%87/ class="group flex items-center text-right"><div><div class="text-sm text-gray-600">Next Post</div><div class="font-medium group-hover:text-primary-600">技术指标第8讲：SAR抛物线转向指标</div></div><svg class="w-5 h-5 ml-2 text-gray-600 group-hover:text-primary-600" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0-7 7m7-7H3"/></svg></a></div></nav></div></div><footer class="bg-gray-50 py-12 border-t border-gray-200"><div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl"><div class="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0"><div class=flex-1><div class="flex items-center space-x-3 mb-4"><a href=https://sk-quant.github.io/ class=inline-block><img src=/images/logo.svg alt=烧烤量化 class=h-6>
+</a><span class="text-xl font-bold text-gray-900">烧烤量化</span></div><div class="flex space-x-3 p-2"><a href=https://linkedin.com/in/yourusername class="text-gray-600 hover:text-gray-900" target=_blank rel="noopener noreferrer"><span class=sr-only>LinkedIn</span>
+<img src=/images/social/linkedin.svg alt=LinkedIn class="h-5 w-5">
+</a><a href=https://bsky.app/profile/yourblueskyhandle class="text-gray-600 hover:text-gray-900" target=_blank rel="noopener noreferrer"><span class=sr-only>Bluesky</span>
+<img src=/images/social/bluesky.svg alt=Bluesky class="h-5 w-5">
+</a><a href=https://twitter.com/yourusername class="text-gray-600 hover:text-gray-900" target=_blank rel="noopener noreferrer"><span class=sr-only>Twitter (X)</span>
+<img src=/images/social/twitter.svg alt=Twitter class="h-5 w-5">
+</a><a href=https://github.com/yourusername class="text-gray-600 hover:text-gray-900" target=_blank rel="noopener noreferrer"><span class=sr-only>GitHub</span>
+<img src=/images/social/github.svg alt=GitHub class="h-5 w-5"></a></div></div><div class=flex-1><h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4"></h3><ul class=space-y-2></ul></div><div class=flex-1><h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4"></h3><ul class=space-y-2></ul></div><div class=flex-1><h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4"></h3><ul class=space-y-2></ul></div></div><div class="mt-12 pt-8 border-t border-gray-200"><div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0"><p class="text-gray-600 text-sm">© 2025 烧烤量化. All rights reserved.</p><a href=https://chaoming.li class="text-sm text-gray-600 hover:text-primary-600" target=_blank rel="noopener noreferrer">Powered by sk-quant</a></div></div></div></footer><script>const mobileMenuButton=document.getElementById("mobile-menu-button");mobileMenuButton&&mobileMenuButton.addEventListener("click",function(){const e=document.getElementById("mobile-menu");e&&e.classList.toggle("hidden")})</script></body></html>

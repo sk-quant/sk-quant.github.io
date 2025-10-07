@@ -1,0 +1,507 @@
+<!doctype html><html lang=zh-cn class=h-full><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><script>(function(e,t,n,s,o){e[s]=e[s]||[],e[s].push({"gtm.start":(new Date).getTime(),event:"gtm.js"});var a=t.getElementsByTagName(n)[0],i=t.createElement(n),r=s!="dataLayer"?"&l="+s:"";i.async=!0,i.src="https://www.googletagmanager.com/gtm.js?id="+o+r,a.parentNode.insertBefore(i,a)})(window,document,"script","dataLayer","GTM-XXXXXXX")</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-XXXXXXXXXX")</script><title>技术指标第2讲：MACD指数平滑异同移动平均线 | 烧烤量化</title>
+<meta name=description content="深度解析MACD指标的计算原理、信号识别与应用策略，从金叉死叉到背离分析，构建基于动量变化的交易决策框架"><meta name=author content="Ryan"><meta name=robots content="index, follow"><meta property="og:title" content="技术指标第2讲：MACD指数平滑异同移动平均线 | 烧烤量化"><meta property="og:description" content="深度解析MACD指标的计算原理、信号识别与应用策略，从金叉死叉到背离分析，构建基于动量变化的交易决策框架"><meta property="og:type" content="article"><meta property="og:url" content="https://sk-quant.github.io/blog/%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87/02-macd%E6%8C%87%E6%95%B0%E5%B9%B3%E6%BB%91%E5%BC%82%E5%90%8C%E7%A7%BB%E5%8A%A8%E5%B9%B3%E5%9D%87%E7%BA%BF/"><meta property="og:site_name" content="烧烤量化"><meta name=twitter:card content="summary_large_image"><meta name=twitter:title content="技术指标第2讲：MACD指数平滑异同移动平均线 | 烧烤量化"><meta name=twitter:description content="深度解析MACD指标的计算原理、信号识别与应用策略，从金叉死叉到背离分析，构建基于动量变化的交易决策框架"><link rel=icon type=image/x-icon href=/images/favicon.ico><link rel=canonical href=https://sk-quant.github.io/blog/%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87/02-macd%E6%8C%87%E6%95%B0%E5%B9%B3%E6%BB%91%E5%BC%82%E5%90%8C%E7%A7%BB%E5%8A%A8%E5%B9%B3%E5%9D%87%E7%BA%BF/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel=stylesheet><link rel=stylesheet href="/css/main.min.0ec21c03b9f63a8c5e37663a4d2dc1608de61fd749fcfef42ffda7dc5bf34cc4.css"></head><body class="min-h-screen flex flex-col"><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height=0 width=0 style=display:none;visibility:hidden></iframe></noscript><div class="fixed top-0 left-0 right-0 z-50"><div class=mobile-menu-wrapper><input type=checkbox id=nav-toggle class=nav-toggle><header class="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-100"><div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl"><nav class="flex items-center justify-between h-20"><a href=https://sk-quant.github.io/ class="flex items-center space-x-4"><img src=/images/logo.svg alt=烧烤量化 class=h-12>
+<span class="text-3xl font-semibold text-gray-800">烧烤量化</span></a><div class="hidden md:flex items-center space-x-8"><a href=/path class="text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">学习路线</a><div class="relative group"><button class="flex items-center text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">
+量化基础<svg class="ml-2 w-4 h-4" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="absolute left-0 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out"><div class="py-6 bg-white border border-gray-100 shadow-xl rounded-lg"><a href=/categories/%e6%8a%95%e8%b5%84%e7%90%86%e8%ae%ba/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">投资理论</a>
+<a href=/categories/%e4%bb%a3%e7%a0%81%e5%9f%ba%e7%a1%80/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">代码基础</a>
+<a href=/categories/%e6%8a%80%e6%9c%af%e6%8c%87%e6%a0%87/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">技术指标</a>
+<a href=/categories/%e5%9b%9e%e6%b5%8b%e5%b9%b3%e5%8f%b0/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">回测平台</a></div></div></div><div class="relative group"><button class="flex items-center text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">
+量化进阶<svg class="ml-2 w-4 h-4" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="absolute left-0 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out"><div class="py-6 bg-white border border-gray-100 shadow-xl rounded-lg"><a href=/categories/%e7%ad%96%e7%95%a5%e5%88%86%e4%ba%ab/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">策略分享</a>
+<a href=/categories/%e5%ae%9e%e7%9b%98%e5%b7%a5%e5%85%b7/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">实盘工具</a>
+<a href=/categories/%e7%83%ad%e7%82%b9%e9%a3%8e%e5%8f%a3/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">热点风口</a>
+<a href=/categories/%e7%bb%bc%e5%90%88%e5%ae%9e%e6%88%98/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">综合实战</a></div></div></div><div class="relative group"><button class="flex items-center text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">
+量化高手<svg class="ml-2 w-4 h-4" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="absolute left-0 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out"><div class="py-6 bg-white border border-gray-100 shadow-xl rounded-lg"><a href=/categories/%e5%8f%af%e8%bd%ac%e5%80%ba/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">可转债</a>
+<a href=/categories/%e8%9e%8d%e8%b5%84%e8%9e%8d%e5%88%b8/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">融资融券</a>
+<a href=/categories/%e8%82%a1%e7%a5%a8%e6%9c%9f%e6%9d%83/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">股票期权</a>
+<a href=/categories/%e8%82%a1%e6%8c%87%e6%9c%9f%e8%b4%a7/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">股指期货</a></div></div></div><a href=/pricing class="text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">服务套餐</a></div><div class="hidden md:flex items-center space-x-4"><a href=/contact class="inline-flex items-center justify-center px-6 py-3 rounded-lg font-bold transition duration-200 ease-in-out bg-primary-600 text-white hover:bg-primary-700 hover:scale-105">现在加入</a></div><div class=md:hidden><label for=nav-toggle class="p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2 transition-colors cursor-pointer"><svg class="w-6 h-6" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></label></div></nav></div><div class="nav-content md:hidden w-full fixed left-0 right-0 top-20 bg-white border-t border-gray-100 shadow-lg"><div class="w-full px-6 py-4"><a href=/path class="block text-xl text-gray-900 hover:text-primary-600 font-bold transition duration-200 py-2">学习路线</a><div class=py-2><div class="text-xl text-gray-900 font-bold mb-2">量化基础</div><div class=pl-4><a href=/categories/%e6%8a%95%e8%b5%84%e7%90%86%e8%ae%ba/ class="block text-gray-700 hover:text-primary-600 py-2">投资理论</a>
+<a href=/categories/%e4%bb%a3%e7%a0%81%e5%9f%ba%e7%a1%80/ class="block text-gray-700 hover:text-primary-600 py-2">代码基础</a>
+<a href=/categories/%e6%8a%80%e6%9c%af%e6%8c%87%e6%a0%87/ class="block text-gray-700 hover:text-primary-600 py-2">技术指标</a>
+<a href=/categories/%e5%9b%9e%e6%b5%8b%e5%b9%b3%e5%8f%b0/ class="block text-gray-700 hover:text-primary-600 py-2">回测平台</a></div></div><div class=py-2><div class="text-xl text-gray-900 font-bold mb-2">量化进阶</div><div class=pl-4><a href=/categories/%e7%ad%96%e7%95%a5%e5%88%86%e4%ba%ab/ class="block text-gray-700 hover:text-primary-600 py-2">策略分享</a>
+<a href=/categories/%e5%ae%9e%e7%9b%98%e5%b7%a5%e5%85%b7/ class="block text-gray-700 hover:text-primary-600 py-2">实盘工具</a>
+<a href=/categories/%e7%83%ad%e7%82%b9%e9%a3%8e%e5%8f%a3/ class="block text-gray-700 hover:text-primary-600 py-2">热点风口</a>
+<a href=/categories/%e7%bb%bc%e5%90%88%e5%ae%9e%e6%88%98/ class="block text-gray-700 hover:text-primary-600 py-2">综合实战</a></div></div><div class=py-2><div class="text-xl text-gray-900 font-bold mb-2">量化高手</div><div class=pl-4><a href=/categories/%e5%8f%af%e8%bd%ac%e5%80%ba/ class="block text-gray-700 hover:text-primary-600 py-2">可转债</a>
+<a href=/categories/%e8%9e%8d%e8%b5%84%e8%9e%8d%e5%88%b8/ class="block text-gray-700 hover:text-primary-600 py-2">融资融券</a>
+<a href=/categories/%e8%82%a1%e7%a5%a8%e6%9c%9f%e6%9d%83/ class="block text-gray-700 hover:text-primary-600 py-2">股票期权</a>
+<a href=/categories/%e8%82%a1%e6%8c%87%e6%9c%9f%e8%b4%a7/ class="block text-gray-700 hover:text-primary-600 py-2">股指期货</a></div></div><a href=/pricing class="block text-xl text-gray-900 hover:text-primary-600 font-bold transition duration-200 py-2">服务套餐</a><div class="pt-4 space-y-4"><a href=/contact class="block text-center px-6 py-3 rounded-lg font-bold transition duration-200 ease-in-out bg-primary-600 text-white hover:bg-primary-700 hover:scale-105">现在加入</a></div></div></div></header><style>.mobile-menu-wrapper{position:relative}.nav-toggle{display:none}.nav-content{display:none}.nav-toggle:checked~header .nav-content{display:block}</style></div></div><div class=pt-20><div class="container mx-auto px-4 py-12"><div class="flex flex-col lg:flex-row gap-8 mb-12"><article class=flex-1><header class=mb-8><div class=mb-4><a href=/categories/%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87 class="inline-block px-3 py-1 text-sm font-medium text-primary-600 bg-primary-50 rounded-full hover:bg-primary-100 mr-2">技术指标</a></div><h1 class="text-4xl font-bold mb-4">技术指标第2讲：MACD指数平滑异同移动平均线</h1><div class="flex flex-col space-y-4"><div class="flex items-center justify-between text-sm text-gray-500"><div class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7A4 4 0 118 7a4 4 0 018 0zm-4 7a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+<span>Ryan</span></div><div class="flex items-center space-x-6"><div class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747.0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746.0-3.332.477-4.5 1.253"/></svg>
+<span>15 分钟</span></div><div class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5A2 2 0 003 7v12a2 2 0 002 2z"/></svg>
+<time datetime=2025-09-12>September 12, 2025</time></div></div></div><div class="flex items-center flex-wrap gap-2"><a href=/tags/2025 class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors duration-200">#2025</a></div></div></header><div class=mb-8><img src=/images/blog/%e6%8a%80%e6%9c%af%e6%8c%87%e6%a0%87.jpg alt=技术指标第2讲：MACD指数平滑异同移动平均线 class="w-full h-auto rounded-lg" loading=lazy></div><div class="prose prose-lg max-w-none"><div class="bg-gray-50 p-6 rounded-lg mb-8"><h2 class="text-xl font-semibold mb-4">目录</h2><nav id=TableOfContents><ul><li><a href=#macd指标趋势动量的量化表达>MACD指标：趋势动量的量化表达</a></li><li><a href=#macd计算原理从ema差值到动量量化>MACD计算原理：从EMA差值到动量量化</a><ul><li><a href=#macd线的数学构建>MACD线的数学构建</a></li><li><a href=#信号线的平滑机制>信号线的平滑机制</a></li></ul></li><li><a href=#macd信号识别从金叉死叉到背离分析>MACD信号识别：从金叉死叉到背离分析</a><ul><li><a href=#基础交叉信号系统>基础交叉信号系统</a></li><li><a href=#零轴穿越的战略意义>零轴穿越的战略意义</a></li><li><a href=#背离分析的前瞻价值>背离分析的前瞻价值</a></li></ul></li><li><a href=#macd动量分析从速度变化到力度评估>MACD动量分析：从速度变化到力度评估</a><ul><li><a href=#macd线斜率的动量含义>MACD线斜率的动量含义</a></li><li><a href=#柱状图的动量预警功能>柱状图的动量预警功能</a></li><li><a href=#macd绝对值的趋势强度评估>MACD绝对值的趋势强度评估</a></li></ul></li><li><a href=#基于talib的macd指标python实现>基于talib的MACD指标Python实现</a><ul><li><a href=#环境配置与数据获取>环境配置与数据获取</a></li><li><a href=#macd指标计算与信号识别>MACD指标计算与信号识别</a></li><li><a href=#macd背离识别与分析>MACD背离识别与分析</a></li><li><a href=#macd指标可视化分析>MACD指标可视化分析</a></li></ul></li><li><a href=#macd高级应用从单一指标到系统策略>MACD高级应用：从单一指标到系统策略</a><ul><li><a href=#macd多时间框架分析>MACD多时间框架分析</a></li><li><a href=#macd指标参数优化>MACD指标参数优化</a></li><li><a href=#macd与其他指标的组合应用>MACD与其他指标的组合应用</a></li><li><a href=#macd量化交易策略构建>MACD量化交易策略构建</a></li></ul></li><li><a href=#macd指标实战要点与风险控制>MACD指标实战要点与风险控制</a><ul><li><a href=#macd指标的核心优势>MACD指标的核心优势</a></li><li><a href=#macd指标的固有局限>MACD指标的固有局限</a></li><li><a href=#风险控制与资金管理>风险控制与资金管理</a></li></ul></li></ul></nav></div><h2 id=macd指标趋势动量的量化表达>MACD指标：趋势动量的量化表达</h2><p>MACD（Moving Average Convergence Divergence）指数平滑异同移动平均线，由Gerald Appel于1970年代提出，是技术分析中最具代表性的趋势动量指标之一。MACD通过计算两条指数移动平均线（EMA）的差值，量化价格动量的变化强度与方向，为投资者提供趋势识别、动量分析和交易时机选择的三重功能。</p><p>MACD指标的核心价值在于捕捉"趋势加速"与"趋势减速"的关键节点。当MACD线向上突破信号线时，表明上涨动量增强；当MACD线向下跌破信号线时，暗示下跌动量加大。通过观察MACD线与价格走势的背离关系，投资者能够提前识别潜在的趋势反转信号。</p><h2 id=macd计算原理从ema差值到动量量化>MACD计算原理：从EMA差值到动量量化</h2><h3 id=macd线的数学构建>MACD线的数学构建</h3><p>MACD指标的计算基于三条指数移动平均线：</p><ol><li><strong>快速EMA</strong>：通常采用12日指数移动平均</li><li><strong>慢速EMA</strong>：通常采用26日指数移动平均</li><li><strong>信号线</strong>：MACD线的9日指数移动平均</li></ol><p>MACD线的计算公式为：</p><p>MACD线 = EMA(12) - EMA(26)</p><p>信号线 = EMA(MACD线, 9)</p><p>柱状图（Histogram）= MACD线 - 信号线</p><p>其中EMA的计算采用指数平滑法，最近期数据获得更高权重，使得MACD指标对价格变化具有较好的敏感性。</p><h3 id=信号线的平滑机制>信号线的平滑机制</h3><p>信号线作为MACD线的平滑版本，起到过滤噪音和确认信号的作用。当MACD线穿越信号线时，产生交易信号。信号线的平滑效果有助于减少虚假信号，但也会带来一定的滞后性。</p><p>柱状图直观展示了MACD线与信号线之间的差值变化，当柱状图由负转正时，表明MACD线向上突破信号线；当柱状图由正转负时，表明MACD线向下跌破信号线。</p><h2 id=macd信号识别从金叉死叉到背离分析>MACD信号识别：从金叉死叉到背离分析</h2><h3 id=基础交叉信号系统>基础交叉信号系统</h3><p><strong>黄金交叉</strong>：MACD线自下而上穿越信号线，产生买入信号。这一交叉表明短期动量超过长期动量，价格上涨动能增强。</p><p><strong>死亡交叉</strong>：MACD线自上而下穿越信号线，产生卖出信号。这一交叉表明短期动量弱于长期动量，价格下跌动能增强。</p><p>交叉信号的可靠性可通过以下因素验证：</p><ul><li>交叉发生时的MACD绝对值大小</li><li>交叉时的成交量变化</li><li>价格走势的技术形态配合</li></ul><h3 id=零轴穿越的战略意义>零轴穿越的战略意义</h3><p><strong>零轴上方</strong>：MACD线位于零轴上方，表明12日EMA高于26日EMA，价格处于上升趋势中。在零轴上方出现的黄金交叉通常具有更高的成功率。</p><p><strong>零轴下方</strong>：MACD线位于零轴下方，表明12日EMA低于26日EMA，价格处于下跌趋势中。在零轴下方出现的死亡交叉通常具有更高的可靠性。</p><p><strong>零轴穿越</strong>：MACD线穿越零轴代表了趋势的根本性转变。从零轴下方穿越到上方，表明市场由跌转升；从零轴上方穿越到下方，表明市场由升转跌。</p><h3 id=背离分析的前瞻价值>背离分析的前瞻价值</h3><p><strong>顶背离</strong>：价格创新高，但MACD指标未能同步创新高，暗示上涨动量减弱，可能面临趋势反转。</p><p><strong>底背离</strong>：价格创新低，但MACD指标未能同步创新低，暗示下跌动量减弱，可能迎来趋势反转。</p><p>背离信号的确认需要满足以下条件：</p><ul><li>背离发生的级别（日线、周线等）</li><li>背离的次数（多重背离更可靠）</li><li>背离时的成交量配合</li></ul><h2 id=macd动量分析从速度变化到力度评估>MACD动量分析：从速度变化到力度评估</h2><h3 id=macd线斜率的动量含义>MACD线斜率的动量含义</h3><p>MACD线的斜率变化反映了动量变化的强度：</p><ul><li><strong>陡峭上升</strong>：上涨动量强劲，趋势加速</li><li><strong>平缓上升</strong>：上涨动量温和，趋势稳定</li><li><strong>陡峭下降</strong>：下跌动量强劲，趋势加速</li><li><strong>平缓下降</strong>：下跌动量温和，趋势稳定</li></ul><h3 id=柱状图的动量预警功能>柱状图的动量预警功能</h3><p>柱状图的变化速度提供了动量变化的早期信号：</p><ul><li><strong>柱状图扩大</strong>：当前趋势动量增强</li><li><strong>柱状图缩小</strong>：当前趋势动量减弱</li><li><strong>柱状图收敛</strong>：趋势可能面临转折</li></ul><h3 id=macd绝对值的趋势强度评估>MACD绝对值的趋势强度评估</h3><p>MACD线的绝对值大小反映了趋势与均值的偏离程度：</p><ul><li><strong>高正值</strong>：价格显著高于长期均值，趋势强劲但可能超买</li><li><strong>低正值</strong>：价格略高于长期均值，趋势温和</li><li><strong>高负值</strong>：价格显著低于长期均值，下跌趋势强劲但可能超卖</li><li><strong>低负值</strong>：价格略低于长期均值，下跌趋势温和</li></ul><h2 id=基于talib的macd指标python实现>基于talib的MACD指标Python实现</h2><h3 id=环境配置与数据获取>环境配置与数据获取</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>talib</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>numpy</span> <span class=k>as</span> <span class=nn>np</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>pandas</span> <span class=k>as</span> <span class=nn>pd</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>matplotlib.pyplot</span> <span class=k>as</span> <span class=nn>plt</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>yfinance</span> <span class=k>as</span> <span class=nn>yf</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>datetime</span> <span class=kn>import</span> <span class=n>datetime</span><span class=p>,</span> <span class=n>timedelta</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 获取股票数据</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>get_stock_data</span><span class=p>(</span><span class=n>symbol</span><span class=p>,</span> <span class=n>period</span><span class=o>=</span><span class=s2>&#34;1y&#34;</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;获取股票历史数据&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>stock</span> <span class=o>=</span> <span class=n>yf</span><span class=o>.</span><span class=n>download</span><span class=p>(</span><span class=n>symbol</span><span class=p>,</span> <span class=n>period</span><span class=o>=</span><span class=n>period</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>stock</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 获取沪深300指数数据</span>
+</span></span><span class=line><span class=cl><span class=n>data</span> <span class=o>=</span> <span class=n>get_stock_data</span><span class=p>(</span><span class=s2>&#34;000300.SS&#34;</span><span class=p>,</span> <span class=n>period</span><span class=o>=</span><span class=s2>&#34;1y&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>close_prices</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;Close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>values</span>
+</span></span><span class=line><span class=cl><span class=n>high_prices</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;High&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>values</span>
+</span></span><span class=line><span class=cl><span class=n>low_prices</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;Low&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>values</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;数据获取完成，共</span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>data</span><span class=p>)</span><span class=si>}</span><span class=s2>个交易日&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;价格区间: </span><span class=si>{</span><span class=n>data</span><span class=p>[</span><span class=s1>&#39;Close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>min</span><span class=p>()</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2> - </span><span class=si>{</span><span class=n>data</span><span class=p>[</span><span class=s1>&#39;Close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>max</span><span class=p>()</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 创建日期索引</span>
+</span></span><span class=line><span class=cl><span class=n>dates</span> <span class=o>=</span> <span class=n>data</span><span class=o>.</span><span class=n>index</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;数据时间范围: </span><span class=si>{</span><span class=n>dates</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=s1>&#39;%Y-%m-</span><span class=si>%d</span><span class=s1>&#39;</span><span class=p>)</span><span class=si>}</span><span class=s2> 至 </span><span class=si>{</span><span class=n>dates</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=s1>&#39;%Y-%m-</span><span class=si>%d</span><span class=s1>&#39;</span><span class=p>)</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h3 id=macd指标计算与信号识别>MACD指标计算与信号识别</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 使用talib计算MACD指标</span>
+</span></span><span class=line><span class=cl><span class=n>macd</span><span class=p>,</span> <span class=n>signal</span><span class=p>,</span> <span class=n>histogram</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>MACD</span><span class=p>(</span><span class=n>close_prices</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                                     <span class=n>fastperiod</span><span class=o>=</span><span class=mi>12</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                                     <span class=n>slowperiod</span><span class=o>=</span><span class=mi>26</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                                     <span class=n>signalperiod</span><span class=o>=</span><span class=mi>9</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 创建MACD分析DataFrame</span>
+</span></span><span class=line><span class=cl><span class=n>macd_df</span> <span class=o>=</span> <span class=n>pd</span><span class=o>.</span><span class=n>DataFrame</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;Close&#39;</span><span class=p>:</span> <span class=n>close_prices</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;MACD&#39;</span><span class=p>:</span> <span class=n>macd</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;Signal&#39;</span><span class=p>:</span> <span class=n>signal</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;Histogram&#39;</span><span class=p>:</span> <span class=n>histogram</span>
+</span></span><span class=line><span class=cl><span class=p>},</span> <span class=n>index</span><span class=o>=</span><span class=n>dates</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 显示最近10个交易日的MACD值</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s2>&#34;最近10个交易日MACD指标值:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>macd_df</span><span class=o>.</span><span class=n>tail</span><span class=p>(</span><span class=mi>10</span><span class=p>)</span><span class=o>.</span><span class=n>round</span><span class=p>(</span><span class=mi>4</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 识别MACD交叉信号</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>identify_macd_signals</span><span class=p>(</span><span class=n>macd_line</span><span class=p>,</span> <span class=n>signal_line</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;识别MACD交叉信号&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=c1># 计算交叉信号</span>
+</span></span><span class=line><span class=cl>    <span class=n>golden_cross</span> <span class=o>=</span> <span class=p>(</span><span class=n>macd_line</span> <span class=o>&gt;</span> <span class=n>signal_line</span><span class=p>)</span> <span class=o>&amp;</span> <span class=p>(</span><span class=n>macd_line</span><span class=o>.</span><span class=n>shift</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span> <span class=o>&lt;=</span> <span class=n>signal_line</span><span class=o>.</span><span class=n>shift</span><span class=p>(</span><span class=mi>1</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=n>death_cross</span> <span class=o>=</span> <span class=p>(</span><span class=n>macd_line</span> <span class=o>&lt;</span> <span class=n>signal_line</span><span class=p>)</span> <span class=o>&amp;</span> <span class=p>(</span><span class=n>macd_line</span><span class=o>.</span><span class=n>shift</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span> <span class=o>&gt;=</span> <span class=n>signal_line</span><span class=o>.</span><span class=n>shift</span><span class=p>(</span><span class=mi>1</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 计算零轴穿越</span>
+</span></span><span class=line><span class=cl>    <span class=n>zero_cross_up</span> <span class=o>=</span> <span class=p>(</span><span class=n>macd_line</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>)</span> <span class=o>&amp;</span> <span class=p>(</span><span class=n>macd_line</span><span class=o>.</span><span class=n>shift</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span> <span class=o>&lt;=</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>zero_cross_down</span> <span class=o>=</span> <span class=p>(</span><span class=n>macd_line</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>)</span> <span class=o>&amp;</span> <span class=p>(</span><span class=n>macd_line</span><span class=o>.</span><span class=n>shift</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span> <span class=o>&gt;=</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>golden_cross</span><span class=p>,</span> <span class=n>death_cross</span><span class=p>,</span> <span class=n>zero_cross_up</span><span class=p>,</span> <span class=n>zero_cross_down</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>golden_cross</span><span class=p>,</span> <span class=n>death_cross</span><span class=p>,</span> <span class=n>zero_up</span><span class=p>,</span> <span class=n>zero_down</span> <span class=o>=</span> <span class=n>identify_macd_signals</span><span class=p>(</span><span class=n>macd</span><span class=p>,</span> <span class=n>signal</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== MACD信号统计 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;黄金交叉次数: </span><span class=si>{</span><span class=n>golden_cross</span><span class=o>.</span><span class=n>sum</span><span class=p>()</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;死亡交叉次数: </span><span class=si>{</span><span class=n>death_cross</span><span class=o>.</span><span class=n>sum</span><span class=p>()</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;零轴向上穿越: </span><span class=si>{</span><span class=n>zero_up</span><span class=o>.</span><span class=n>sum</span><span class=p>()</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;零轴向下穿越: </span><span class=si>{</span><span class=n>zero_down</span><span class=o>.</span><span class=n>sum</span><span class=p>()</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 获取最近5次信号</span>
+</span></span><span class=line><span class=cl><span class=n>recent_signals</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=nb>len</span><span class=p>(</span><span class=n>dates</span><span class=p>)</span><span class=o>-</span><span class=mi>1</span><span class=p>,</span> <span class=o>-</span><span class=mi>1</span><span class=p>,</span> <span class=o>-</span><span class=mi>1</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>golden_cross</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=n>recent_signals</span><span class=o>.</span><span class=n>append</span><span class=p>((</span><span class=s1>&#39;黄金交叉&#39;</span><span class=p>,</span> <span class=n>dates</span><span class=p>[</span><span class=n>i</span><span class=p>],</span> <span class=s1>&#39;买入信号&#39;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=k>elif</span> <span class=n>death_cross</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=n>recent_signals</span><span class=o>.</span><span class=n>append</span><span class=p>((</span><span class=s1>&#39;死亡交叉&#39;</span><span class=p>,</span> <span class=n>dates</span><span class=p>[</span><span class=n>i</span><span class=p>],</span> <span class=s1>&#39;卖出信号&#39;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=k>elif</span> <span class=n>zero_up</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=n>recent_signals</span><span class=o>.</span><span class=n>append</span><span class=p>((</span><span class=s1>&#39;零轴上穿&#39;</span><span class=p>,</span> <span class=n>dates</span><span class=p>[</span><span class=n>i</span><span class=p>],</span> <span class=s1>&#39;趋势转折&#39;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=k>elif</span> <span class=n>zero_down</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=n>i</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>        <span class=n>recent_signals</span><span class=o>.</span><span class=n>append</span><span class=p>((</span><span class=s1>&#39;零轴下穿&#39;</span><span class=p>,</span> <span class=n>dates</span><span class=p>[</span><span class=n>i</span><span class=p>],</span> <span class=s1>&#39;趋势转折&#39;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>recent_signals</span><span class=p>)</span> <span class=o>&gt;=</span> <span class=mi>5</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>break</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>最近5次MACD信号:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>signal_type</span><span class=p>,</span> <span class=n>signal_date</span><span class=p>,</span> <span class=n>signal_desc</span> <span class=ow>in</span> <span class=n>recent_signals</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=n>signal_date</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=s1>&#39;%Y-%m-</span><span class=si>%d</span><span class=s1>&#39;</span><span class=p>)</span><span class=si>}</span><span class=s2>: </span><span class=si>{</span><span class=n>signal_type</span><span class=si>}</span><span class=s2> - </span><span class=si>{</span><span class=n>signal_desc</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h3 id=macd背离识别与分析>MACD背离识别与分析</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 识别MACD背离</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>identify_divergences</span><span class=p>(</span><span class=n>prices</span><span class=p>,</span> <span class=n>macd_line</span><span class=p>,</span> <span class=n>lookback_period</span><span class=o>=</span><span class=mi>20</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;识别MACD背离信号&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>divergences</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>lookback_period</span><span class=p>,</span> <span class=nb>len</span><span class=p>(</span><span class=n>prices</span><span class=p>)):</span>
+</span></span><span class=line><span class=cl>        <span class=c1># 检查顶背离</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>prices</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&gt;</span> <span class=n>prices</span><span class=p>[</span><span class=n>i</span><span class=o>-</span><span class=n>lookback_period</span><span class=p>:</span><span class=n>i</span><span class=p>]</span><span class=o>.</span><span class=n>max</span><span class=p>()</span> <span class=ow>and</span> 
+</span></span><span class=line><span class=cl>            <span class=n>macd_line</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&lt;</span> <span class=n>macd_line</span><span class=p>[</span><span class=n>i</span><span class=o>-</span><span class=n>lookback_period</span><span class=p>:</span><span class=n>i</span><span class=p>]</span><span class=o>.</span><span class=n>max</span><span class=p>()):</span>
+</span></span><span class=line><span class=cl>            <span class=n>divergences</span><span class=o>.</span><span class=n>append</span><span class=p>((</span><span class=s1>&#39;顶背离&#39;</span><span class=p>,</span> <span class=n>dates</span><span class=p>[</span><span class=n>i</span><span class=p>],</span> <span class=n>prices</span><span class=p>[</span><span class=n>i</span><span class=p>],</span> <span class=s1>&#39;可能反转下跌&#39;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 检查底背离</span>
+</span></span><span class=line><span class=cl>        <span class=k>elif</span> <span class=p>(</span><span class=n>prices</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&lt;</span> <span class=n>prices</span><span class=p>[</span><span class=n>i</span><span class=o>-</span><span class=n>lookback_period</span><span class=p>:</span><span class=n>i</span><span class=p>]</span><span class=o>.</span><span class=n>min</span><span class=p>()</span> <span class=ow>and</span> 
+</span></span><span class=line><span class=cl>              <span class=n>macd_line</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&gt;</span> <span class=n>macd_line</span><span class=p>[</span><span class=n>i</span><span class=o>-</span><span class=n>lookback_period</span><span class=p>:</span><span class=n>i</span><span class=p>]</span><span class=o>.</span><span class=n>min</span><span class=p>()):</span>
+</span></span><span class=line><span class=cl>            <span class=n>divergences</span><span class=o>.</span><span class=n>append</span><span class=p>((</span><span class=s1>&#39;底背离&#39;</span><span class=p>,</span> <span class=n>dates</span><span class=p>[</span><span class=n>i</span><span class=p>],</span> <span class=n>prices</span><span class=p>[</span><span class=n>i</span><span class=p>],</span> <span class=s1>&#39;可能反转上涨&#39;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>divergences</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 识别背离信号（最近3个月）</span>
+</span></span><span class=line><span class=cl><span class=n>recent_divergences</span> <span class=o>=</span> <span class=n>identify_divergences</span><span class=p>(</span><span class=n>close_prices</span><span class=p>,</span> <span class=n>macd</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== MACD背离信号分析 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;识别到的背离信号总数: </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>recent_divergences</span><span class=p>)</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 显示最近5次背离</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=n>recent_divergences</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;最近5次背离信号:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>div_type</span><span class=p>,</span> <span class=n>div_date</span><span class=p>,</span> <span class=n>price</span><span class=p>,</span> <span class=n>desc</span> <span class=ow>in</span> <span class=n>recent_divergences</span><span class=p>[</span><span class=o>-</span><span class=mi>5</span><span class=p>:]:</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=n>div_date</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=s1>&#39;%Y-%m-</span><span class=si>%d</span><span class=s1>&#39;</span><span class=p>)</span><span class=si>}</span><span class=s2>: </span><span class=si>{</span><span class=n>div_type</span><span class=si>}</span><span class=s2> - 价格: </span><span class=si>{</span><span class=n>price</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2> - </span><span class=si>{</span><span class=n>desc</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;近期未识别到明显的背离信号&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 计算MACD动量指标</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>calculate_macd_momentum</span><span class=p>(</span><span class=n>macd_line</span><span class=p>,</span> <span class=n>signal_line</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;计算MACD动量相关指标&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=c1># MACD线斜率</span>
+</span></span><span class=line><span class=cl>    <span class=n>macd_slope</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>gradient</span><span class=p>(</span><span class=n>macd_line</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># MACD绝对值（趋势强度）</span>
+</span></span><span class=line><span class=cl>    <span class=n>macd_strength</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>abs</span><span class=p>(</span><span class=n>macd_line</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># MACD与信号线的距离</span>
+</span></span><span class=line><span class=cl>    <span class=n>macd_distance</span> <span class=o>=</span> <span class=n>macd_line</span> <span class=o>-</span> <span class=n>signal_line</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 柱状图变化率</span>
+</span></span><span class=line><span class=cl>    <span class=n>histogram_change</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>gradient</span><span class=p>(</span><span class=n>histogram</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>macd_slope</span><span class=p>,</span> <span class=n>macd_strength</span><span class=p>,</span> <span class=n>macd_distance</span><span class=p>,</span> <span class=n>histogram_change</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>macd_slope</span><span class=p>,</span> <span class=n>macd_strength</span><span class=p>,</span> <span class=n>macd_distance</span><span class=p>,</span> <span class=n>hist_change</span> <span class=o>=</span> <span class=n>calculate_macd_momentum</span><span class=p>(</span><span class=n>macd</span><span class=p>,</span> <span class=n>signal</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 当前动量状态分析</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== 当前MACD动量状态 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;MACD值: </span><span class=si>{</span><span class=n>macd</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.4f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;信号线值: </span><span class=si>{</span><span class=n>signal</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.4f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;柱状图值: </span><span class=si>{</span><span class=n>histogram</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.4f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;MACD斜率: </span><span class=si>{</span><span class=n>macd_slope</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.6f</span><span class=si>}</span><span class=s2> (</span><span class=si>{</span><span class=s1>&#39;上升&#39;</span> <span class=k>if</span> <span class=n>macd_slope</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=k>else</span> <span class=s1>&#39;下降&#39;</span><span class=si>}</span><span class=s2>)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;趋势强度: </span><span class=si>{</span><span class=n>macd_strength</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.4f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;相对信号线位置: </span><span class=si>{</span><span class=s1>&#39;上方&#39;</span> <span class=k>if</span> <span class=n>macd_distance</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=k>else</span> <span class=s1>&#39;下方&#39;</span><span class=si>}</span><span class=s2> (</span><span class=si>{</span><span class=n>macd_distance</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.4f</span><span class=si>}</span><span class=s2>)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;柱状图变化: </span><span class=si>{</span><span class=n>hist_change</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.6f</span><span class=si>}</span><span class=s2> (</span><span class=si>{</span><span class=s1>&#39;扩大&#39;</span> <span class=k>if</span> <span class=n>hist_change</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=k>else</span> <span class=s1>&#39;缩小&#39;</span><span class=si>}</span><span class=s2>)&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h3 id=macd指标可视化分析>MACD指标可视化分析</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span><span class=lnt>85
+</span><span class=lnt>86
+</span><span class=lnt>87
+</span><span class=lnt>88
+</span><span class=lnt>89
+</span><span class=lnt>90
+</span><span class=lnt>91
+</span><span class=lnt>92
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 创建MACD综合分析图表</span>
+</span></span><span class=line><span class=cl><span class=n>fig</span><span class=p>,</span> <span class=n>axes</span> <span class=o>=</span> <span class=n>plt</span><span class=o>.</span><span class=n>subplots</span><span class=p>(</span><span class=mi>3</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=n>figsize</span><span class=o>=</span><span class=p>(</span><span class=mi>15</span><span class=p>,</span> <span class=mi>12</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 主图：价格走势与信号标记</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>dates</span><span class=p>,</span> <span class=n>close_prices</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;收盘价&#39;</span><span class=p>,</span> <span class=n>linewidth</span><span class=o>=</span><span class=mi>2</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;black&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 标记MACD信号</span>
+</span></span><span class=line><span class=cl><span class=n>signal_dates</span> <span class=o>=</span> <span class=n>dates</span><span class=p>[</span><span class=n>golden_cross</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>signal_dates</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>signal_prices</span> <span class=o>=</span> <span class=n>close_prices</span><span class=p>[</span><span class=n>golden_cross</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=n>axes</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>scatter</span><span class=p>(</span><span class=n>signal_dates</span><span class=p>,</span> <span class=n>signal_prices</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;green&#39;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                   <span class=n>marker</span><span class=o>=</span><span class=s1>&#39;^&#39;</span><span class=p>,</span> <span class=n>s</span><span class=o>=</span><span class=mi>100</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;黄金交叉&#39;</span><span class=p>,</span> <span class=n>zorder</span><span class=o>=</span><span class=mi>5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>signal_dates</span> <span class=o>=</span> <span class=n>dates</span><span class=p>[</span><span class=n>death_cross</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>signal_dates</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>signal_prices</span> <span class=o>=</span> <span class=n>close_prices</span><span class=p>[</span><span class=n>death_cross</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=n>axes</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>scatter</span><span class=p>(</span><span class=n>signal_dates</span><span class=p>,</span> <span class=n>signal_prices</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;red&#39;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                   <span class=n>marker</span><span class=o>=</span><span class=s1>&#39;v&#39;</span><span class=p>,</span> <span class=n>s</span><span class=o>=</span><span class=mi>100</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;死亡交叉&#39;</span><span class=p>,</span> <span class=n>zorder</span><span class=o>=</span><span class=mi>5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>set_title</span><span class=p>(</span><span class=s1>&#39;价格走势与MACD交易信号&#39;</span><span class=p>,</span> <span class=n>fontsize</span><span class=o>=</span><span class=mi>14</span><span class=p>,</span> <span class=n>fontweight</span><span class=o>=</span><span class=s1>&#39;bold&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>set_ylabel</span><span class=p>(</span><span class=s1>&#39;价格&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>legend</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>grid</span><span class=p>(</span><span class=kc>True</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.3</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 副图1：MACD线与信号线</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>dates</span><span class=p>,</span> <span class=n>macd</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;MACD线&#39;</span><span class=p>,</span> <span class=n>linewidth</span><span class=o>=</span><span class=mi>2</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;blue&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>dates</span><span class=p>,</span> <span class=n>signal</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;信号线&#39;</span><span class=p>,</span> <span class=n>linewidth</span><span class=o>=</span><span class=mi>2</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;red&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>axhline</span><span class=p>(</span><span class=n>y</span><span class=o>=</span><span class=mi>0</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;black&#39;</span><span class=p>,</span> <span class=n>linestyle</span><span class=o>=</span><span class=s1>&#39;--&#39;</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 填充柱状图</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>bar</span><span class=p>(</span><span class=n>dates</span><span class=p>,</span> <span class=n>histogram</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;柱状图&#39;</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.3</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>           <span class=n>color</span><span class=o>=</span><span class=p>[</span><span class=s1>&#39;green&#39;</span> <span class=k>if</span> <span class=n>h</span> <span class=o>&gt;=</span> <span class=mi>0</span> <span class=k>else</span> <span class=s1>&#39;red&#39;</span> <span class=k>for</span> <span class=n>h</span> <span class=ow>in</span> <span class=n>histogram</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>set_title</span><span class=p>(</span><span class=s1>&#39;MACD指标分析&#39;</span><span class=p>,</span> <span class=n>fontsize</span><span class=o>=</span><span class=mi>14</span><span class=p>,</span> <span class=n>fontweight</span><span class=o>=</span><span class=s1>&#39;bold&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>set_ylabel</span><span class=p>(</span><span class=s1>&#39;MACD值&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>legend</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>grid</span><span class=p>(</span><span class=kc>True</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.3</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 副图2：MACD动量分析</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span><span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>dates</span><span class=p>,</span> <span class=n>macd_slope</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;MACD斜率&#39;</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;purple&#39;</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.8</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span><span class=o>.</span><span class=n>axhline</span><span class=p>(</span><span class=n>y</span><span class=o>=</span><span class=mi>0</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;black&#39;</span><span class=p>,</span> <span class=n>linestyle</span><span class=o>=</span><span class=s1>&#39;--&#39;</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 添加趋势强度区域</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span><span class=o>.</span><span class=n>fill_between</span><span class=p>(</span><span class=n>dates</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=n>macd_strength</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.3</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                    <span class=n>color</span><span class=o>=</span><span class=s1>&#39;orange&#39;</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;趋势强度&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span><span class=o>.</span><span class=n>set_title</span><span class=p>(</span><span class=s1>&#39;MACD动量分析&#39;</span><span class=p>,</span> <span class=n>fontsize</span><span class=o>=</span><span class=mi>14</span><span class=p>,</span> <span class=n>fontweight</span><span class=o>=</span><span class=s1>&#39;bold&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span><span class=o>.</span><span class=n>set_ylabel</span><span class=p>(</span><span class=s1>&#39;动量值&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span><span class=o>.</span><span class=n>set_xlabel</span><span class=p>(</span><span class=s1>&#39;日期&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span><span class=o>.</span><span class=n>legend</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span><span class=o>.</span><span class=n>grid</span><span class=p>(</span><span class=kc>True</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.3</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>tight_layout</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>show</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 生成综合交易建议</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== MACD综合分析与交易建议 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>current_macd</span> <span class=o>=</span> <span class=n>macd</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>current_signal</span> <span class=o>=</span> <span class=n>signal</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>current_hist</span> <span class=o>=</span> <span class=n>histogram</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>current_slope</span> <span class=o>=</span> <span class=n>macd_slope</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 趋势判断</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=n>current_macd</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=ow>and</span> <span class=n>current_macd</span> <span class=o>&gt;</span> <span class=n>current_signal</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>trend_status</span> <span class=o>=</span> <span class=s2>&#34;上升趋势&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>signal_strength</span> <span class=o>=</span> <span class=s2>&#34;强&#34;</span> <span class=k>if</span> <span class=nb>abs</span><span class=p>(</span><span class=n>current_hist</span><span class=p>)</span> <span class=o>&gt;</span> <span class=nb>abs</span><span class=p>(</span><span class=n>current_hist</span><span class=p>[</span><span class=o>-</span><span class=mi>5</span><span class=p>:])</span><span class=o>.</span><span class=n>mean</span><span class=p>()</span> <span class=k>else</span> <span class=s2>&#34;温和&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>elif</span> <span class=n>current_macd</span> <span class=o>&lt;</span> <span class=mi>0</span> <span class=ow>and</span> <span class=n>current_macd</span> <span class=o>&lt;</span> <span class=n>current_signal</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>trend_status</span> <span class=o>=</span> <span class=s2>&#34;下跌趋势&#34;</span>  
+</span></span><span class=line><span class=cl>    <span class=n>signal_strength</span> <span class=o>=</span> <span class=s2>&#34;强&#34;</span> <span class=k>if</span> <span class=nb>abs</span><span class=p>(</span><span class=n>current_hist</span><span class=p>)</span> <span class=o>&gt;</span> <span class=nb>abs</span><span class=p>(</span><span class=n>current_hist</span><span class=p>[</span><span class=o>-</span><span class=mi>5</span><span class=p>:])</span><span class=o>.</span><span class=n>mean</span><span class=p>()</span> <span class=k>else</span> <span class=s2>&#34;温和&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>trend_status</span> <span class=o>=</span> <span class=s2>&#34;震荡整理&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>signal_strength</span> <span class=o>=</span> <span class=s2>&#34;不确定&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;当前趋势状态: </span><span class=si>{</span><span class=n>trend_status</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;信号强度: </span><span class=si>{</span><span class=n>signal_strength</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;动量方向: </span><span class=si>{</span><span class=s1>&#39;上升&#39;</span> <span class=k>if</span> <span class=n>current_slope</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=k>else</span> <span class=s1>&#39;下降&#39;</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 生成具体建议</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=n>golden_cross</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>    <span class=n>recommendation</span> <span class=o>=</span> <span class=s2>&#34;买入信号 - MACD黄金交叉&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>elif</span> <span class=n>death_cross</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]:</span>
+</span></span><span class=line><span class=cl>    <span class=n>recommendation</span> <span class=o>=</span> <span class=s2>&#34;卖出信号 - MACD死亡交叉&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>elif</span> <span class=n>current_macd</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=ow>and</span> <span class=n>current_slope</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>recommendation</span> <span class=o>=</span> <span class=s2>&#34;持有多头 - 上升趋势延续&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>elif</span> <span class=n>current_macd</span> <span class=o>&lt;</span> <span class=mi>0</span> <span class=ow>and</span> <span class=n>current_slope</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>recommendation</span> <span class=o>=</span> <span class=s2>&#34;持有空头 - 下跌趋势延续&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>recommendation</span> <span class=o>=</span> <span class=s2>&#34;观望等待 - 等待明确信号&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;操作建议: </span><span class=si>{</span><span class=n>recommendation</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;风险提示: 建议设置止损位，控制仓位风险&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h2 id=macd高级应用从单一指标到系统策略>MACD高级应用：从单一指标到系统策略</h2><h3 id=macd多时间框架分析>MACD多时间框架分析</h3><p>多时间框架MACD分析遵循"大周期定方向，小周期选时机"的基本原则。周线级别MACD用于判断主要趋势方向，日线级别MACD用于识别中期交易机会，而小时线或30分钟线MACD则用于精确化入场时机。</p><p>多周期共振策略要求不同时间框架的MACD信号方向一致。当周线MACD处于上升趋势，日线MACD出现黄金交叉，且小时线MACD突破零轴时，构成高概率买入信号。这种多周期确认机制能够显著提升交易成功率。</p><h3 id=macd指标参数优化>MACD指标参数优化</h3><p>标准MACD参数(12,26,9)适用于大多数市场环境，但投资者可根据品种特性和交易风格进行参数优化。短线交易者可采用(5,13,5)参数组合，提高指标敏感度；长线投资者可使用(21,55,13)参数，获得更稳定的信号。</p><p>自适应MACD参数调整基于市场波动率动态优化指标参数。在高波动环境中延长慢速EMA周期，在低波动环境中缩短周期，使MACD指标能够适应不同的市场状态。</p><h3 id=macd与其他指标的组合应用>MACD与其他指标的组合应用</h3><p>MACD与RSI指标的组合应用能够有效过滤虚假信号。当MACD出现黄金交叉且RSI指标从超卖区域回升时，买入信号的可信度显著提升；当MACD出现死亡交叉且RSI指标从超买区域回落时，卖出信号更加可靠。</p><p>MACD与布林带指标的结合使用有助于识别突破行情。当价格突破布林带上轨且MACD柱状图快速扩大时，表明强势突破确立；当价格跌破布林带下轨且MACD线加速下跌时，暗示下跌趋势加剧。</p><h3 id=macd量化交易策略构建>MACD量化交易策略构建</h3><p>基于MACD的量化交易策略通常包含以下要素：明确的入场条件、严格的止损机制、合理的仓位管理以及清晰的出场规则。入场条件可设定为MACD黄金交叉且柱状图转正，止损位可设在近期低点下方，出场条件可设为MACD死亡交叉或达到目标盈利位。</p><p>动态止损策略结合MACD指标变化调整止损位。当MACD指标持续向好时，可逐步提高止损位锁定利润；当MACD出现走弱迹象时，应收紧止损位控制风险暴露。</p><h2 id=macd指标实战要点与风险控制>MACD指标实战要点与风险控制</h2><h3 id=macd指标的核心优势>MACD指标的核心优势</h3><p>MACD指标的最大优势在于其双重功能：既能识别趋势方向，又能衡量动量强度。通过一条指标线同时提供趋势和动量信息，MACD为投资者提供了简洁而有效的分析工具。</p><p>MACD指标的适应性较强，适用于股票、期货、外汇、加密货币等各类金融市场。其计算逻辑基于价格动量，不依赖于特定的市场结构或交易机制，具有良好的普适性。</p><p>MACD指标的信号相对清晰，交叉信号和背离信号都有明确的判断标准，便于投资者制定量化的交易规则。这种标准化特征使得MACD指标在量化交易和算法交易中得到广泛应用。</p><h3 id=macd指标的固有局限>MACD指标的固有局限</h3><p>MACD指标的滞后性是其主要缺陷。作为基于移动平均线的衍生指标，MACD天然具有滞后特征，在快速变化的市场中可能导致入场时机延迟或出场不及时。</p><p>在震荡市中，MACD指标容易产生虚假信号。当价格在一定区间内反复波动时，MACD线会频繁穿越信号线，产生大量无效的交易信号，增加交易成本和亏损风险。</p><p>MACD指标对参数选择较为敏感。不同的快、慢速EMA参数组合会产生显著不同的信号效果，参数优化过程可能引入过度拟合风险，影响策略的稳健性。</p><h3 id=风险控制与资金管理>风险控制与资金管理</h3><p>使用MACD指标进行交易时，严格的风险控制至关重要。建议单笔交易风险不超过总资金的2%，并通过分散投资降低单一品种的风险暴露。止损位的设置应结合市场波动性和个人风险承受能力综合确定。</p><p>仓位管理策略应根据MACD信号的强度动态调整。在强趋势行情中可适当增加仓位，在震荡市中应降低仓位或暂停交易。通过动态仓位调整，能够在控制风险的同时最大化收益潜力。</p><p>MACD指标应作为技术分析体系的重要组成部分，而非唯一决策依据。成功的交易策略需要将MACD分析与基本面分析、市场情绪分析以及其他技术指标相结合，构建多维度的投资决策框架，实现长期稳定的投资收益。</p></div></article><aside class="lg:w-80 xl:w-96"><div class=space-y-8></div></aside></div><nav class="border-t border-gray-200 mt-12 pt-8"><div class="flex justify-between items-center"><a href=/blog/%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87/01-ma%E7%A7%BB%E5%8A%A8%E5%B9%B3%E5%9D%87%E7%BA%BF%E5%9F%BA%E7%A1%80/ class="group flex items-center"><svg class="w-5 h-5 mr-2 text-gray-600 group-hover:text-primary-600" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0 7-7m-7 7h18"/></svg><div><div class="text-sm text-gray-600">上一篇</div><div class="font-medium group-hover:text-primary-600">技术指标第1讲：MA移动平均线基础</div></div></a><a href=/blog/%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87/03-rsi%E7%9B%B8%E5%AF%B9%E5%BC%BA%E5%BC%B1%E6%8C%87%E6%A0%87/ class="group flex items-center text-right"><div><div class="text-sm text-gray-600">Next Post</div><div class="font-medium group-hover:text-primary-600">技术指标第3讲：RSI相对强弱指标</div></div><svg class="w-5 h-5 ml-2 text-gray-600 group-hover:text-primary-600" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0-7 7m7-7H3"/></svg></a></div></nav></div></div><footer class="bg-gray-50 py-12 border-t border-gray-200"><div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl"><div class="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0"><div class=flex-1><div class="flex items-center space-x-3 mb-4"><a href=https://sk-quant.github.io/ class=inline-block><img src=/images/logo.svg alt=烧烤量化 class=h-6>
+</a><span class="text-xl font-bold text-gray-900">烧烤量化</span></div><div class="flex space-x-3 p-2"><a href=https://linkedin.com/in/yourusername class="text-gray-600 hover:text-gray-900" target=_blank rel="noopener noreferrer"><span class=sr-only>LinkedIn</span>
+<img src=/images/social/linkedin.svg alt=LinkedIn class="h-5 w-5">
+</a><a href=https://bsky.app/profile/yourblueskyhandle class="text-gray-600 hover:text-gray-900" target=_blank rel="noopener noreferrer"><span class=sr-only>Bluesky</span>
+<img src=/images/social/bluesky.svg alt=Bluesky class="h-5 w-5">
+</a><a href=https://twitter.com/yourusername class="text-gray-600 hover:text-gray-900" target=_blank rel="noopener noreferrer"><span class=sr-only>Twitter (X)</span>
+<img src=/images/social/twitter.svg alt=Twitter class="h-5 w-5">
+</a><a href=https://github.com/yourusername class="text-gray-600 hover:text-gray-900" target=_blank rel="noopener noreferrer"><span class=sr-only>GitHub</span>
+<img src=/images/social/github.svg alt=GitHub class="h-5 w-5"></a></div></div><div class=flex-1><h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4"></h3><ul class=space-y-2></ul></div><div class=flex-1><h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4"></h3><ul class=space-y-2></ul></div><div class=flex-1><h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4"></h3><ul class=space-y-2></ul></div></div><div class="mt-12 pt-8 border-t border-gray-200"><div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0"><p class="text-gray-600 text-sm">© 2025 烧烤量化. All rights reserved.</p><a href=https://chaoming.li class="text-sm text-gray-600 hover:text-primary-600" target=_blank rel="noopener noreferrer">Powered by sk-quant</a></div></div></div></footer><script>const mobileMenuButton=document.getElementById("mobile-menu-button");mobileMenuButton&&mobileMenuButton.addEventListener("click",function(){const e=document.getElementById("mobile-menu");e&&e.classList.toggle("hidden")})</script></body></html>

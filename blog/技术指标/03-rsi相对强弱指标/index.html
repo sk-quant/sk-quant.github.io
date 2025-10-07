@@ -1,0 +1,840 @@
+<!doctype html><html lang=zh-cn class=h-full><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><script>(function(e,t,n,s,o){e[s]=e[s]||[],e[s].push({"gtm.start":(new Date).getTime(),event:"gtm.js"});var a=t.getElementsByTagName(n)[0],i=t.createElement(n),r=s!="dataLayer"?"&l="+s:"";i.async=!0,i.src="https://www.googletagmanager.com/gtm.js?id="+o+r,a.parentNode.insertBefore(i,a)})(window,document,"script","dataLayer","GTM-XXXXXXX")</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-XXXXXXXXXX")</script><title>技术指标第3讲：RSI相对强弱指标 | 烧烤量化</title>
+<meta name=description content="系统解析RSI指标的计算逻辑、超买超卖识别与背离分析，从14日标准参数到动态优化，构建基于相对强弱分析的量化交易框架"><meta name=author content="Ryan"><meta name=robots content="index, follow"><meta property="og:title" content="技术指标第3讲：RSI相对强弱指标 | 烧烤量化"><meta property="og:description" content="系统解析RSI指标的计算逻辑、超买超卖识别与背离分析，从14日标准参数到动态优化，构建基于相对强弱分析的量化交易框架"><meta property="og:type" content="article"><meta property="og:url" content="https://sk-quant.github.io/blog/%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87/03-rsi%E7%9B%B8%E5%AF%B9%E5%BC%BA%E5%BC%B1%E6%8C%87%E6%A0%87/"><meta property="og:site_name" content="烧烤量化"><meta name=twitter:card content="summary_large_image"><meta name=twitter:title content="技术指标第3讲：RSI相对强弱指标 | 烧烤量化"><meta name=twitter:description content="系统解析RSI指标的计算逻辑、超买超卖识别与背离分析，从14日标准参数到动态优化，构建基于相对强弱分析的量化交易框架"><link rel=icon type=image/x-icon href=/images/favicon.ico><link rel=canonical href=https://sk-quant.github.io/blog/%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87/03-rsi%E7%9B%B8%E5%AF%B9%E5%BC%BA%E5%BC%B1%E6%8C%87%E6%A0%87/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel=stylesheet><link rel=stylesheet href="/css/main.min.0ec21c03b9f63a8c5e37663a4d2dc1608de61fd749fcfef42ffda7dc5bf34cc4.css"></head><body class="min-h-screen flex flex-col"><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height=0 width=0 style=display:none;visibility:hidden></iframe></noscript><div class="fixed top-0 left-0 right-0 z-50"><div class=mobile-menu-wrapper><input type=checkbox id=nav-toggle class=nav-toggle><header class="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-100"><div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl"><nav class="flex items-center justify-between h-20"><a href=https://sk-quant.github.io/ class="flex items-center space-x-4"><img src=/images/logo.svg alt=烧烤量化 class=h-12>
+<span class="text-3xl font-semibold text-gray-800">烧烤量化</span></a><div class="hidden md:flex items-center space-x-8"><a href=/path class="text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">学习路线</a><div class="relative group"><button class="flex items-center text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">
+量化基础<svg class="ml-2 w-4 h-4" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="absolute left-0 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out"><div class="py-6 bg-white border border-gray-100 shadow-xl rounded-lg"><a href=/categories/%e6%8a%95%e8%b5%84%e7%90%86%e8%ae%ba/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">投资理论</a>
+<a href=/categories/%e4%bb%a3%e7%a0%81%e5%9f%ba%e7%a1%80/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">代码基础</a>
+<a href=/categories/%e6%8a%80%e6%9c%af%e6%8c%87%e6%a0%87/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">技术指标</a>
+<a href=/categories/%e5%9b%9e%e6%b5%8b%e5%b9%b3%e5%8f%b0/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">回测平台</a></div></div></div><div class="relative group"><button class="flex items-center text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">
+量化进阶<svg class="ml-2 w-4 h-4" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="absolute left-0 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out"><div class="py-6 bg-white border border-gray-100 shadow-xl rounded-lg"><a href=/categories/%e7%ad%96%e7%95%a5%e5%88%86%e4%ba%ab/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">策略分享</a>
+<a href=/categories/%e5%ae%9e%e7%9b%98%e5%b7%a5%e5%85%b7/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">实盘工具</a>
+<a href=/categories/%e7%83%ad%e7%82%b9%e9%a3%8e%e5%8f%a3/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">热点风口</a>
+<a href=/categories/%e7%bb%bc%e5%90%88%e5%ae%9e%e6%88%98/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">综合实战</a></div></div></div><div class="relative group"><button class="flex items-center text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">
+量化高手<svg class="ml-2 w-4 h-4" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="absolute left-0 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out"><div class="py-6 bg-white border border-gray-100 shadow-xl rounded-lg"><a href=/categories/%e5%8f%af%e8%bd%ac%e5%80%ba/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">可转债</a>
+<a href=/categories/%e8%9e%8d%e8%b5%84%e8%9e%8d%e5%88%b8/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">融资融券</a>
+<a href=/categories/%e8%82%a1%e7%a5%a8%e6%9c%9f%e6%9d%83/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">股票期权</a>
+<a href=/categories/%e8%82%a1%e6%8c%87%e6%9c%9f%e8%b4%a7/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">股指期货</a></div></div></div><a href=/pricing class="text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">服务套餐</a></div><div class="hidden md:flex items-center space-x-4"><a href=/contact class="inline-flex items-center justify-center px-6 py-3 rounded-lg font-bold transition duration-200 ease-in-out bg-primary-600 text-white hover:bg-primary-700 hover:scale-105">现在加入</a></div><div class=md:hidden><label for=nav-toggle class="p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2 transition-colors cursor-pointer"><svg class="w-6 h-6" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></label></div></nav></div><div class="nav-content md:hidden w-full fixed left-0 right-0 top-20 bg-white border-t border-gray-100 shadow-lg"><div class="w-full px-6 py-4"><a href=/path class="block text-xl text-gray-900 hover:text-primary-600 font-bold transition duration-200 py-2">学习路线</a><div class=py-2><div class="text-xl text-gray-900 font-bold mb-2">量化基础</div><div class=pl-4><a href=/categories/%e6%8a%95%e8%b5%84%e7%90%86%e8%ae%ba/ class="block text-gray-700 hover:text-primary-600 py-2">投资理论</a>
+<a href=/categories/%e4%bb%a3%e7%a0%81%e5%9f%ba%e7%a1%80/ class="block text-gray-700 hover:text-primary-600 py-2">代码基础</a>
+<a href=/categories/%e6%8a%80%e6%9c%af%e6%8c%87%e6%a0%87/ class="block text-gray-700 hover:text-primary-600 py-2">技术指标</a>
+<a href=/categories/%e5%9b%9e%e6%b5%8b%e5%b9%b3%e5%8f%b0/ class="block text-gray-700 hover:text-primary-600 py-2">回测平台</a></div></div><div class=py-2><div class="text-xl text-gray-900 font-bold mb-2">量化进阶</div><div class=pl-4><a href=/categories/%e7%ad%96%e7%95%a5%e5%88%86%e4%ba%ab/ class="block text-gray-700 hover:text-primary-600 py-2">策略分享</a>
+<a href=/categories/%e5%ae%9e%e7%9b%98%e5%b7%a5%e5%85%b7/ class="block text-gray-700 hover:text-primary-600 py-2">实盘工具</a>
+<a href=/categories/%e7%83%ad%e7%82%b9%e9%a3%8e%e5%8f%a3/ class="block text-gray-700 hover:text-primary-600 py-2">热点风口</a>
+<a href=/categories/%e7%bb%bc%e5%90%88%e5%ae%9e%e6%88%98/ class="block text-gray-700 hover:text-primary-600 py-2">综合实战</a></div></div><div class=py-2><div class="text-xl text-gray-900 font-bold mb-2">量化高手</div><div class=pl-4><a href=/categories/%e5%8f%af%e8%bd%ac%e5%80%ba/ class="block text-gray-700 hover:text-primary-600 py-2">可转债</a>
+<a href=/categories/%e8%9e%8d%e8%b5%84%e8%9e%8d%e5%88%b8/ class="block text-gray-700 hover:text-primary-600 py-2">融资融券</a>
+<a href=/categories/%e8%82%a1%e7%a5%a8%e6%9c%9f%e6%9d%83/ class="block text-gray-700 hover:text-primary-600 py-2">股票期权</a>
+<a href=/categories/%e8%82%a1%e6%8c%87%e6%9c%9f%e8%b4%a7/ class="block text-gray-700 hover:text-primary-600 py-2">股指期货</a></div></div><a href=/pricing class="block text-xl text-gray-900 hover:text-primary-600 font-bold transition duration-200 py-2">服务套餐</a><div class="pt-4 space-y-4"><a href=/contact class="block text-center px-6 py-3 rounded-lg font-bold transition duration-200 ease-in-out bg-primary-600 text-white hover:bg-primary-700 hover:scale-105">现在加入</a></div></div></div></header><style>.mobile-menu-wrapper{position:relative}.nav-toggle{display:none}.nav-content{display:none}.nav-toggle:checked~header .nav-content{display:block}</style></div></div><div class=pt-20><div class="container mx-auto px-4 py-12"><div class="flex flex-col lg:flex-row gap-8 mb-12"><article class=flex-1><header class=mb-8><div class=mb-4><a href=/categories/%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87 class="inline-block px-3 py-1 text-sm font-medium text-primary-600 bg-primary-50 rounded-full hover:bg-primary-100 mr-2">技术指标</a></div><h1 class="text-4xl font-bold mb-4">技术指标第3讲：RSI相对强弱指标</h1><div class="flex flex-col space-y-4"><div class="flex items-center justify-between text-sm text-gray-500"><div class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7A4 4 0 118 7a4 4 0 018 0zm-4 7a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+<span>Ryan</span></div><div class="flex items-center space-x-6"><div class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747.0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746.0-3.332.477-4.5 1.253"/></svg>
+<span>13 分钟</span></div><div class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5A2 2 0 003 7v12a2 2 0 002 2z"/></svg>
+<time datetime=2025-09-13>September 13, 2025</time></div></div></div><div class="flex items-center flex-wrap gap-2"><a href=/tags/2025 class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors duration-200">#2025</a></div></div></header><div class=mb-8><img src=/images/blog/%e6%8a%80%e6%9c%af%e6%8c%87%e6%a0%87.jpg alt=技术指标第3讲：RSI相对强弱指标 class="w-full h-auto rounded-lg" loading=lazy></div><div class="prose prose-lg max-w-none"><div class="bg-gray-50 p-6 rounded-lg mb-8"><h2 class="text-xl font-semibold mb-4">目录</h2><nav id=TableOfContents><ul><li><a href=#rsi相对强弱指标价格动量的量化标尺>RSI相对强弱指标：价格动量的量化标尺</a></li><li><a href=#rsi计算原理从价格变化到强弱量化>RSI计算原理：从价格变化到强弱量化</a><ul><li><a href=#rsi的数学构建逻辑>RSI的数学构建逻辑</a></li><li><a href=#平滑rsi算法优化>平滑RSI算法优化</a></li><li><a href=#rsi的统计学特征>RSI的统计学特征</a></li></ul></li><li><a href=#rsi信号识别从超买超卖到背离分析>RSI信号识别：从超买超卖到背离分析</a><ul><li><a href=#传统阈值信号系统>传统阈值信号系统</a></li><li><a href=#动态阈值优化策略>动态阈值优化策略</a></li><li><a href=#rsi背离分析技术>RSI背离分析技术</a></li><li><a href=#rsi形态分析>RSI形态分析</a></li></ul></li><li><a href=#rsi实战应用从单一信号到系统策略>RSI实战应用：从单一信号到系统策略</a><ul><li><a href=#rsi反转交易策略>RSI反转交易策略</a></li><li><a href=#rsi趋势跟踪策略>RSI趋势跟踪策略</a></li><li><a href=#rsi区间交易策略>RSI区间交易策略</a></li></ul></li><li><a href=#基于talib的rsi指标python实现>基于talib的RSI指标Python实现</a><ul><li><a href=#环境配置与数据准备>环境配置与数据准备</a></li><li><a href=#rsi指标计算与基础分析>RSI指标计算与基础分析</a></li><li><a href=#rsi背离识别与分析>RSI背离识别与分析</a></li><li><a href=#rsi交易策略回测>RSI交易策略回测</a></li><li><a href=#rsi指标可视化分析>RSI指标可视化分析</a></li></ul></li><li><a href=#rsi高级应用从单一指标到系统优化>RSI高级应用：从单一指标到系统优化</a><ul><li><a href=#rsi参数动态优化>RSI参数动态优化</a></li><li><a href=#rsi多时间框架分析>RSI多时间框架分析</a></li><li><a href=#rsi与其他指标的组合优化>RSI与其他指标的组合优化</a></li><li><a href=#rsi量化交易策略构建>RSI量化交易策略构建</a></li></ul></li><li><a href=#rsi指标优势局限与实战总结>RSI指标优势局限与实战总结</a><ul><li><a href=#rsi指标的核心优势>RSI指标的核心优势</a></li><li><a href=#rsi指标的固有局限>RSI指标的固有局限</a></li><li><a href=#实战应用要点总结>实战应用要点总结</a></li></ul></li></ul></nav></div><h2 id=rsi相对强弱指标价格动量的量化标尺>RSI相对强弱指标：价格动量的量化标尺</h2><p>RSI（Relative Strength Index）相对强弱指标，由技术分析大师Welles Wilder于1978年在其著作《技术交易系统新概念》中首次提出，是衡量价格变动速度和变化幅度的重要震荡指标。RSI通过比较一段时期内价格上涨幅度与下跌幅度的相对关系，量化市场的超买超卖状态，为投资者提供趋势转折的早期预警信号。</p><p>RSI指标的核心价值在于其"相对性"特征。不同于绝对价格指标，RSI将价格变化标准化为0-100的区间，使得不同品种、不同时间段的强弱比较成为可能。当RSI指标突破传统阈值（70/30）时，表明市场可能进入极端状态，为交易决策提供重要参考。</p><h2 id=rsi计算原理从价格变化到强弱量化>RSI计算原理：从价格变化到强弱量化</h2><h3 id=rsi的数学构建逻辑>RSI的数学构建逻辑</h3><p>RSI指标的计算基于"上涨力度与下跌力度的比值"这一核心概念。其计算过程分为以下几个步骤：</p><ol><li><strong>价格变化分解</strong>：将价格变化分解为上涨变化和下跌变化</li><li><strong>平均力度计算</strong>：分别计算上涨和下跌的平均力度</li><li><strong>相对强度计算</strong>：计算上涨平均力度与下跌平均力度的比值</li><li><strong>指数转换</strong>：将相对强度转换为0-100区间的RSI值</li></ol><p>具体计算公式为：</p><p>RS = 平均上涨幅度 / 平均下跌幅度
+RSI = 100 - (100 / (1 + RS))</p><p>其中，RS代表相对强度（Relative Strength），平均上涨幅度和平均下跌幅度通常采用简单移动平均计算。</p><h3 id=平滑rsi算法优化>平滑RSI算法优化</h3><p>标准RSI计算采用简单移动平均，但为了提高指标的平滑性和稳定性，Wilder推荐使用指数移动平均（EMA）进行计算：</p><p>平均上涨幅度(t) = 平均上涨幅度(t-1) × (n-1)/n + 当前上涨幅度 × 1/n
+平均下跌幅度(t) = 平均下跌幅度(t-1) × (n-1)/n + 当前下跌幅度 × 1/n</p><p>这种平滑算法使得RSI指标对近期价格变化更加敏感，同时保持了良好的稳定性。</p><h3 id=rsi的统计学特征>RSI的统计学特征</h3><p>RSI指标具有明确的统计学解释。当RSI=50时，表明上涨力度与下跌力度相等，市场处于平衡状态；当RSI>50时，表明上涨力度大于下跌力度，市场偏向强势；当RSI&lt;50时，表明下跌力度大于上涨力度，市场偏向弱势。</p><p>RSI指标的极值（接近0或100）具有特殊的统计意义。RSI接近100表明市场几乎单边上涨，RSI接近0表明市场几乎单边下跌，这两种极端状态通常难以持续，为趋势反转提供预警信号。</p><h2 id=rsi信号识别从超买超卖到背离分析>RSI信号识别：从超买超卖到背离分析</h2><h3 id=传统阈值信号系统>传统阈值信号系统</h3><p><strong>超买区域</strong>：RSI > 70，表明市场可能过度买入，面临回调风险
+<strong>超卖区域</strong>：RSI &lt; 30，表明市场可能过度卖出，存在反弹机会
+<strong>中性区域</strong>：30 ≤ RSI ≤ 70，表明市场处于正常波动范围</p><p>传统阈值信号的应用需要注意市场环境的影响。在强势上涨市场中，RSI可能长期维持在70以上；在弱势下跌市场中，RSI可能长期维持在30以下。因此，阈值信号应结合趋势分析使用。</p><h3 id=动态阈值优化策略>动态阈值优化策略</h3><p><strong>趋势调整阈值</strong>：在上升趋势中，将超买阈值上调至80，超卖阈值上调至40；在下降趋势中，将超买阈值下调至60，超卖阈值下调至20。</p><p><strong>波动率调整阈值</strong>：在高波动环境中，扩大阈值范围（如75/25）；在低波动环境中，缩小阈值范围（如65/35）。</p><p><strong>品种特性调整</strong>：不同品种具有不同的RSI特征，应根据历史数据统计确定个性化的阈值标准。</p><h3 id=rsi背离分析技术>RSI背离分析技术</h3><p><strong>顶背离</strong>：价格创新高，但RSI指标未能同步创新高，暗示上涨动量减弱，可能面临趋势反转。</p><p><strong>底背离</strong>：价格创新低，但RSI指标未能同步创新低，暗示下跌动量减弱，可能迎来趋势反转。</p><p><strong>多重背离</strong>：多次背离信号的出现通常比单次背离更可靠，为趋势反转提供更强的预警信号。</p><p>背离信号的确认需要满足以下条件：</p><ul><li>背离的幅度：价格与指标的背离幅度越大，信号越可靠</li><li>背离的次数：多重背离比单一背离更可信</li><li>背离的时间跨度：长时间跨度形成的背离信号更可靠</li></ul><h3 id=rsi形态分析>RSI形态分析</h3><p><strong>RSI趋势线突破</strong>：在RSI图表上绘制趋势线，当RSI突破趋势线时，往往预示价格将出现同向突破。</p><p><strong>RSI支撑阻力位</strong>：RSI在某些特定水平（如40、60）可能形成支撑或阻力，这些水平的突破具有技术分析意义。</p><p><strong>RSI价格形态</strong>：RSI图表上可能出现头肩顶、双底等经典价格形态，这些形态的形成和突破提供交易信号。</p><h2 id=rsi实战应用从单一信号到系统策略>RSI实战应用：从单一信号到系统策略</h2><h3 id=rsi反转交易策略>RSI反转交易策略</h3><p>RSI反转策略基于"均值回归"原理，当RSI进入极端区域时，预期价格将向均值回归。具体实施步骤：</p><ol><li><strong>信号识别</strong>：RSI进入超买（>70）或超卖（&lt;30）区域</li><li><strong>确认条件</strong>：价格出现反转K线形态或成交量异常</li><li><strong>入场时机</strong>：RSI从极端区域向中性区域回归时</li><li><strong>止损设置</strong>：近期高点/低点附近或固定百分比止损</li><li><strong>获利了结</strong>：RSI回到中性区域（50附近）或达到目标位</li></ol><h3 id=rsi趋势跟踪策略>RSI趋势跟踪策略</h3><p>RSI趋势跟踪策略基于"动量延续"原理，当RSI突破中性区域时，预期趋势将延续。具体实施要点：</p><p><strong>上升趋势跟踪</strong>：RSI从50以下向上突破50，且价格突破前期高点
+<strong>下降趋势跟踪</strong>：RSI从50以上向下跌破50，且价格跌破前期低点
+<strong>趋势确认</strong>：RSI在趋势方向上持续运行，远离中性区域</p><h3 id=rsi区间交易策略>RSI区间交易策略</h3><p>RSI区间交易适用于震荡市场环境，通过识别RSI的区间边界进行高抛低吸操作：</p><p><strong>区间识别</strong>：通过历史数据分析确定RSI的波动区间
+<strong>买入信号</strong>：RSI触及区间下界且出现回升迹象
+<strong>卖出信号</strong>：RSI触及区间上界且出现回落迹象
+<strong>区间突破</strong>：当RSI突破历史区间时，可能预示趋势形成</p><h2 id=基于talib的rsi指标python实现>基于talib的RSI指标Python实现</h2><h3 id=环境配置与数据准备>环境配置与数据准备</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>talib</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>numpy</span> <span class=k>as</span> <span class=nn>np</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>pandas</span> <span class=k>as</span> <span class=nn>pd</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>matplotlib.pyplot</span> <span class=k>as</span> <span class=nn>plt</span>
+</span></span><span class=line><span class=cl><span class=kn>import</span> <span class=nn>yfinance</span> <span class=k>as</span> <span class=nn>yf</span>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>datetime</span> <span class=kn>import</span> <span class=n>datetime</span><span class=p>,</span> <span class=n>timedelta</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 获取股票数据</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>get_stock_data</span><span class=p>(</span><span class=n>symbol</span><span class=p>,</span> <span class=n>period</span><span class=o>=</span><span class=s2>&#34;1y&#34;</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;获取股票历史数据&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>stock</span> <span class=o>=</span> <span class=n>yf</span><span class=o>.</span><span class=n>download</span><span class=p>(</span><span class=n>symbol</span><span class=p>,</span> <span class=n>period</span><span class=o>=</span><span class=n>period</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>stock</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 获取沪深300指数数据</span>
+</span></span><span class=line><span class=cl><span class=n>data</span> <span class=o>=</span> <span class=n>get_stock_data</span><span class=p>(</span><span class=s2>&#34;000300.SS&#34;</span><span class=p>,</span> <span class=n>period</span><span class=o>=</span><span class=s2>&#34;1y&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>close_prices</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;Close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>values</span>
+</span></span><span class=line><span class=cl><span class=n>high_prices</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;High&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>values</span>
+</span></span><span class=line><span class=cl><span class=n>low_prices</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=s1>&#39;Low&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>values</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;数据获取完成，共</span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>data</span><span class=p>)</span><span class=si>}</span><span class=s2>个交易日&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;价格区间: </span><span class=si>{</span><span class=n>data</span><span class=p>[</span><span class=s1>&#39;Close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>min</span><span class=p>()</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2> - </span><span class=si>{</span><span class=n>data</span><span class=p>[</span><span class=s1>&#39;Close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>max</span><span class=p>()</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 创建日期索引</span>
+</span></span><span class=line><span class=cl><span class=n>dates</span> <span class=o>=</span> <span class=n>data</span><span class=o>.</span><span class=n>index</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;数据时间范围: </span><span class=si>{</span><span class=n>dates</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=s1>&#39;%Y-%m-</span><span class=si>%d</span><span class=s1>&#39;</span><span class=p>)</span><span class=si>}</span><span class=s2> 至 </span><span class=si>{</span><span class=n>dates</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=s1>&#39;%Y-%m-</span><span class=si>%d</span><span class=s1>&#39;</span><span class=p>)</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h3 id=rsi指标计算与基础分析>RSI指标计算与基础分析</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 使用talib计算RSI指标（14日标准参数）</span>
+</span></span><span class=line><span class=cl><span class=n>rsi_14</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>RSI</span><span class=p>(</span><span class=n>close_prices</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>14</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 计算不同周期的RSI进行对比</span>
+</span></span><span class=line><span class=cl><span class=n>rsi_6</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>RSI</span><span class=p>(</span><span class=n>close_prices</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>6</span><span class=p>)</span>   <span class=c1># 短期RSI</span>
+</span></span><span class=line><span class=cl><span class=n>rsi_21</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>RSI</span><span class=p>(</span><span class=n>close_prices</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>21</span><span class=p>)</span> <span class=c1># 中期RSI</span>
+</span></span><span class=line><span class=cl><span class=n>rsi_34</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>RSI</span><span class=p>(</span><span class=n>close_prices</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=mi>34</span><span class=p>)</span> <span class=c1># 长期RSI</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 创建RSI分析DataFrame</span>
+</span></span><span class=line><span class=cl><span class=n>rsi_df</span> <span class=o>=</span> <span class=n>pd</span><span class=o>.</span><span class=n>DataFrame</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;Close&#39;</span><span class=p>:</span> <span class=n>close_prices</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;RSI_6&#39;</span><span class=p>:</span> <span class=n>rsi_6</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;RSI_14&#39;</span><span class=p>:</span> <span class=n>rsi_14</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;RSI_21&#39;</span><span class=p>:</span> <span class=n>rsi_21</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=s1>&#39;RSI_34&#39;</span><span class=p>:</span> <span class=n>rsi_34</span>
+</span></span><span class=line><span class=cl><span class=p>},</span> <span class=n>index</span><span class=o>=</span><span class=n>dates</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 显示最近10个交易日的RSI值</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s2>&#34;最近10个交易日RSI指标值:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=n>rsi_df</span><span class=o>.</span><span class=n>tail</span><span class=p>(</span><span class=mi>10</span><span class=p>)</span><span class=o>.</span><span class=n>round</span><span class=p>(</span><span class=mi>2</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># RSI信号识别函数</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>identify_rsi_signals</span><span class=p>(</span><span class=n>rsi_values</span><span class=p>,</span> <span class=n>overbought</span><span class=o>=</span><span class=mi>70</span><span class=p>,</span> <span class=n>oversold</span><span class=o>=</span><span class=mi>30</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;识别RSI超买超卖信号&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=c1># 超买信号</span>
+</span></span><span class=line><span class=cl>    <span class=n>overbought_signal</span> <span class=o>=</span> <span class=p>(</span><span class=n>rsi_values</span> <span class=o>&gt;</span> <span class=n>overbought</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 超卖信号  </span>
+</span></span><span class=line><span class=cl>    <span class=n>oversold_signal</span> <span class=o>=</span> <span class=p>(</span><span class=n>rsi_values</span> <span class=o>&lt;</span> <span class=n>oversold</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 进入超买区域</span>
+</span></span><span class=line><span class=cl>    <span class=n>enter_overbought</span> <span class=o>=</span> <span class=p>(</span><span class=n>rsi_values</span> <span class=o>&gt;</span> <span class=n>overbought</span><span class=p>)</span> <span class=o>&amp;</span> <span class=p>(</span><span class=n>rsi_values</span><span class=o>.</span><span class=n>shift</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span> <span class=o>&lt;=</span> <span class=n>overbought</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 进入超卖区域</span>
+</span></span><span class=line><span class=cl>    <span class=n>enter_oversold</span> <span class=o>=</span> <span class=p>(</span><span class=n>rsi_values</span> <span class=o>&lt;</span> <span class=n>oversold</span><span class=p>)</span> <span class=o>&amp;</span> <span class=p>(</span><span class=n>rsi_values</span><span class=o>.</span><span class=n>shift</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span> <span class=o>&gt;=</span> <span class=n>oversold</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 离开超买区域</span>
+</span></span><span class=line><span class=cl>    <span class=n>exit_overbought</span> <span class=o>=</span> <span class=p>(</span><span class=n>rsi_values</span> <span class=o>&lt;=</span> <span class=n>overbought</span><span class=p>)</span> <span class=o>&amp;</span> <span class=p>(</span><span class=n>rsi_values</span><span class=o>.</span><span class=n>shift</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span> <span class=o>&gt;</span> <span class=n>overbought</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 离开超卖区域</span>
+</span></span><span class=line><span class=cl>    <span class=n>exit_oversold</span> <span class=o>=</span> <span class=p>(</span><span class=n>rsi_values</span> <span class=o>&gt;=</span> <span class=n>oversold</span><span class=p>)</span> <span class=o>&amp;</span> <span class=p>(</span><span class=n>rsi_values</span><span class=o>.</span><span class=n>shift</span><span class=p>(</span><span class=mi>1</span><span class=p>)</span> <span class=o>&lt;</span> <span class=n>oversold</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;overbought&#39;</span><span class=p>:</span> <span class=n>overbought_signal</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;oversold&#39;</span><span class=p>:</span> <span class=n>oversold_signal</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;enter_overbought&#39;</span><span class=p>:</span> <span class=n>enter_overbought</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;enter_oversold&#39;</span><span class=p>:</span> <span class=n>enter_oversold</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;exit_overbought&#39;</span><span class=p>:</span> <span class=n>exit_overbought</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=s1>&#39;exit_oversold&#39;</span><span class=p>:</span> <span class=n>exit_oversold</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 分析14日RSI信号</span>
+</span></span><span class=line><span class=cl><span class=n>rsi_signals</span> <span class=o>=</span> <span class=n>identify_rsi_signals</span><span class=p>(</span><span class=n>rsi_14</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== RSI信号统计 (14日周期) ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;超买信号次数: </span><span class=si>{</span><span class=n>rsi_signals</span><span class=p>[</span><span class=s1>&#39;overbought&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>sum</span><span class=p>()</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;超卖信号次数: </span><span class=si>{</span><span class=n>rsi_signals</span><span class=p>[</span><span class=s1>&#39;oversold&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>sum</span><span class=p>()</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;进入超买区域次数: </span><span class=si>{</span><span class=n>rsi_signals</span><span class=p>[</span><span class=s1>&#39;enter_overbought&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>sum</span><span class=p>()</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;进入超卖区域次数: </span><span class=si>{</span><span class=n>rsi_signals</span><span class=p>[</span><span class=s1>&#39;enter_oversold&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>sum</span><span class=p>()</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;离开超买区域次数: </span><span class=si>{</span><span class=n>rsi_signals</span><span class=p>[</span><span class=s1>&#39;exit_overbought&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>sum</span><span class=p>()</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;离开超卖区域次数: </span><span class=si>{</span><span class=n>rsi_signals</span><span class=p>[</span><span class=s1>&#39;exit_oversold&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>sum</span><span class=p>()</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 当前RSI状态分析</span>
+</span></span><span class=line><span class=cl><span class=n>current_rsi</span> <span class=o>=</span> <span class=n>rsi_14</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>当前RSI值: </span><span class=si>{</span><span class=n>current_rsi</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=n>current_rsi</span> <span class=o>&gt;</span> <span class=mi>70</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>status</span> <span class=o>=</span> <span class=s2>&#34;超买区域 - 谨慎回调风险&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>elif</span> <span class=n>current_rsi</span> <span class=o>&lt;</span> <span class=mi>30</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>status</span> <span class=o>=</span> <span class=s2>&#34;超卖区域 - 关注反弹机会&#34;</span>  
+</span></span><span class=line><span class=cl><span class=k>elif</span> <span class=n>current_rsi</span> <span class=o>&gt;</span> <span class=mi>50</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>status</span> <span class=o>=</span> <span class=s2>&#34;中性偏强 - 温和上升趋势&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>status</span> <span class=o>=</span> <span class=s2>&#34;中性偏弱 - 温和下跌趋势&#34;</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;当前状态: </span><span class=si>{</span><span class=n>status</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h3 id=rsi背离识别与分析>RSI背离识别与分析</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span><span class=lnt>85
+</span><span class=lnt>86
+</span><span class=lnt>87
+</span><span class=lnt>88
+</span><span class=lnt>89
+</span><span class=lnt>90
+</span><span class=lnt>91
+</span><span class=lnt>92
+</span><span class=lnt>93
+</span><span class=lnt>94
+</span><span class=lnt>95
+</span><span class=lnt>96
+</span><span class=lnt>97
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># RSI背离识别函数</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>identify_rsi_divergences</span><span class=p>(</span><span class=n>prices</span><span class=p>,</span> <span class=n>rsi_values</span><span class=p>,</span> <span class=n>lookback_period</span><span class=o>=</span><span class=mi>15</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;识别RSI背离信号&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>divergences</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>lookback_period</span><span class=p>,</span> <span class=nb>len</span><span class=p>(</span><span class=n>prices</span><span class=p>)):</span>
+</span></span><span class=line><span class=cl>        <span class=c1># 检查顶背离</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>prices</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&gt;</span> <span class=n>prices</span><span class=p>[</span><span class=n>i</span><span class=o>-</span><span class=n>lookback_period</span><span class=p>:</span><span class=n>i</span><span class=p>]</span><span class=o>.</span><span class=n>max</span><span class=p>()</span> <span class=ow>and</span> 
+</span></span><span class=line><span class=cl>            <span class=n>rsi_values</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&lt;</span> <span class=n>rsi_values</span><span class=p>[</span><span class=n>i</span><span class=o>-</span><span class=n>lookback_period</span><span class=p>:</span><span class=n>i</span><span class=p>]</span><span class=o>.</span><span class=n>max</span><span class=p>()):</span>
+</span></span><span class=line><span class=cl>            <span class=n>divergences</span><span class=o>.</span><span class=n>append</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;type&#39;</span><span class=p>:</span> <span class=s1>&#39;顶背离&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;date&#39;</span><span class=p>:</span> <span class=n>dates</span><span class=p>[</span><span class=n>i</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;price&#39;</span><span class=p>:</span> <span class=n>prices</span><span class=p>[</span><span class=n>i</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;rsi&#39;</span><span class=p>:</span> <span class=n>rsi_values</span><span class=p>[</span><span class=n>i</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;description&#39;</span><span class=p>:</span> <span class=s1>&#39;价格上涨但RSI走弱，可能反转下跌&#39;</span>
+</span></span><span class=line><span class=cl>            <span class=p>})</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 检查底背离</span>
+</span></span><span class=line><span class=cl>        <span class=k>elif</span> <span class=p>(</span><span class=n>prices</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&lt;</span> <span class=n>prices</span><span class=p>[</span><span class=n>i</span><span class=o>-</span><span class=n>lookback_period</span><span class=p>:</span><span class=n>i</span><span class=p>]</span><span class=o>.</span><span class=n>min</span><span class=p>()</span> <span class=ow>and</span> 
+</span></span><span class=line><span class=cl>              <span class=n>rsi_values</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&gt;</span> <span class=n>rsi_values</span><span class=p>[</span><span class=n>i</span><span class=o>-</span><span class=n>lookback_period</span><span class=p>:</span><span class=n>i</span><span class=p>]</span><span class=o>.</span><span class=n>min</span><span class=p>()):</span>
+</span></span><span class=line><span class=cl>            <span class=n>divergences</span><span class=o>.</span><span class=n>append</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;type&#39;</span><span class=p>:</span> <span class=s1>&#39;底背离&#39;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;date&#39;</span><span class=p>:</span> <span class=n>dates</span><span class=p>[</span><span class=n>i</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;price&#39;</span><span class=p>:</span> <span class=n>prices</span><span class=p>[</span><span class=n>i</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;rsi&#39;</span><span class=p>:</span> <span class=n>rsi_values</span><span class=p>[</span><span class=n>i</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;description&#39;</span><span class=p>:</span> <span class=s1>&#39;价格下跌但RSI走强，可能反转上涨&#39;</span>
+</span></span><span class=line><span class=cl>            <span class=p>})</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>divergences</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 识别RSI背离信号</span>
+</span></span><span class=line><span class=cl><span class=n>rsi_divergences</span> <span class=o>=</span> <span class=n>identify_rsi_divergences</span><span class=p>(</span><span class=n>close_prices</span><span class=p>,</span> <span class=n>rsi_14</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== RSI背离信号分析 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;识别到的背离信号总数: </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>rsi_divergences</span><span class=p>)</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 显示最近5次背离</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=n>rsi_divergences</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;最近5次背离信号:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>div</span> <span class=ow>in</span> <span class=n>rsi_divergences</span><span class=p>[</span><span class=o>-</span><span class=mi>5</span><span class=p>:]:</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=n>div</span><span class=p>[</span><span class=s1>&#39;date&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=s1>&#39;%Y-%m-</span><span class=si>%d</span><span class=s1>&#39;</span><span class=p>)</span><span class=si>}</span><span class=s2>: </span><span class=si>{</span><span class=n>div</span><span class=p>[</span><span class=s1>&#39;type&#39;</span><span class=p>]</span><span class=si>}</span><span class=s2> - &#34;</span>
+</span></span><span class=line><span class=cl>              <span class=sa>f</span><span class=s2>&#34;价格: </span><span class=si>{</span><span class=n>div</span><span class=p>[</span><span class=s1>&#39;price&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>, RSI: </span><span class=si>{</span><span class=n>div</span><span class=p>[</span><span class=s1>&#39;rsi&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2> - </span><span class=si>{</span><span class=n>div</span><span class=p>[</span><span class=s1>&#39;description&#39;</span><span class=p>]</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;近期未识别到明显的背离信号&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># RSI动量分析函数</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>analyze_rsi_momentum</span><span class=p>(</span><span class=n>rsi_values</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;分析RSI动量变化&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=c1># RSI变化率</span>
+</span></span><span class=line><span class=cl>    <span class=n>rsi_change</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>gradient</span><span class=p>(</span><span class=n>rsi_values</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># RSI变化加速度</span>
+</span></span><span class=line><span class=cl>    <span class=n>rsi_acceleration</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>gradient</span><span class=p>(</span><span class=n>rsi_change</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># RSI相对位置（标准化到0-1区间）</span>
+</span></span><span class=line><span class=cl>    <span class=n>rsi_normalized</span> <span class=o>=</span> <span class=p>(</span><span class=n>rsi_values</span> <span class=o>-</span> <span class=n>rsi_values</span><span class=o>.</span><span class=n>min</span><span class=p>())</span> <span class=o>/</span> <span class=p>(</span><span class=n>rsi_values</span><span class=o>.</span><span class=n>max</span><span class=p>()</span> <span class=o>-</span> <span class=n>rsi_values</span><span class=o>.</span><span class=n>min</span><span class=p>())</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># RSI波动性</span>
+</span></span><span class=line><span class=cl>    <span class=n>rsi_volatility</span> <span class=o>=</span> <span class=n>pd</span><span class=o>.</span><span class=n>Series</span><span class=p>(</span><span class=n>rsi_values</span><span class=p>)</span><span class=o>.</span><span class=n>rolling</span><span class=p>(</span><span class=n>window</span><span class=o>=</span><span class=mi>10</span><span class=p>)</span><span class=o>.</span><span class=n>std</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>rsi_change</span><span class=p>,</span> <span class=n>rsi_acceleration</span><span class=p>,</span> <span class=n>rsi_normalized</span><span class=p>,</span> <span class=n>rsi_volatility</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>rsi_change</span><span class=p>,</span> <span class=n>rsi_acceleration</span><span class=p>,</span> <span class=n>rsi_norm</span><span class=p>,</span> <span class=n>rsi_vol</span> <span class=o>=</span> <span class=n>analyze_rsi_momentum</span><span class=p>(</span><span class=n>rsi_14</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 当前RSI动量状态</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== 当前RSI动量状态 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;RSI值: </span><span class=si>{</span><span class=n>current_rsi</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;RSI变化率: </span><span class=si>{</span><span class=n>rsi_change</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.4f</span><span class=si>}</span><span class=s2> (</span><span class=si>{</span><span class=s1>&#39;上升&#39;</span> <span class=k>if</span> <span class=n>rsi_change</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=k>else</span> <span class=s1>&#39;下降&#39;</span><span class=si>}</span><span class=s2>)&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;RSI加速度: </span><span class=si>{</span><span class=n>rsi_acceleration</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.6f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;RSI波动性: </span><span class=si>{</span><span class=n>rsi_vol</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span><span class=si>:</span><span class=s2>.4f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># RSI区间分析</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>analyze_rsi_zones</span><span class=p>(</span><span class=n>rsi_values</span><span class=p>,</span> <span class=n>zones</span><span class=o>=</span><span class=p>[</span><span class=mi>30</span><span class=p>,</span> <span class=mi>50</span><span class=p>,</span> <span class=mi>70</span><span class=p>]):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;分析RSI在不同区间的分布&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>zones_analysis</span> <span class=o>=</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>i</span><span class=p>,</span> <span class=n>zone</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>([</span><span class=s1>&#39;超卖&#39;</span><span class=p>,</span> <span class=s1>&#39;中性偏弱&#39;</span><span class=p>,</span> <span class=s1>&#39;中性偏强&#39;</span><span class=p>,</span> <span class=s1>&#39;超买&#39;</span><span class=p>]):</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>i</span> <span class=o>==</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>mask</span> <span class=o>=</span> <span class=n>rsi_values</span> <span class=o>&lt;</span> <span class=n>zones</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>        <span class=k>elif</span> <span class=n>i</span> <span class=o>==</span> <span class=nb>len</span><span class=p>(</span><span class=n>zones</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=n>mask</span> <span class=o>=</span> <span class=n>rsi_values</span> <span class=o>&gt;</span> <span class=n>zones</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>mask</span> <span class=o>=</span> <span class=p>(</span><span class=n>rsi_values</span> <span class=o>&gt;</span> <span class=n>zones</span><span class=p>[</span><span class=n>i</span><span class=o>-</span><span class=mi>1</span><span class=p>])</span> <span class=o>&amp;</span> <span class=p>(</span><span class=n>rsi_values</span> <span class=o>&lt;=</span> <span class=n>zones</span><span class=p>[</span><span class=n>i</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=n>zones_analysis</span><span class=p>[</span><span class=n>zone</span><span class=p>]</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;count&#39;</span><span class=p>:</span> <span class=n>mask</span><span class=o>.</span><span class=n>sum</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;percentage&#39;</span><span class=p>:</span> <span class=p>(</span><span class=n>mask</span><span class=o>.</span><span class=n>sum</span><span class=p>()</span> <span class=o>/</span> <span class=nb>len</span><span class=p>(</span><span class=n>rsi_values</span><span class=p>))</span> <span class=o>*</span> <span class=mi>100</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>            <span class=s1>&#39;avg_rsi&#39;</span><span class=p>:</span> <span class=n>rsi_values</span><span class=p>[</span><span class=n>mask</span><span class=p>]</span><span class=o>.</span><span class=n>mean</span><span class=p>()</span> <span class=k>if</span> <span class=n>mask</span><span class=o>.</span><span class=n>sum</span><span class=p>()</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=k>else</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>zones_analysis</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>zone_analysis</span> <span class=o>=</span> <span class=n>analyze_rsi_zones</span><span class=p>(</span><span class=n>rsi_14</span><span class=o>.</span><span class=n>dropna</span><span class=p>())</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== RSI区间分布分析 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=n>zone</span><span class=p>,</span> <span class=n>stats</span> <span class=ow>in</span> <span class=n>zone_analysis</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=n>zone</span><span class=si>}</span><span class=s2>区域: </span><span class=si>{</span><span class=n>stats</span><span class=p>[</span><span class=s1>&#39;count&#39;</span><span class=p>]</span><span class=si>}</span><span class=s2>天 (</span><span class=si>{</span><span class=n>stats</span><span class=p>[</span><span class=s1>&#39;percentage&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>.1f</span><span class=si>}</span><span class=s2>%), 平均RSI: </span><span class=si>{</span><span class=n>stats</span><span class=p>[</span><span class=s1>&#39;avg_rsi&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h3 id=rsi交易策略回测>RSI交易策略回测</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># RSI简单交易策略回测</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>rsi_trading_strategy</span><span class=p>(</span><span class=n>prices</span><span class=p>,</span> <span class=n>rsi_values</span><span class=p>,</span> <span class=n>oversold</span><span class=o>=</span><span class=mi>30</span><span class=p>,</span> <span class=n>overbought</span><span class=o>=</span><span class=mi>70</span><span class=p>,</span> <span class=n>holding_period</span><span class=o>=</span><span class=mi>5</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;RSI反转交易策略回测&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>positions</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    <span class=n>trades</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>    <span class=n>current_position</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>    <span class=n>entry_price</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>i</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=nb>len</span><span class=p>(</span><span class=n>prices</span><span class=p>)):</span>
+</span></span><span class=line><span class=cl>        <span class=c1># 进入超卖区域，准备买入</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>rsi_values</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&lt;</span> <span class=n>oversold</span> <span class=ow>and</span> <span class=n>current_position</span> <span class=o>==</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>current_position</span> <span class=o>=</span> <span class=mi>1</span>
+</span></span><span class=line><span class=cl>            <span class=n>entry_price</span> <span class=o>=</span> <span class=n>prices</span><span class=p>[</span><span class=n>i</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>            <span class=n>positions</span><span class=o>.</span><span class=n>append</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;date&#39;</span><span class=p>:</span> <span class=n>dates</span><span class=p>[</span><span class=n>i</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;action&#39;</span><span class=p>:</span> <span class=s1>&#39;买入&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;price&#39;</span><span class=p>:</span> <span class=n>prices</span><span class=p>[</span><span class=n>i</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;rsi&#39;</span><span class=p>:</span> <span class=n>rsi_values</span><span class=p>[</span><span class=n>i</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;position&#39;</span><span class=p>:</span> <span class=n>current_position</span>
+</span></span><span class=line><span class=cl>            <span class=p>})</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 进入超买区域，准备卖出</span>
+</span></span><span class=line><span class=cl>        <span class=k>elif</span> <span class=n>rsi_values</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>&gt;</span> <span class=n>overbought</span> <span class=ow>and</span> <span class=n>current_position</span> <span class=o>==</span> <span class=mi>1</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>current_position</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>            <span class=n>exit_price</span> <span class=o>=</span> <span class=n>prices</span><span class=p>[</span><span class=n>i</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>            <span class=n>return_pct</span> <span class=o>=</span> <span class=p>(</span><span class=n>exit_price</span> <span class=o>-</span> <span class=n>entry_price</span><span class=p>)</span> <span class=o>/</span> <span class=n>entry_price</span> <span class=o>*</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=n>trades</span><span class=o>.</span><span class=n>append</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;entry_date&#39;</span><span class=p>:</span> <span class=n>positions</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>][</span><span class=s1>&#39;date&#39;</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;exit_date&#39;</span><span class=p>:</span> <span class=n>dates</span><span class=p>[</span><span class=n>i</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;entry_price&#39;</span><span class=p>:</span> <span class=n>entry_price</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;exit_price&#39;</span><span class=p>:</span> <span class=n>exit_price</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;return_pct&#39;</span><span class=p>:</span> <span class=n>return_pct</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;holding_days&#39;</span><span class=p>:</span> <span class=p>(</span><span class=n>dates</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=o>-</span> <span class=n>positions</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>][</span><span class=s1>&#39;date&#39;</span><span class=p>])</span><span class=o>.</span><span class=n>days</span>
+</span></span><span class=line><span class=cl>            <span class=p>})</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=n>positions</span><span class=o>.</span><span class=n>append</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;date&#39;</span><span class=p>:</span> <span class=n>dates</span><span class=p>[</span><span class=n>i</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;action&#39;</span><span class=p>:</span> <span class=s1>&#39;卖出&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;price&#39;</span><span class=p>:</span> <span class=n>prices</span><span class=p>[</span><span class=n>i</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;rsi&#39;</span><span class=p>:</span> <span class=n>rsi_values</span><span class=p>[</span><span class=n>i</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;position&#39;</span><span class=p>:</span> <span class=n>current_position</span>
+</span></span><span class=line><span class=cl>            <span class=p>})</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>trades</span><span class=p>,</span> <span class=n>positions</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 执行策略回测</span>
+</span></span><span class=line><span class=cl><span class=n>rsi_trades</span><span class=p>,</span> <span class=n>rsi_positions</span> <span class=o>=</span> <span class=n>rsi_trading_strategy</span><span class=p>(</span><span class=n>close_prices</span><span class=p>,</span> <span class=n>rsi_14</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== RSI交易策略回测结果 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;总交易次数: </span><span class=si>{</span><span class=nb>len</span><span class=p>(</span><span class=n>rsi_trades</span><span class=p>)</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>rsi_trades</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=c1># 计算策略表现指标</span>
+</span></span><span class=line><span class=cl>    <span class=n>returns</span> <span class=o>=</span> <span class=p>[</span><span class=n>trade</span><span class=p>[</span><span class=s1>&#39;return_pct&#39;</span><span class=p>]</span> <span class=k>for</span> <span class=n>trade</span> <span class=ow>in</span> <span class=n>rsi_trades</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=n>winning_trades</span> <span class=o>=</span> <span class=p>[</span><span class=n>r</span> <span class=k>for</span> <span class=n>r</span> <span class=ow>in</span> <span class=n>returns</span> <span class=k>if</span> <span class=n>r</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    <span class=n>losing_trades</span> <span class=o>=</span> <span class=p>[</span><span class=n>r</span> <span class=k>for</span> <span class=n>r</span> <span class=ow>in</span> <span class=n>returns</span> <span class=k>if</span> <span class=n>r</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=n>win_rate</span> <span class=o>=</span> <span class=nb>len</span><span class=p>(</span><span class=n>winning_trades</span><span class=p>)</span> <span class=o>/</span> <span class=nb>len</span><span class=p>(</span><span class=n>returns</span><span class=p>)</span> <span class=o>*</span> <span class=mi>100</span>
+</span></span><span class=line><span class=cl>    <span class=n>avg_return</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>mean</span><span class=p>(</span><span class=n>returns</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>max_return</span> <span class=o>=</span> <span class=nb>max</span><span class=p>(</span><span class=n>returns</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>min_return</span> <span class=o>=</span> <span class=nb>min</span><span class=p>(</span><span class=n>returns</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>avg_holding_days</span> <span class=o>=</span> <span class=n>np</span><span class=o>.</span><span class=n>mean</span><span class=p>([</span><span class=n>trade</span><span class=p>[</span><span class=s1>&#39;holding_days&#39;</span><span class=p>]</span> <span class=k>for</span> <span class=n>trade</span> <span class=ow>in</span> <span class=n>rsi_trades</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;胜率: </span><span class=si>{</span><span class=n>win_rate</span><span class=si>:</span><span class=s2>.1f</span><span class=si>}</span><span class=s2>%&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;平均收益率: </span><span class=si>{</span><span class=n>avg_return</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>%&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;最大单笔收益: </span><span class=si>{</span><span class=n>max_return</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>%&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;最大单笔亏损: </span><span class=si>{</span><span class=n>min_return</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>%&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;平均持仓天数: </span><span class=si>{</span><span class=n>avg_holding_days</span><span class=si>:</span><span class=s2>.1f</span><span class=si>}</span><span class=s2>天&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 显示最近5次交易</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>最近5次交易:&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>i</span><span class=p>,</span> <span class=n>trade</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span><span class=n>rsi_trades</span><span class=p>[</span><span class=o>-</span><span class=mi>5</span><span class=p>:],</span> <span class=mi>1</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>        <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=n>i</span><span class=si>}</span><span class=s2>. </span><span class=si>{</span><span class=n>trade</span><span class=p>[</span><span class=s1>&#39;entry_date&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=s1>&#39;%Y-%m-</span><span class=si>%d</span><span class=s1>&#39;</span><span class=p>)</span><span class=si>}</span><span class=s2> 买入 - &#34;</span>
+</span></span><span class=line><span class=cl>              <span class=sa>f</span><span class=s2>&#34;</span><span class=si>{</span><span class=n>trade</span><span class=p>[</span><span class=s1>&#39;exit_date&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>strftime</span><span class=p>(</span><span class=s1>&#39;%Y-%m-</span><span class=si>%d</span><span class=s1>&#39;</span><span class=p>)</span><span class=si>}</span><span class=s2> 卖出 - &#34;</span>
+</span></span><span class=line><span class=cl>              <span class=sa>f</span><span class=s2>&#34;收益: </span><span class=si>{</span><span class=n>trade</span><span class=p>[</span><span class=s1>&#39;return_pct&#39;</span><span class=p>]</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>% - 持仓: </span><span class=si>{</span><span class=n>trade</span><span class=p>[</span><span class=s1>&#39;holding_days&#39;</span><span class=p>]</span><span class=si>}</span><span class=s2>天&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;策略未产生任何交易信号&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># RSI与其他指标组合分析</span>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>rsi_ma_combination</span><span class=p>(</span><span class=n>prices</span><span class=p>,</span> <span class=n>rsi_values</span><span class=p>,</span> <span class=n>ma_period</span><span class=o>=</span><span class=mi>20</span><span class=p>,</span> <span class=n>rsi_threshold</span><span class=o>=</span><span class=mi>50</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;RSI与移动平均线组合策略&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=n>ma</span> <span class=o>=</span> <span class=n>talib</span><span class=o>.</span><span class=n>SMA</span><span class=p>(</span><span class=n>prices</span><span class=p>,</span> <span class=n>timeperiod</span><span class=o>=</span><span class=n>ma_period</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 生成组合信号</span>
+</span></span><span class=line><span class=cl>    <span class=n>bullish_signal</span> <span class=o>=</span> <span class=p>(</span><span class=n>rsi_values</span> <span class=o>&gt;</span> <span class=n>rsi_threshold</span><span class=p>)</span> <span class=o>&amp;</span> <span class=p>(</span><span class=n>prices</span> <span class=o>&gt;</span> <span class=n>ma</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>bearish_signal</span> <span class=o>=</span> <span class=p>(</span><span class=n>rsi_values</span> <span class=o>&lt;</span> <span class=n>rsi_threshold</span><span class=p>)</span> <span class=o>&amp;</span> <span class=p>(</span><span class=n>prices</span> <span class=o>&lt;</span> <span class=n>ma</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>bullish_signal</span><span class=p>,</span> <span class=n>bearish_signal</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>bullish_combo</span><span class=p>,</span> <span class=n>bearish_combo</span> <span class=o>=</span> <span class=n>rsi_ma_combination</span><span class=p>(</span><span class=n>close_prices</span><span class=p>,</span> <span class=n>rsi_14</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== RSI+MA组合信号分析 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;看涨组合信号次数: </span><span class=si>{</span><span class=n>bullish_combo</span><span class=o>.</span><span class=n>sum</span><span class=p>()</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;看跌组合信号次数: </span><span class=si>{</span><span class=n>bearish_combo</span><span class=o>.</span><span class=n>sum</span><span class=p>()</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 当前组合状态</span>
+</span></span><span class=line><span class=cl><span class=n>current_bullish</span> <span class=o>=</span> <span class=n>bullish_combo</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl><span class=n>current_bearish</span> <span class=o>=</span> <span class=n>bearish_combo</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=n>current_bullish</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>combo_signal</span> <span class=o>=</span> <span class=s2>&#34;看涨组合 - RSI&gt;50且价格&gt;MA20&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>elif</span> <span class=n>current_bearish</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>combo_signal</span> <span class=o>=</span> <span class=s2>&#34;看跌组合 - RSI&lt;50且价格&lt;MA20&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>combo_signal</span> <span class=o>=</span> <span class=s2>&#34;中性状态 - 指标不一致&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;当前组合状态: </span><span class=si>{</span><span class=n>combo_signal</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h3 id=rsi指标可视化分析>RSI指标可视化分析</h3><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span><span class=lnt>85
+</span><span class=lnt>86
+</span><span class=lnt>87
+</span><span class=lnt>88
+</span><span class=lnt>89
+</span><span class=lnt>90
+</span><span class=lnt>91
+</span><span class=lnt>92
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 创建RSI综合分析图表</span>
+</span></span><span class=line><span class=cl><span class=n>fig</span><span class=p>,</span> <span class=n>axes</span> <span class=o>=</span> <span class=n>plt</span><span class=o>.</span><span class=n>subplots</span><span class=p>(</span><span class=mi>3</span><span class=p>,</span> <span class=mi>1</span><span class=p>,</span> <span class=n>figsize</span><span class=o>=</span><span class=p>(</span><span class=mi>15</span><span class=p>,</span> <span class=mi>12</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 主图：价格走势与RSI信号</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>dates</span><span class=p>,</span> <span class=n>close_prices</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;收盘价&#39;</span><span class=p>,</span> <span class=n>linewidth</span><span class=o>=</span><span class=mi>2</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;black&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 标记RSI信号</span>
+</span></span><span class=line><span class=cl><span class=n>overbought_dates</span> <span class=o>=</span> <span class=n>dates</span><span class=p>[</span><span class=n>rsi_signals</span><span class=p>[</span><span class=s1>&#39;enter_overbought&#39;</span><span class=p>]]</span>
+</span></span><span class=line><span class=cl><span class=n>oversold_dates</span> <span class=o>=</span> <span class=n>dates</span><span class=p>[</span><span class=n>rsi_signals</span><span class=p>[</span><span class=s1>&#39;enter_oversold&#39;</span><span class=p>]]</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>overbought_dates</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>overbought_prices</span> <span class=o>=</span> <span class=n>close_prices</span><span class=p>[</span><span class=n>rsi_signals</span><span class=p>[</span><span class=s1>&#39;enter_overbought&#39;</span><span class=p>]]</span>
+</span></span><span class=line><span class=cl>    <span class=n>axes</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>scatter</span><span class=p>(</span><span class=n>overbought_dates</span><span class=p>,</span> <span class=n>overbought_prices</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;red&#39;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                   <span class=n>marker</span><span class=o>=</span><span class=s1>&#39;v&#39;</span><span class=p>,</span> <span class=n>s</span><span class=o>=</span><span class=mi>80</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;进入超买&#39;</span><span class=p>,</span> <span class=n>zorder</span><span class=o>=</span><span class=mi>5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>oversold_dates</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>oversold_prices</span> <span class=o>=</span> <span class=n>close_prices</span><span class=p>[</span><span class=n>rsi_signals</span><span class=p>[</span><span class=s1>&#39;enter_oversold&#39;</span><span class=p>]]</span>
+</span></span><span class=line><span class=cl>    <span class=n>axes</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>scatter</span><span class=p>(</span><span class=n>oversold_dates</span><span class=p>,</span> <span class=n>oversold_prices</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;green&#39;</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                   <span class=n>marker</span><span class=o>=</span><span class=s1>&#39;^&#39;</span><span class=p>,</span> <span class=n>s</span><span class=o>=</span><span class=mi>80</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;进入超卖&#39;</span><span class=p>,</span> <span class=n>zorder</span><span class=o>=</span><span class=mi>5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>set_title</span><span class=p>(</span><span class=s1>&#39;价格走势与RSI信号标记&#39;</span><span class=p>,</span> <span class=n>fontsize</span><span class=o>=</span><span class=mi>14</span><span class=p>,</span> <span class=n>fontweight</span><span class=o>=</span><span class=s1>&#39;bold&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>set_ylabel</span><span class=p>(</span><span class=s1>&#39;价格&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>legend</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>0</span><span class=p>]</span><span class=o>.</span><span class=n>grid</span><span class=p>(</span><span class=kc>True</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.3</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 副图1：RSI指标与阈值线</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>dates</span><span class=p>,</span> <span class=n>rsi_14</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;RSI 14&#39;</span><span class=p>,</span> <span class=n>linewidth</span><span class=o>=</span><span class=mi>2</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;blue&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>axhline</span><span class=p>(</span><span class=n>y</span><span class=o>=</span><span class=mi>70</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;red&#39;</span><span class=p>,</span> <span class=n>linestyle</span><span class=o>=</span><span class=s1>&#39;--&#39;</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.7</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;超买线 (70)&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>axhline</span><span class=p>(</span><span class=n>y</span><span class=o>=</span><span class=mi>30</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;green&#39;</span><span class=p>,</span> <span class=n>linestyle</span><span class=o>=</span><span class=s1>&#39;--&#39;</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.7</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;超卖线 (30)&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>axhline</span><span class=p>(</span><span class=n>y</span><span class=o>=</span><span class=mi>50</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;gray&#39;</span><span class=p>,</span> <span class=n>linestyle</span><span class=o>=</span><span class=s1>&#39;-&#39;</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.5</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;中性线 (50)&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 填充超买超卖区域</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>fill_between</span><span class=p>(</span><span class=n>dates</span><span class=p>,</span> <span class=mi>70</span><span class=p>,</span> <span class=mi>100</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.2</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;red&#39;</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;超买区域&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>fill_between</span><span class=p>(</span><span class=n>dates</span><span class=p>,</span> <span class=mi>0</span><span class=p>,</span> <span class=mi>30</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.2</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;green&#39;</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;超卖区域&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>set_title</span><span class=p>(</span><span class=s1>&#39;RSI相对强弱指标&#39;</span><span class=p>,</span> <span class=n>fontsize</span><span class=o>=</span><span class=mi>14</span><span class=p>,</span> <span class=n>fontweight</span><span class=o>=</span><span class=s1>&#39;bold&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>set_ylabel</span><span class=p>(</span><span class=s1>&#39;RSI值&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>set_ylim</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=mi>100</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>legend</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>1</span><span class=p>]</span><span class=o>.</span><span class=n>grid</span><span class=p>(</span><span class=kc>True</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.3</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 副图2：多周期RSI对比</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span><span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>dates</span><span class=p>,</span> <span class=n>rsi_6</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;RSI 6 (短期)&#39;</span><span class=p>,</span> <span class=n>linewidth</span><span class=o>=</span><span class=mf>1.5</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;orange&#39;</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.8</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span><span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>dates</span><span class=p>,</span> <span class=n>rsi_14</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;RSI 14 (标准)&#39;</span><span class=p>,</span> <span class=n>linewidth</span><span class=o>=</span><span class=mi>2</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;blue&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span><span class=o>.</span><span class=n>plot</span><span class=p>(</span><span class=n>dates</span><span class=p>,</span> <span class=n>rsi_21</span><span class=p>,</span> <span class=n>label</span><span class=o>=</span><span class=s1>&#39;RSI 21 (中期)&#39;</span><span class=p>,</span> <span class=n>linewidth</span><span class=o>=</span><span class=mf>1.5</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;purple&#39;</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.8</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span><span class=o>.</span><span class=n>axhline</span><span class=p>(</span><span class=n>y</span><span class=o>=</span><span class=mi>70</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;red&#39;</span><span class=p>,</span> <span class=n>linestyle</span><span class=o>=</span><span class=s1>&#39;--&#39;</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span><span class=o>.</span><span class=n>axhline</span><span class=p>(</span><span class=n>y</span><span class=o>=</span><span class=mi>30</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;green&#39;</span><span class=p>,</span> <span class=n>linestyle</span><span class=o>=</span><span class=s1>&#39;--&#39;</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.5</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span><span class=o>.</span><span class=n>axhline</span><span class=p>(</span><span class=n>y</span><span class=o>=</span><span class=mi>50</span><span class=p>,</span> <span class=n>color</span><span class=o>=</span><span class=s1>&#39;gray&#39;</span><span class=p>,</span> <span class=n>linestyle</span><span class=o>=</span><span class=s1>&#39;-&#39;</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.3</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span><span class=o>.</span><span class=n>set_title</span><span class=p>(</span><span class=s1>&#39;多周期RSI对比分析&#39;</span><span class=p>,</span> <span class=n>fontsize</span><span class=o>=</span><span class=mi>14</span><span class=p>,</span> <span class=n>fontweight</span><span class=o>=</span><span class=s1>&#39;bold&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span><span class=o>.</span><span class=n>set_ylabel</span><span class=p>(</span><span class=s1>&#39;RSI值&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span><span class=o>.</span><span class=n>set_xlabel</span><span class=p>(</span><span class=s1>&#39;日期&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span><span class=o>.</span><span class=n>set_ylim</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=mi>100</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span><span class=o>.</span><span class=n>legend</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>axes</span><span class=p>[</span><span class=mi>2</span><span class=p>]</span><span class=o>.</span><span class=n>grid</span><span class=p>(</span><span class=kc>True</span><span class=p>,</span> <span class=n>alpha</span><span class=o>=</span><span class=mf>0.3</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>tight_layout</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=n>plt</span><span class=o>.</span><span class=n>show</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 生成综合交易建议</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== RSI综合分析与交易建议 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;当前RSI值: </span><span class=si>{</span><span class=n>current_rsi</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;RSI趋势: </span><span class=si>{</span><span class=s1>&#39;上升&#39;</span> <span class=k>if</span> <span class=n>rsi_change</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=k>else</span> <span class=s1>&#39;下降&#39;</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;动量强度: </span><span class=si>{</span><span class=s1>&#39;强劲&#39;</span> <span class=k>if</span> <span class=nb>abs</span><span class=p>(</span><span class=n>rsi_change</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>])</span> <span class=o>&gt;</span> <span class=n>np</span><span class=o>.</span><span class=n>abs</span><span class=p>(</span><span class=n>rsi_change</span><span class=p>[</span><span class=o>-</span><span class=mi>20</span><span class=p>:])</span><span class=o>.</span><span class=n>mean</span><span class=p>()</span> <span class=k>else</span> <span class=s1>&#39;温和&#39;</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 生成具体建议</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=n>current_rsi</span> <span class=o>&lt;</span> <span class=mi>30</span> <span class=ow>and</span> <span class=n>rsi_change</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>recommendation</span> <span class=o>=</span> <span class=s2>&#34;买入信号 - RSI超卖反弹&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>elif</span> <span class=n>current_rsi</span> <span class=o>&gt;</span> <span class=mi>70</span> <span class=ow>and</span> <span class=n>rsi_change</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>recommendation</span> <span class=o>=</span> <span class=s2>&#34;卖出信号 - RSI超买回调&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>elif</span> <span class=n>current_rsi</span> <span class=o>&gt;</span> <span class=mi>50</span> <span class=ow>and</span> <span class=n>rsi_change</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>recommendation</span> <span class=o>=</span> <span class=s2>&#34;温和看涨 - RSI中性偏强&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>elif</span> <span class=n>current_rsi</span> <span class=o>&lt;</span> <span class=mi>50</span> <span class=ow>and</span> <span class=n>rsi_change</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span> <span class=o>&lt;</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>recommendation</span> <span class=o>=</span> <span class=s2>&#34;温和看跌 - RSI中性偏弱&#34;</span>
+</span></span><span class=line><span class=cl><span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=n>recommendation</span> <span class=o>=</span> <span class=s2>&#34;观望等待 - 等待明确信号&#34;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;操作建议: </span><span class=si>{</span><span class=n>recommendation</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;风险提示: RSI指标在趋势行情中可能长期停留在极端区域&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;建议: 结合趋势指标和其他技术指标进行综合判断&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 显示策略表现统计</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>rsi_trades</span><span class=p>)</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== RSI策略历史表现 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;策略胜率: </span><span class=si>{</span><span class=n>win_rate</span><span class=si>:</span><span class=s2>.1f</span><span class=si>}</span><span class=s2>%&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;盈亏比: </span><span class=si>{</span><span class=nb>abs</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>mean</span><span class=p>(</span><span class=n>winning_trades</span><span class=p>))</span> <span class=o>/</span> <span class=nb>abs</span><span class=p>(</span><span class=n>np</span><span class=o>.</span><span class=n>mean</span><span class=p>(</span><span class=n>losing_trades</span><span class=p>))</span><span class=si>:</span><span class=s2>.2f</span><span class=si>}</span><span class=s2>&#34;</span> <span class=k>if</span> <span class=n>losing_trades</span> <span class=k>else</span> <span class=s2>&#34;N/A&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;策略有效性: </span><span class=si>{</span><span class=s1>&#39;有效&#39;</span> <span class=k>if</span> <span class=n>avg_return</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=k>else</span> <span class=s1>&#39;需优化&#39;</span><span class=si>}</span><span class=s2>&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=sa>f</span><span class=s2>&#34;</span><span class=se>\n</span><span class=s2>=== RSI策略分析 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;当前参数设置下策略信号较少，建议调整参数或结合其他指标&#34;</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h2 id=rsi高级应用从单一指标到系统优化>RSI高级应用：从单一指标到系统优化</h2><h3 id=rsi参数动态优化>RSI参数动态优化</h3><p>RSI指标的标准参数为14日，但这一参数并非适用于所有市场环境。参数优化应基于以下因素：</p><p><strong>品种特性优化</strong>：不同品种的价格波动特征差异显著。高波动品种适合使用较长周期参数（如21日），低波动品种适合使用较短周期参数（如9日）。</p><p><strong>市场环境适配</strong>：趋势性强的市场适合使用较长周期参数，震荡市适合使用较短周期参数。通过历史回测可确定最优参数组合。</p><p><strong>交易周期匹配</strong>：日内交易适合使用短周期RSI（如6日），波段交易适合使用标准周期RSI（14日），长线投资适合使用长周期RSI（如34日）。</p><h3 id=rsi多时间框架分析>RSI多时间框架分析</h3><p>多时间框架RSI分析能够提供不同层级的市场信息。长期RSI（如周线）判断主要趋势方向，中期RSI（如日线）识别交易机会，短期RSI（如小时线）选择精确入场时机。</p><p><strong>趋势一致性原则</strong>：当多个时间框架的RSI指标方向一致时，信号可靠性显著提升。例如，周线RSI显示上升趋势，日线RSI从超卖区域回升，小时线RSI突破中性区域，构成高概率买入信号。</p><p><strong>周期共振效应</strong>：不同周期RSI指标同时发出同向信号时，往往预示着重要的趋势转折点或加速点。</p><h3 id=rsi与其他指标的组合优化>RSI与其他指标的组合优化</h3><p><strong>RSI+MACD组合</strong>：MACD指标判断趋势方向，RSI指标选择交易时机。在MACD上升趋势中，RSI从超卖区域回升提供买入机会；在MACD下跌趋势中，RSI从超买区域回落提供卖出时机。</p><p><strong>RSI+布林带组合</strong>：布林带指标判断价格相对位置，RSI指标确认交易信号。当价格触及布林带下轨且RSI进入超卖区域时，构成买入信号；当价格触及布林带上轨且RSI进入超买区域时，构成卖出信号。</p><p><strong>RSI+成交量组合</strong>：成交量指标验证RSI信号的有效性。RSI买入信号伴随成交量放大，表明资金认可，信号可靠性提升；RSI卖出信号伴随成交量放大，表明抛压沉重，信号更加可信。</p><h3 id=rsi量化交易策略构建>RSI量化交易策略构建</h3><p>基于RSI的量化交易策略应包含完整的交易逻辑：明确的入场条件、严格的止损机制、合理的仓位管理以及清晰的出场规则。入场条件可设定为RSI从超卖区域回升且突破阈值线，止损位可设在近期低点下方，出场条件可设为RSI达到中性区域或出现反转信号。</p><p>动态仓位调整机制根据RSI信号的强度调整仓位大小。RSI严重超卖（&lt;20）时增加仓位，RSI轻度超卖（20-30）时标准仓位，RSI背离信号出现时额外增加仓位，通过这种动态调整优化风险收益比。</p><h2 id=rsi指标优势局限与实战总结>RSI指标优势局限与实战总结</h2><h3 id=rsi指标的核心优势>RSI指标的核心优势</h3><p>RSI指标的最大优势在于其标准化特征。将价格变化转换为0-100的标准区间，使得不同品种、不同时间段的强弱比较成为可能，为横向比较和时序分析提供了便利。</p><p>RSI指标具有良好的震荡特性。在震荡市中，RSI能够准确识别超买超卖状态，为高抛低吸提供有效的参考依据。其阈值信号简单明确，便于投资者掌握和应用。</p><p>RSI指标的背离分析功能强大。通过价格与指标的背离关系，RSI能够提前预警趋势反转，为投资者提供宝贵的决策时间窗口。</p><h3 id=rsi指标的固有局限>RSI指标的固有局限</h3><p>RSI指标在趋势行情中表现受限。在强势上涨或下跌趋势中，RSI可能长期停留在极端区域，导致超买超卖信号失效，投资者可能因此错失大段行情或过早离场。</p><p>RSI指标对参数选择较为敏感。不同的计算周期会产生显著不同的信号效果，参数优化过程可能引入过度拟合风险，影响策略的稳健性和适应性。</p><p>RSI指标容易产生虚假信号。在市场波动剧烈或消息面影响下，RSI可能频繁穿越阈值线，产生大量无效的交易信号，增加交易成本和决策难度。</p><h3 id=实战应用要点总结>实战应用要点总结</h3><p>成功应用RSI指标的关键在于充分理解其适用范围和局限性。RSI指标最适合震荡市环境，在趋势明显的行情中应降低使用频率或调整阈值参数。</p><p>参数优化是提升RSI指标效果的重要途径。投资者应根据交易品种的特性、交易周期的要求以及市场环境的变化，动态调整RSI参数，并通过历史回测验证参数的有效性。</p><p>多指标组合使用能够显著提升RSI信号的可靠性。将RSI与趋势指标、成交量指标、其他震荡指标相结合，构建多维度的分析框架，能够有效过滤虚假信号，提高交易成功率。</p><p>风险控制在使用RSI指标时至关重要。建议投资者设置合理的止损位，通常可将前期高点/低点作为止损参考，或结合ATR指标设定动态止损位。同时，应避免在重要经济数据发布或重大事件前后完全依赖RSI指标进行交易决策。</p><p>RSI指标应作为技术分析工具箱的重要组成部分，而非唯一决策依据。通过将RSI分析与基本面分析、市场情绪分析以及风险管理相结合，投资者能够构建更加robust的交易体系，实现长期稳定的投资收益。</p></div></article><aside class="lg:w-80 xl:w-96"><div class=space-y-8></div></aside></div><nav class="border-t border-gray-200 mt-12 pt-8"><div class="flex justify-between items-center"><a href=/blog/%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87/02-macd%E6%8C%87%E6%95%B0%E5%B9%B3%E6%BB%91%E5%BC%82%E5%90%8C%E7%A7%BB%E5%8A%A8%E5%B9%B3%E5%9D%87%E7%BA%BF/ class="group flex items-center"><svg class="w-5 h-5 mr-2 text-gray-600 group-hover:text-primary-600" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0 7-7m-7 7h18"/></svg><div><div class="text-sm text-gray-600">上一篇</div><div class="font-medium group-hover:text-primary-600">技术指标第2讲：MACD指数平滑异同移动平均线</div></div></a><a href=/blog/%E6%8A%80%E6%9C%AF%E6%8C%87%E6%A0%87/04-bollinger-bands%E5%B8%83%E6%9E%97%E5%B8%A6/ class="group flex items-center text-right"><div><div class="text-sm text-gray-600">Next Post</div><div class="font-medium group-hover:text-primary-600">技术指标第4讲：Bollinger Bands布林带</div></div><svg class="w-5 h-5 ml-2 text-gray-600 group-hover:text-primary-600" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0-7 7m7-7H3"/></svg></a></div></nav></div></div><footer class="bg-gray-50 py-12 border-t border-gray-200"><div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl"><div class="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0"><div class=flex-1><div class="flex items-center space-x-3 mb-4"><a href=https://sk-quant.github.io/ class=inline-block><img src=/images/logo.svg alt=烧烤量化 class=h-6>
+</a><span class="text-xl font-bold text-gray-900">烧烤量化</span></div><div class="flex space-x-3 p-2"><a href=https://linkedin.com/in/yourusername class="text-gray-600 hover:text-gray-900" target=_blank rel="noopener noreferrer"><span class=sr-only>LinkedIn</span>
+<img src=/images/social/linkedin.svg alt=LinkedIn class="h-5 w-5">
+</a><a href=https://bsky.app/profile/yourblueskyhandle class="text-gray-600 hover:text-gray-900" target=_blank rel="noopener noreferrer"><span class=sr-only>Bluesky</span>
+<img src=/images/social/bluesky.svg alt=Bluesky class="h-5 w-5">
+</a><a href=https://twitter.com/yourusername class="text-gray-600 hover:text-gray-900" target=_blank rel="noopener noreferrer"><span class=sr-only>Twitter (X)</span>
+<img src=/images/social/twitter.svg alt=Twitter class="h-5 w-5">
+</a><a href=https://github.com/yourusername class="text-gray-600 hover:text-gray-900" target=_blank rel="noopener noreferrer"><span class=sr-only>GitHub</span>
+<img src=/images/social/github.svg alt=GitHub class="h-5 w-5"></a></div></div><div class=flex-1><h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4"></h3><ul class=space-y-2></ul></div><div class=flex-1><h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4"></h3><ul class=space-y-2></ul></div><div class=flex-1><h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4"></h3><ul class=space-y-2></ul></div></div><div class="mt-12 pt-8 border-t border-gray-200"><div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0"><p class="text-gray-600 text-sm">© 2025 烧烤量化. All rights reserved.</p><a href=https://chaoming.li class="text-sm text-gray-600 hover:text-primary-600" target=_blank rel="noopener noreferrer">Powered by sk-quant</a></div></div></div></footer><script>const mobileMenuButton=document.getElementById("mobile-menu-button");mobileMenuButton&&mobileMenuButton.addEventListener("click",function(){const e=document.getElementById("mobile-menu");e&&e.classList.toggle("hidden")})</script></body></html>
