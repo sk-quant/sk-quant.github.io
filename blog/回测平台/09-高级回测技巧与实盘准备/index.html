@@ -1,0 +1,1420 @@
+<!doctype html><html lang=zh-cn class=h-full><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><script>(function(e,t,n,s,o){e[s]=e[s]||[],e[s].push({"gtm.start":(new Date).getTime(),event:"gtm.js"});var a=t.getElementsByTagName(n)[0],i=t.createElement(n),r=s!="dataLayer"?"&l="+s:"";i.async=!0,i.src="https://www.googletagmanager.com/gtm.js?id="+o+r,a.parentNode.insertBefore(i,a)})(window,document,"script","dataLayer","GTM-XXXXXXX")</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-XXXXXXXXXX")</script><title>SuperMind第9讲：高级回测技巧与实盘准备 | 烧烤量化</title>
+<meta name=description content="学习高级回测技巧、策略验证方法和实盘准备流程"><meta name=author content="Ryan"><meta name=robots content="index, follow"><meta property="og:title" content="SuperMind第9讲：高级回测技巧与实盘准备 | 烧烤量化"><meta property="og:description" content="学习高级回测技巧、策略验证方法和实盘准备流程"><meta property="og:type" content="article"><meta property="og:url" content="https://sk-quant.github.io/blog/%E5%9B%9E%E6%B5%8B%E5%B9%B3%E5%8F%B0/09-%E9%AB%98%E7%BA%A7%E5%9B%9E%E6%B5%8B%E6%8A%80%E5%B7%A7%E4%B8%8E%E5%AE%9E%E7%9B%98%E5%87%86%E5%A4%87/"><meta property="og:site_name" content="烧烤量化"><meta name=twitter:card content="summary_large_image"><meta name=twitter:title content="SuperMind第9讲：高级回测技巧与实盘准备 | 烧烤量化"><meta name=twitter:description content="学习高级回测技巧、策略验证方法和实盘准备流程"><link rel=icon type=image/x-icon href=/images/favicon.ico><link rel=canonical href=https://sk-quant.github.io/blog/%E5%9B%9E%E6%B5%8B%E5%B9%B3%E5%8F%B0/09-%E9%AB%98%E7%BA%A7%E5%9B%9E%E6%B5%8B%E6%8A%80%E5%B7%A7%E4%B8%8E%E5%AE%9E%E7%9B%98%E5%87%86%E5%A4%87/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel=stylesheet><link rel=stylesheet href="/css/main.min.9a3c970d7feebe1317992d10ced98f226635b831a963ee601e5901734ff0da21.css"></head><body class="min-h-screen flex flex-col"><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height=0 width=0 style=display:none;visibility:hidden></iframe></noscript><div class="fixed top-0 left-0 right-0 z-50"><div class=mobile-menu-wrapper><input type=checkbox id=nav-toggle class=nav-toggle><header class="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-100"><div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl"><nav class="flex items-center justify-between h-20"><a href=https://sk-quant.github.io/ class="flex items-center space-x-4"><img src=/images/logo.svg alt=烧烤量化 class=h-12>
+<span class="text-3xl font-semibold text-gray-800">烧烤量化</span></a><div class="hidden md:flex items-center space-x-8"><a href=/path class="text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">学习路线</a><div class="relative group"><button class="flex items-center text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">
+量化基础<svg class="ml-2 w-4 h-4" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="absolute left-0 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out"><div class="py-6 bg-white border border-gray-100 shadow-xl rounded-lg"><a href=/categories/%e6%8a%95%e8%b5%84%e7%90%86%e8%ae%ba/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">投资理论</a>
+<a href=/categories/%e4%bb%a3%e7%a0%81%e5%9f%ba%e7%a1%80/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">代码基础</a>
+<a href=/categories/%e6%8a%80%e6%9c%af%e6%8c%87%e6%a0%87/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">技术指标</a>
+<a href=/categories/%e5%9b%9e%e6%b5%8b%e5%b9%b3%e5%8f%b0/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">回测平台</a></div></div></div><div class="relative group"><button class="flex items-center text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">
+量化进阶<svg class="ml-2 w-4 h-4" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="absolute left-0 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out"><div class="py-6 bg-white border border-gray-100 shadow-xl rounded-lg"><a href=/categories/%e7%ad%96%e7%95%a5%e5%88%86%e4%ba%ab/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">策略分享</a>
+<a href=/categories/%e5%ae%9e%e7%9b%98%e5%b7%a5%e5%85%b7/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">实盘工具</a>
+<a href=/categories/%e7%83%ad%e7%82%b9%e9%a3%8e%e5%8f%a3/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">热点风口</a>
+<a href=/categories/%e7%bb%bc%e5%90%88%e5%ae%9e%e6%88%98/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">综合实战</a></div></div></div><div class="relative group"><button class="flex items-center text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">
+量化高手<svg class="ml-2 w-4 h-4" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="absolute left-0 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out"><div class="py-6 bg-white border border-gray-100 shadow-xl rounded-lg"><a href=/categories/%e5%8f%af%e8%bd%ac%e5%80%ba/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">可转债</a>
+<a href=/categories/%e8%9e%8d%e8%b5%84%e8%9e%8d%e5%88%b8/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">融资融券</a>
+<a href=/categories/%e8%82%a1%e7%a5%a8%e6%9c%9f%e6%9d%83/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">股票期权</a>
+<a href=/categories/%e8%82%a1%e6%8c%87%e6%9c%9f%e8%b4%a7/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">股指期货</a></div></div></div><a href=/pricing class="text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">服务套餐</a></div><div class="hidden md:flex items-center space-x-4"><a href=/contact class="inline-flex items-center justify-center px-6 py-3 rounded-lg font-bold transition duration-200 ease-in-out bg-primary-600 text-white hover:bg-primary-700 hover:scale-105">现在加入</a></div><div class=md:hidden><label for=nav-toggle class="p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2 transition-colors cursor-pointer"><svg class="w-6 h-6" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></label></div></nav></div><div class="nav-content md:hidden w-full fixed left-0 right-0 top-20 bg-white border-t border-gray-100 shadow-lg"><div class="w-full px-6 py-4"><a href=/path class="block text-xl text-gray-900 hover:text-primary-600 font-bold transition duration-200 py-2">学习路线</a><div class=py-2><div class="text-xl text-gray-900 font-bold mb-2">量化基础</div><div class=pl-4><a href=/categories/%e6%8a%95%e8%b5%84%e7%90%86%e8%ae%ba/ class="block text-gray-700 hover:text-primary-600 py-2">投资理论</a>
+<a href=/categories/%e4%bb%a3%e7%a0%81%e5%9f%ba%e7%a1%80/ class="block text-gray-700 hover:text-primary-600 py-2">代码基础</a>
+<a href=/categories/%e6%8a%80%e6%9c%af%e6%8c%87%e6%a0%87/ class="block text-gray-700 hover:text-primary-600 py-2">技术指标</a>
+<a href=/categories/%e5%9b%9e%e6%b5%8b%e5%b9%b3%e5%8f%b0/ class="block text-gray-700 hover:text-primary-600 py-2">回测平台</a></div></div><div class=py-2><div class="text-xl text-gray-900 font-bold mb-2">量化进阶</div><div class=pl-4><a href=/categories/%e7%ad%96%e7%95%a5%e5%88%86%e4%ba%ab/ class="block text-gray-700 hover:text-primary-600 py-2">策略分享</a>
+<a href=/categories/%e5%ae%9e%e7%9b%98%e5%b7%a5%e5%85%b7/ class="block text-gray-700 hover:text-primary-600 py-2">实盘工具</a>
+<a href=/categories/%e7%83%ad%e7%82%b9%e9%a3%8e%e5%8f%a3/ class="block text-gray-700 hover:text-primary-600 py-2">热点风口</a>
+<a href=/categories/%e7%bb%bc%e5%90%88%e5%ae%9e%e6%88%98/ class="block text-gray-700 hover:text-primary-600 py-2">综合实战</a></div></div><div class=py-2><div class="text-xl text-gray-900 font-bold mb-2">量化高手</div><div class=pl-4><a href=/categories/%e5%8f%af%e8%bd%ac%e5%80%ba/ class="block text-gray-700 hover:text-primary-600 py-2">可转债</a>
+<a href=/categories/%e8%9e%8d%e8%b5%84%e8%9e%8d%e5%88%b8/ class="block text-gray-700 hover:text-primary-600 py-2">融资融券</a>
+<a href=/categories/%e8%82%a1%e7%a5%a8%e6%9c%9f%e6%9d%83/ class="block text-gray-700 hover:text-primary-600 py-2">股票期权</a>
+<a href=/categories/%e8%82%a1%e6%8c%87%e6%9c%9f%e8%b4%a7/ class="block text-gray-700 hover:text-primary-600 py-2">股指期货</a></div></div><a href=/pricing class="block text-xl text-gray-900 hover:text-primary-600 font-bold transition duration-200 py-2">服务套餐</a><div class="pt-4 space-y-4"><a href=/contact class="block text-center px-6 py-3 rounded-lg font-bold transition duration-200 ease-in-out bg-primary-600 text-white hover:bg-primary-700 hover:scale-105">现在加入</a></div></div></div></header><style>.mobile-menu-wrapper{position:relative}.nav-toggle{display:none}.nav-content{display:none}.nav-toggle:checked~header .nav-content{display:block}</style></div></div><div class=pt-20><div class="container mx-auto px-4 py-12"><div class="flex flex-col lg:flex-row gap-8 mb-12"><article class=flex-1><header class=mb-8><div class=mb-4><a href=/categories/%E5%9B%9E%E6%B5%8B%E5%B9%B3%E5%8F%B0 class="inline-block px-3 py-1 text-sm font-medium text-primary-600 bg-primary-50 rounded-full hover:bg-primary-100 mr-2">回测平台</a></div><h1 class="text-4xl font-bold mb-4">SuperMind第9讲：高级回测技巧与实盘准备</h1><div class="flex flex-col space-y-4"><div class="flex items-center justify-between text-sm text-gray-500"><div class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7A4 4 0 118 7a4 4 0 018 0zm-4 7a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+<span>Ryan</span></div><div class="flex items-center space-x-6"><div class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747.0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746.0-3.332.477-4.5 1.253"/></svg>
+<span>18 分钟</span></div><div class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5A2 2 0 003 7v12a2 2 0 002 2z"/></svg>
+<time datetime=2025-09-29>September 29, 2025</time></div></div></div><div class="flex items-center flex-wrap gap-2"><a href=/tags/2025 class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors duration-200">#2025
+</a><a href=/tags/supermind class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors duration-200">#SuperMind</a></div></div></header><div class=mb-8><img src=/images/blog/%e5%9b%9e%e6%b5%8b%e5%b9%b3%e5%8f%b0.jpg alt=SuperMind第9讲：高级回测技巧与实盘准备 class="w-full h-auto rounded-lg" loading=lazy></div><div class="prose prose-lg max-w-none"><h2 id=学习目标>学习目标</h2><ul><li>掌握高级回测技巧，包括滑点建模、市场冲击和交易成本</li><li>学会策略稳健性测试和压力测试方法</li><li>理解多策略组合和资产配置优化</li><li>掌握策略验证的完整流程</li><li>了解实盘交易的准备工作和注意事项</li></ul><div class="bg-gray-50 p-6 rounded-lg mb-8"><h2 class="text-xl font-semibold mb-4">目录</h2><nav id=TableOfContents><ul><li><a href=#学习目标>学习目标</a></li><li><a href=#高级回测建模>高级回测建模</a><ul><li><a href=#真实交易成本建模>真实交易成本建模</a></li></ul></li></ul></nav></div><h2 id=高级回测建模>高级回测建模</h2><h3 id=真实交易成本建模>真实交易成本建模</h3><p>精确建模交易成本对回测结果至关重要：</p><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span><span class=lnt>170
+</span><span class=lnt>171
+</span><span class=lnt>172
+</span><span class=lnt>173
+</span><span class=lnt>174
+</span><span class=lnt>175
+</span><span class=lnt>176
+</span><span class=lnt>177
+</span><span class=lnt>178
+</span><span class=lnt>179
+</span><span class=lnt>180
+</span><span class=lnt>181
+</span><span class=lnt>182
+</span><span class=lnt>183
+</span><span class=lnt>184
+</span><span class=lnt>185
+</span><span class=lnt>186
+</span><span class=lnt>187
+</span><span class=lnt>188
+</span><span class=lnt>189
+</span><span class=lnt>190
+</span><span class=lnt>191
+</span><span class=lnt>192
+</span><span class=lnt>193
+</span><span class=lnt>194
+</span><span class=lnt>195
+</span><span class=lnt>196
+</span><span class=lnt>197
+</span><span class=lnt>198
+</span><span class=lnt>199
+</span><span class=lnt>200
+</span><span class=lnt>201
+</span><span class=lnt>202
+</span><span class=lnt>203
+</span><span class=lnt>204
+</span><span class=lnt>205
+</span><span class=lnt>206
+</span><span class=lnt>207
+</span><span class=lnt>208
+</span><span class=lnt>209
+</span><span class=lnt>210
+</span><span class=lnt>211
+</span><span class=lnt>212
+</span><span class=lnt>213
+</span><span class=lnt>214
+</span><span class=lnt>215
+</span><span class=lnt>216
+</span><span class=lnt>217
+</span><span class=lnt>218
+</span><span class=lnt>219
+</span><span class=lnt>220
+</span><span class=lnt>221
+</span><span class=lnt>222
+</span><span class=lnt>223
+</span><span class=lnt>224
+</span><span class=lnt>225
+</span><span class=lnt>226
+</span><span class=lnt>227
+</span><span class=lnt>228
+</span><span class=lnt>229
+</span><span class=lnt>230
+</span><span class=lnt>231
+</span><span class=lnt>232
+</span><span class=lnt>233
+</span><span class=lnt>234
+</span><span class=lnt>235
+</span><span class=lnt>236
+</span><span class=lnt>237
+</span><span class=lnt>238
+</span><span class=lnt>239
+</span><span class=lnt>240
+</span><span class=lnt>241
+</span><span class=lnt>242
+</span><span class=lnt>243
+</span><span class=lnt>244
+</span><span class=lnt>245
+</span><span class=lnt>246
+</span><span class=lnt>247
+</span><span class=lnt>248
+</span><span class=lnt>249
+</span><span class=lnt>250
+</span><span class=lnt>251
+</span><span class=lnt>252
+</span><span class=lnt>253
+</span><span class=lnt>254
+</span><span class=lnt>255
+</span><span class=lnt>256
+</span><span class=lnt>257
+</span><span class=lnt>258
+</span><span class=lnt>259
+</span><span class=lnt>260
+</span><span class=lnt>261
+</span><span class=lnt>262
+</span><span class=lnt>263
+</span><span class=lnt>264
+</span><span class=lnt>265
+</span><span class=lnt>266
+</span><span class=lnt>267
+</span><span class=lnt>268
+</span><span class=lnt>269
+</span><span class=lnt>270
+</span><span class=lnt>271
+</span><span class=lnt>272
+</span><span class=lnt>273
+</span><span class=lnt>274
+</span><span class=lnt>275
+</span><span class=lnt>276
+</span><span class=lnt>277
+</span><span class=lnt>278
+</span><span class=lnt>279
+</span><span class=lnt>280
+</span><span class=lnt>281
+</span><span class=lnt>282
+</span><span class=lnt>283
+</span><span class=lnt>284
+</span><span class=lnt>285
+</span><span class=lnt>286
+</span><span class=lnt>287
+</span><span class=lnt>288
+</span><span class=lnt>289
+</span><span class=lnt>290
+</span><span class=lnt>291
+</span><span class=lnt>292
+</span><span class=lnt>293
+</span><span class=lnt>294
+</span><span class=lnt>295
+</span><span class=lnt>296
+</span><span class=lnt>297
+</span><span class=lnt>298
+</span><span class=lnt>299
+</span><span class=lnt>300
+</span><span class=lnt>301
+</span><span class=lnt>302
+</span><span class=lnt>303
+</span><span class=lnt>304
+</span><span class=lnt>305
+</span><span class=lnt>306
+</span><span class=lnt>307
+</span><span class=lnt>308
+</span><span class=lnt>309
+</span><span class=lnt>310
+</span><span class=lnt>311
+</span><span class=lnt>312
+</span><span class=lnt>313
+</span><span class=lnt>314
+</span><span class=lnt>315
+</span><span class=lnt>316
+</span><span class=lnt>317
+</span><span class=lnt>318
+</span><span class=lnt>319
+</span><span class=lnt>320
+</span><span class=lnt>321
+</span><span class=lnt>322
+</span><span class=lnt>323
+</span><span class=lnt>324
+</span><span class=lnt>325
+</span><span class=lnt>326
+</span><span class=lnt>327
+</span><span class=lnt>328
+</span><span class=lnt>329
+</span><span class=lnt>330
+</span><span class=lnt>331
+</span><span class=lnt>332
+</span><span class=lnt>333
+</span><span class=lnt>334
+</span><span class=lnt>335
+</span><span class=lnt>336
+</span><span class=lnt>337
+</span><span class=lnt>338
+</span><span class=lnt>339
+</span><span class=lnt>340
+</span><span class=lnt>341
+</span><span class=lnt>342
+</span><span class=lnt>343
+</span><span class=lnt>344
+</span><span class=lnt>345
+</span><span class=lnt>346
+</span><span class=lnt>347
+</span><span class=lnt>348
+</span><span class=lnt>349
+</span><span class=lnt>350
+</span><span class=lnt>351
+</span><span class=lnt>352
+</span><span class=lnt>353
+</span><span class=lnt>354
+</span><span class=lnt>355
+</span><span class=lnt>356
+</span><span class=lnt>357
+</span><span class=lnt>358
+</span><span class=lnt>359
+</span><span class=lnt>360
+</span><span class=lnt>361
+</span><span class=lnt>362
+</span><span class=lnt>363
+</span><span class=lnt>364
+</span><span class=lnt>365
+</span><span class=lnt>366
+</span><span class=lnt>367
+</span><span class=lnt>368
+</span><span class=lnt>369
+</span><span class=lnt>370
+</span><span class=lnt>371
+</span><span class=lnt>372
+</span><span class=lnt>373
+</span><span class=lnt>374
+</span><span class=lnt>375
+</span><span class=lnt>376
+</span><span class=lnt>377
+</span><span class=lnt>378
+</span><span class=lnt>379
+</span><span class=lnt>380
+</span><span class=lnt>381
+</span><span class=lnt>382
+</span><span class=lnt>383
+</span><span class=lnt>384
+</span><span class=lnt>385
+</span><span class=lnt>386
+</span><span class=lnt>387
+</span><span class=lnt>388
+</span><span class=lnt>389
+</span><span class=lnt>390
+</span><span class=lnt>391
+</span><span class=lnt>392
+</span><span class=lnt>393
+</span><span class=lnt>394
+</span><span class=lnt>395
+</span><span class=lnt>396
+</span><span class=lnt>397
+</span><span class=lnt>398
+</span><span class=lnt>399
+</span><span class=lnt>400
+</span><span class=lnt>401
+</span><span class=lnt>402
+</span><span class=lnt>403
+</span><span class=lnt>404
+</span><span class=lnt>405
+</span><span class=lnt>406
+</span><span class=lnt>407
+</span><span class=lnt>408
+</span><span class=lnt>409
+</span><span class=lnt>410
+</span><span class=lnt>411
+</span><span class=lnt>412
+</span><span class=lnt>413
+</span><span class=lnt>414
+</span><span class=lnt>415
+</span><span class=lnt>416
+</span><span class=lnt>417
+</span><span class=lnt>418
+</span><span class=lnt>419
+</span><span class=lnt>420
+</span><span class=lnt>421
+</span><span class=lnt>422
+</span><span class=lnt>423
+</span><span class=lnt>424
+</span><span class=lnt>425
+</span><span class=lnt>426
+</span><span class=lnt>427
+</span><span class=lnt>428
+</span><span class=lnt>429
+</span><span class=lnt>430
+</span><span class=lnt>431
+</span><span class=lnt>432
+</span><span class=lnt>433
+</span><span class=lnt>434
+</span><span class=lnt>435
+</span><span class=lnt>436
+</span><span class=lnt>437
+</span><span class=lnt>438
+</span><span class=lnt>439
+</span><span class=lnt>440
+</span><span class=lnt>441
+</span><span class=lnt>442
+</span><span class=lnt>443
+</span><span class=lnt>444
+</span><span class=lnt>445
+</span><span class=lnt>446
+</span><span class=lnt>447
+</span><span class=lnt>448
+</span><span class=lnt>449
+</span><span class=lnt>450
+</span><span class=lnt>451
+</span><span class=lnt>452
+</span><span class=lnt>453
+</span><span class=lnt>454
+</span><span class=lnt>455
+</span><span class=lnt>456
+</span><span class=lnt>457
+</span><span class=lnt>458
+</span><span class=lnt>459
+</span><span class=lnt>460
+</span><span class=lnt>461
+</span><span class=lnt>462
+</span><span class=lnt>463
+</span><span class=lnt>464
+</span><span class=lnt>465
+</span><span class=lnt>466
+</span><span class=lnt>467
+</span><span class=lnt>468
+</span><span class=lnt>469
+</span><span class=lnt>470
+</span><span class=lnt>471
+</span><span class=lnt>472
+</span><span class=lnt>473
+</span><span class=lnt>474
+</span><span class=lnt>475
+</span><span class=lnt>476
+</span><span class=lnt>477
+</span><span class=lnt>478
+</span><span class=lnt>479
+</span><span class=lnt>480
+</span><span class=lnt>481
+</span><span class=lnt>482
+</span><span class=lnt>483
+</span><span class=lnt>484
+</span><span class=lnt>485
+</span><span class=lnt>486
+</span><span class=lnt>487
+</span><span class=lnt>488
+</span><span class=lnt>489
+</span><span class=lnt>490
+</span><span class=lnt>491
+</span><span class=lnt>492
+</span><span class=lnt>493
+</span><span class=lnt>494
+</span><span class=lnt>495
+</span><span class=lnt>496
+</span><span class=lnt>497
+</span><span class=lnt>498
+</span><span class=lnt>499
+</span><span class=lnt>500
+</span><span class=lnt>501
+</span><span class=lnt>502
+</span><span class=lnt>503
+</span><span class=lnt>504
+</span><span class=lnt>505
+</span><span class=lnt>506
+</span><span class=lnt>507
+</span><span class=lnt>508
+</span><span class=lnt>509
+</span><span class=lnt>510
+</span><span class=lnt>511
+</span><span class=lnt>512
+</span><span class=lnt>513
+</span><span class=lnt>514
+</span><span class=lnt>515
+</span><span class=lnt>516
+</span><span class=lnt>517
+</span><span class=lnt>518
+</span><span class=lnt>519
+</span><span class=lnt>520
+</span><span class=lnt>521
+</span><span class=lnt>522
+</span><span class=lnt>523
+</span><span class=lnt>524
+</span><span class=lnt>525
+</span><span class=lnt>526
+</span><span class=lnt>527
+</span><span class=lnt>528
+</span><span class=lnt>529
+</span><span class=lnt>530
+</span><span class=lnt>531
+</span><span class=lnt>532
+</span><span class=lnt>533
+</span><span class=lnt>534
+</span><span class=lnt>535
+</span><span class=lnt>536
+</span><span class=lnt>537
+</span><span class=lnt>538
+</span><span class=lnt>539
+</span><span class=lnt>540
+</span><span class=lnt>541
+</span><span class=lnt>542
+</span><span class=lnt>543
+</span><span class=lnt>544
+</span><span class=lnt>545
+</span><span class=lnt>546
+</span><span class=lnt>547
+</span><span class=lnt>548
+</span><span class=lnt>549
+</span><span class=lnt>550
+</span><span class=lnt>551
+</span><span class=lnt>552
+</span><span class=lnt>553
+</span><span class=lnt>554
+</span><span class=lnt>555
+</span><span class=lnt>556
+</span><span class=lnt>557
+</span><span class=lnt>558
+</span><span class=lnt>559
+</span><span class=lnt>560
+</span><span class=lnt>561
+</span><span class=lnt>562
+</span><span class=lnt>563
+</span><span class=lnt>564
+</span><span class=lnt>565
+</span><span class=lnt>566
+</span><span class=lnt>567
+</span><span class=lnt>568
+</span><span class=lnt>569
+</span><span class=lnt>570
+</span><span class=lnt>571
+</span><span class=lnt>572
+</span><span class=lnt>573
+</span><span class=lnt>574
+</span><span class=lnt>575
+</span><span class=lnt>576
+</span><span class=lnt>577
+</span><span class=lnt>578
+</span><span class=lnt>579
+</span><span class=lnt>580
+</span><span class=lnt>581
+</span><span class=lnt>582
+</span><span class=lnt>583
+</span><span class=lnt>584
+</span><span class=lnt>585
+</span><span class=lnt>586
+</span><span class=lnt>587
+</span><span class=lnt>588
+</span><span class=lnt>589
+</span><span class=lnt>590
+</span><span class=lnt>591
+</span><span class=lnt>592
+</span><span class=lnt>593
+</span><span class=lnt>594
+</span><span class=lnt>595
+</span><span class=lnt>596
+</span><span class=lnt>597
+</span><span class=lnt>598
+</span><span class=lnt>599
+</span><span class=lnt>600
+</span><span class=lnt>601
+</span><span class=lnt>602
+</span><span class=lnt>603
+</span><span class=lnt>604
+</span><span class=lnt>605
+</span><span class=lnt>606
+</span><span class=lnt>607
+</span><span class=lnt>608
+</span><span class=lnt>609
+</span><span class=lnt>610
+</span><span class=lnt>611
+</span><span class=lnt>612
+</span><span class=lnt>613
+</span><span class=lnt>614
+</span><span class=lnt>615
+</span><span class=lnt>616
+</span><span class=lnt>617
+</span><span class=lnt>618
+</span><span class=lnt>619
+</span><span class=lnt>620
+</span><span class=lnt>621
+</span><span class=lnt>622
+</span><span class=lnt>623
+</span><span class=lnt>624
+</span><span class=lnt>625
+</span><span class=lnt>626
+</span><span class=lnt>627
+</span><span class=lnt>628
+</span><span class=lnt>629
+</span><span class=lnt>630
+</span><span class=lnt>631
+</span><span class=lnt>632
+</span><span class=lnt>633
+</span><span class=lnt>634
+</span><span class=lnt>635
+</span><span class=lnt>636
+</span><span class=lnt>637
+</span><span class=lnt>638
+</span><span class=lnt>639
+</span><span class=lnt>640
+</span><span class=lnt>641
+</span><span class=lnt>642
+</span><span class=lnt>643
+</span><span class=lnt>644
+</span><span class=lnt>645
+</span><span class=lnt>646
+</span><span class=lnt>647
+</span><span class=lnt>648
+</span><span class=lnt>649
+</span><span class=lnt>650
+</span><span class=lnt>651
+</span><span class=lnt>652
+</span><span class=lnt>653
+</span><span class=lnt>654
+</span><span class=lnt>655
+</span><span class=lnt>656
+</span><span class=lnt>657
+</span><span class=lnt>658
+</span><span class=lnt>659
+</span><span class=lnt>660
+</span><span class=lnt>661
+</span><span class=lnt>662
+</span><span class=lnt>663
+</span><span class=lnt>664
+</span><span class=lnt>665
+</span><span class=lnt>666
+</span><span class=lnt>667
+</span><span class=lnt>668
+</span><span class=lnt>669
+</span><span class=lnt>670
+</span><span class=lnt>671
+</span><span class=lnt>672
+</span><span class=lnt>673
+</span><span class=lnt>674
+</span><span class=lnt>675
+</span><span class=lnt>676
+</span><span class=lnt>677
+</span><span class=lnt>678
+</span><span class=lnt>679
+</span><span class=lnt>680
+</span><span class=lnt>681
+</span><span class=lnt>682
+</span><span class=lnt>683
+</span><span class=lnt>684
+</span><span class=lnt>685
+</span><span class=lnt>686
+</span><span class=lnt>687
+</span><span class=lnt>688
+</span><span class=lnt>689
+</span><span class=lnt>690
+</span><span class=lnt>691
+</span><span class=lnt>692
+</span><span class=lnt>693
+</span><span class=lnt>694
+</span><span class=lnt>695
+</span><span class=lnt>696
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>advanced_transaction_cost_modeling</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>    高级交易成本建模
+</span></span></span><span class=line><span class=cl><span class=s2>    &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>class</span> <span class=nc>TransactionCostModel</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>cost_components</span> <span class=o>=</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>market_conditions</span> <span class=o>=</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>model_commission_costs</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>trade_value</span><span class=p>,</span> <span class=n>asset_type</span><span class=o>=</span><span class=s1>&#39;stock&#39;</span><span class=p>,</span> <span class=n>broker_type</span><span class=o>=</span><span class=s1>&#39;standard&#39;</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>            佣金成本建模
+</span></span></span><span class=line><span class=cl><span class=s2>            &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=n>commission_rates</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;stock&#39;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;standard&#39;</span><span class=p>:</span> <span class=mf>0.001</span><span class=p>,</span>      <span class=c1># 0.1%</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;discount&#39;</span><span class=p>:</span> <span class=mf>0.0005</span><span class=p>,</span>     <span class=c1># 0.05%</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;premium&#39;</span><span class=p>:</span> <span class=mf>0.0003</span>      <span class=c1># 0.03%</span>
+</span></span><span class=line><span class=cl>                <span class=p>},</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;fund&#39;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;standard&#39;</span><span class=p>:</span> <span class=mf>0.005</span><span class=p>,</span>      <span class=c1># 0.5%</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;discount&#39;</span><span class=p>:</span> <span class=mf>0.003</span><span class=p>,</span>      <span class=c1># 0.3%</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;premium&#39;</span><span class=p>:</span> <span class=mf>0.001</span>        <span class=c1># 0.1%</span>
+</span></span><span class=line><span class=cl>                <span class=p>},</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;futures&#39;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;standard&#39;</span><span class=p>:</span> <span class=mf>0.0005</span><span class=p>,</span>     <span class=c1># 0.05%</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;discount&#39;</span><span class=p>:</span> <span class=mf>0.0003</span><span class=p>,</span>     <span class=c1># 0.03%</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;premium&#39;</span><span class=p>:</span> <span class=mf>0.0001</span>      <span class=c1># 0.01%</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 最低佣金</span>
+</span></span><span class=line><span class=cl>            <span class=n>min_commissions</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;stock&#39;</span><span class=p>:</span> <span class=mi>5</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;fund&#39;</span><span class=p>:</span> <span class=mi>1</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;futures&#39;</span><span class=p>:</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=n>rate</span> <span class=o>=</span> <span class=n>commission_rates</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>asset_type</span><span class=p>,</span> <span class=p>{})</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>broker_type</span><span class=p>,</span> <span class=mf>0.001</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>min_commission</span> <span class=o>=</span> <span class=n>min_commissions</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>asset_type</span><span class=p>,</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 计算佣金</span>
+</span></span><span class=line><span class=cl>            <span class=n>commission</span> <span class=o>=</span> <span class=nb>max</span><span class=p>(</span><span class=n>trade_value</span> <span class=o>*</span> <span class=n>rate</span><span class=p>,</span> <span class=n>min_commission</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;commission_rate&#39;</span><span class=p>:</span> <span class=n>rate</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;commission_amount&#39;</span><span class=p>:</span> <span class=n>commission</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;effective_rate&#39;</span><span class=p>:</span> <span class=n>commission</span> <span class=o>/</span> <span class=n>trade_value</span> <span class=k>if</span> <span class=n>trade_value</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=k>else</span> <span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;asset_type&#39;</span><span class=p>:</span> <span class=n>asset_type</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;broker_type&#39;</span><span class=p>:</span> <span class=n>broker_type</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>model_slippage_costs</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>order_size</span><span class=p>,</span> <span class=n>daily_volume</span><span class=p>,</span> <span class=n>price</span><span class=p>,</span> <span class=n>volatility</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                                <span class=n>spread_factor</span><span class=o>=</span><span class=mf>0.5</span><span class=p>,</span> <span class=n>volume_factor</span><span class=o>=</span><span class=mf>0.3</span><span class=p>,</span> <span class=n>volatility_factor</span><span class=o>=</span><span class=mf>0.2</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>            滑点成本建模
+</span></span></span><span class=line><span class=cl><span class=s2>            &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=c1># 基础滑点（买卖价差）</span>
+</span></span><span class=line><span class=cl>            <span class=n>base_spread</span> <span class=o>=</span> <span class=mf>0.001</span>  <span class=c1># 0.1%基础价差</span>
+</span></span><span class=line><span class=cl>            <span class=n>spread_slippage</span> <span class=o>=</span> <span class=n>base_spread</span> <span class=o>*</span> <span class=n>spread_factor</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 成交量影响滑点</span>
+</span></span><span class=line><span class=cl>            <span class=n>volume_ratio</span> <span class=o>=</span> <span class=n>order_size</span> <span class=o>/</span> <span class=n>daily_volume</span> <span class=k>if</span> <span class=n>daily_volume</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=k>else</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>            <span class=n>volume_slippage</span> <span class=o>=</span> <span class=n>volume_factor</span> <span class=o>*</span> <span class=n>np</span><span class=o>.</span><span class=n>sqrt</span><span class=p>(</span><span class=n>volume_ratio</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 波动率影响滑点</span>
+</span></span><span class=line><span class=cl>            <span class=n>volatility_slippage</span> <span class=o>=</span> <span class=n>volatility_factor</span> <span class=o>*</span> <span class=n>volatility</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 总滑点</span>
+</span></span><span class=line><span class=cl>            <span class=n>total_slippage</span> <span class=o>=</span> <span class=n>spread_slippage</span> <span class=o>+</span> <span class=n>volume_slippage</span> <span class=o>+</span> <span class=n>volatility_slippage</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 滑点成本</span>
+</span></span><span class=line><span class=cl>            <span class=n>slippage_cost</span> <span class=o>=</span> <span class=n>order_size</span> <span class=o>*</span> <span class=n>price</span> <span class=o>*</span> <span class=n>total_slippage</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;total_slippage_rate&#39;</span><span class=p>:</span> <span class=n>total_slippage</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;slippage_cost&#39;</span><span class=p>:</span> <span class=n>slippage_cost</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;components&#39;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;spread_slippage&#39;</span><span class=p>:</span> <span class=n>spread_slippage</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;volume_slippage&#39;</span><span class=p>:</span> <span class=n>volume_slippage</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;volatility_slippage&#39;</span><span class=p>:</span> <span class=n>volatility_slippage</span>
+</span></span><span class=line><span class=cl>                <span class=p>},</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;factors&#39;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;volume_ratio&#39;</span><span class=p>:</span> <span class=n>volume_ratio</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;volatility&#39;</span><span class=p>:</span> <span class=n>volatility</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;order_size&#39;</span><span class=p>:</span> <span class=n>order_size</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>model_market_impact</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>order_size</span><span class=p>,</span> <span class=n>market_cap</span><span class=p>,</span> <span class=n>daily_turnover</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                              <span class=n>price_impact_factor</span><span class=o>=</span><span class=mf>0.0001</span><span class=p>,</span> <span class=n>permanent_impact_factor</span><span class=o>=</span><span class=mf>0.00005</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>            市场冲击成本建模
+</span></span></span><span class=line><span class=cl><span class=s2>            &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=c1># 临时冲击（临时价格影响）</span>
+</span></span><span class=line><span class=cl>            <span class=n>temporary_impact</span> <span class=o>=</span> <span class=n>price_impact_factor</span> <span class=o>*</span> <span class=n>np</span><span class=o>.</span><span class=n>sqrt</span><span class=p>(</span><span class=n>order_size</span> <span class=o>/</span> <span class=n>market_cap</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 永久冲击（永久价格影响）</span>
+</span></span><span class=line><span class=cl>            <span class=n>permanent_impact</span> <span class=o>=</span> <span class=n>permanent_impact_factor</span> <span class=o>*</span> <span class=n>order_size</span> <span class=o>/</span> <span class=n>market_cap</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 总冲击成本</span>
+</span></span><span class=line><span class=cl>            <span class=n>total_impact</span> <span class=o>=</span> <span class=n>temporary_impact</span> <span class=o>+</span> <span class=n>permanent_impact</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 冲击成本金额</span>
+</span></span><span class=line><span class=cl>            <span class=n>impact_cost</span> <span class=o>=</span> <span class=n>order_size</span> <span class=o>*</span> <span class=n>daily_turnover</span> <span class=o>*</span> <span class=n>total_impact</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;temporary_impact_rate&#39;</span><span class=p>:</span> <span class=n>temporary_impact</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;permanent_impact_rate&#39;</span><span class=p>:</span> <span class=n>permanent_impact</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;total_impact_rate&#39;</span><span class=p>:</span> <span class=n>total_impact</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;impact_cost&#39;</span><span class=p>:</span> <span class=n>impact_cost</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;recovery_time&#39;</span><span class=p>:</span> <span class=bp>self</span><span class=o>.</span><span class=n>estimate_recovery_time</span><span class=p>(</span><span class=n>temporary_impact</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;market_conditions&#39;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;market_cap&#39;</span><span class=p>:</span> <span class=n>market_cap</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;daily_turnover&#39;</span><span class=p>:</span> <span class=n>daily_turnover</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;order_relative_size&#39;</span><span class=p>:</span> <span class=n>order_size</span> <span class=o>/</span> <span class=n>market_cap</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>estimate_recovery_time</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>temporary_impact</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>            估计冲击恢复时间
+</span></span></span><span class=line><span class=cl><span class=s2>            &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=c1># 基于历史数据分析的冲击恢复模型</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>temporary_impact</span> <span class=o>&lt;</span> <span class=mf>0.0001</span><span class=p>:</span>  <span class=c1># &lt; 0.01%</span>
+</span></span><span class=line><span class=cl>                <span class=k>return</span> <span class=mi>1</span>  <span class=c1># 1天</span>
+</span></span><span class=line><span class=cl>            <span class=k>elif</span> <span class=n>temporary_impact</span> <span class=o>&lt;</span> <span class=mf>0.0005</span><span class=p>:</span>  <span class=c1># &lt; 0.05%</span>
+</span></span><span class=line><span class=cl>                <span class=k>return</span> <span class=mi>2</span>  <span class=c1># 2天</span>
+</span></span><span class=line><span class=cl>            <span class=k>elif</span> <span class=n>temporary_impact</span> <span class=o>&lt;</span> <span class=mf>0.001</span><span class=p>:</span>   <span class=c1># &lt; 0.1%</span>
+</span></span><span class=line><span class=cl>                <span class=k>return</span> <span class=mi>3</span>  <span class=c1># 3天</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=k>return</span> <span class=mi>5</span>  <span class=c1># 5天或更长</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>calculate_total_transaction_costs</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>trade_info</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>            计算总交易成本
+</span></span></span><span class=line><span class=cl><span class=s2>            &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=n>trade_value</span> <span class=o>=</span> <span class=n>trade_info</span><span class=p>[</span><span class=s1>&#39;trade_value&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>            <span class=n>order_size</span> <span class=o>=</span> <span class=n>trade_info</span><span class=p>[</span><span class=s1>&#39;order_size&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>            <span class=n>daily_volume</span> <span class=o>=</span> <span class=n>trade_info</span><span class=p>[</span><span class=s1>&#39;daily_volume&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>            <span class=n>price</span> <span class=o>=</span> <span class=n>trade_info</span><span class=p>[</span><span class=s1>&#39;price&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>            <span class=n>volatility</span> <span class=o>=</span> <span class=n>trade_info</span><span class=p>[</span><span class=s1>&#39;volatility&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>            <span class=n>market_cap</span> <span class=o>=</span> <span class=n>trade_info</span><span class=p>[</span><span class=s1>&#39;market_cap&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>            <span class=n>daily_turnover</span> <span class=o>=</span> <span class=n>trade_info</span><span class=p>[</span><span class=s1>&#39;daily_turnover&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>            <span class=n>asset_type</span> <span class=o>=</span> <span class=n>trade_info</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;asset_type&#39;</span><span class=p>,</span> <span class=s1>&#39;stock&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 计算各项成本</span>
+</span></span><span class=line><span class=cl>            <span class=n>commission</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>model_commission_costs</span><span class=p>(</span><span class=n>trade_value</span><span class=p>,</span> <span class=n>asset_type</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>slippage</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>model_slippage_costs</span><span class=p>(</span><span class=n>order_size</span><span class=p>,</span> <span class=n>daily_volume</span><span class=p>,</span> <span class=n>price</span><span class=p>,</span> <span class=n>volatility</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>market_impact</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>model_market_impact</span><span class=p>(</span><span class=n>order_size</span><span class=p>,</span> <span class=n>market_cap</span><span class=p>,</span> <span class=n>daily_turnover</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 总成本</span>
+</span></span><span class=line><span class=cl>            <span class=n>total_cost</span> <span class=o>=</span> <span class=p>(</span><span class=n>commission</span><span class=p>[</span><span class=s1>&#39;commission_amount&#39;</span><span class=p>]</span> <span class=o>+</span> 
+</span></span><span class=line><span class=cl>                         <span class=n>slippage</span><span class=p>[</span><span class=s1>&#39;slippage_cost&#39;</span><span class=p>]</span> <span class=o>+</span> 
+</span></span><span class=line><span class=cl>                         <span class=n>market_impact</span><span class=p>[</span><span class=s1>&#39;impact_cost&#39;</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 总成本率</span>
+</span></span><span class=line><span class=cl>            <span class=n>total_cost_rate</span> <span class=o>=</span> <span class=n>total_cost</span> <span class=o>/</span> <span class=n>trade_value</span> <span class=k>if</span> <span class=n>trade_value</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=k>else</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;total_cost&#39;</span><span class=p>:</span> <span class=n>total_cost</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;total_cost_rate&#39;</span><span class=p>:</span> <span class=n>total_cost_rate</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;components&#39;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;commission&#39;</span><span class=p>:</span> <span class=n>commission</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;slippage&#39;</span><span class=p>:</span> <span class=n>slippage</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;market_impact&#39;</span><span class=p>:</span> <span class=n>market_impact</span>
+</span></span><span class=line><span class=cl>                <span class=p>},</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;cost_breakdown&#39;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;commission_rate&#39;</span><span class=p>:</span> <span class=n>commission</span><span class=p>[</span><span class=s1>&#39;commission_amount&#39;</span><span class=p>]</span> <span class=o>/</span> <span class=n>trade_value</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;slippage_rate&#39;</span><span class=p>:</span> <span class=n>slippage</span><span class=p>[</span><span class=s1>&#39;total_slippage_rate&#39;</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;impact_rate&#39;</span><span class=p>:</span> <span class=n>market_impact</span><span class=p>[</span><span class=s1>&#39;total_impact_rate&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>model_time_varying_costs</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>time_of_day</span><span class=p>,</span> <span class=n>day_of_week</span><span class=p>,</span> <span class=n>month</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                                   <span class=n>market_volatility_regime</span><span class=o>=</span><span class=s1>&#39;normal&#39;</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>            时间变化的成本建模
+</span></span></span><span class=line><span class=cl><span class=s2>            &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=c1># 时间影响因子</span>
+</span></span><span class=line><span class=cl>            <span class=n>time_factors</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;morning_open&#39;</span><span class=p>:</span> <span class=mf>1.5</span><span class=p>,</span>      <span class=c1># 开盘时成本较高</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;midday&#39;</span><span class=p>:</span> <span class=mf>1.0</span><span class=p>,</span>              <span class=c1># 中午成本正常</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;afternoon_close&#39;</span><span class=p>:</span> <span class=mf>1.3</span><span class=p>,</span>     <span class=c1># 收盘时成本略高</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;after_hours&#39;</span><span class=p>:</span> <span class=mf>2.0</span>          <span class=c1># 盘后交易成本很高</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 星期影响因子</span>
+</span></span><span class=line><span class=cl>            <span class=n>weekday_factors</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=mi>0</span><span class=p>:</span> <span class=mf>1.1</span><span class=p>,</span>  <span class=c1># 周一</span>
+</span></span><span class=line><span class=cl>                <span class=mi>1</span><span class=p>:</span> <span class=mf>1.0</span><span class=p>,</span>  <span class=c1># 周二</span>
+</span></span><span class=line><span class=cl>                <span class=mi>2</span><span class=p>:</span> <span class=mf>1.0</span><span class=p>,</span>  <span class=c1># 周三</span>
+</span></span><span class=line><span class=cl>                <span class=mi>3</span><span class=p>:</span> <span class=mf>1.0</span><span class=p>,</span>  <span class=c1># 周四</span>
+</span></span><span class=line><span class=cl>                <span class=mi>4</span><span class=p>:</span> <span class=mf>1.2</span><span class=p>,</span>  <span class=c1># 周五</span>
+</span></span><span class=line><span class=cl>                <span class=mi>5</span><span class=p>:</span> <span class=mf>1.5</span><span class=p>,</span>  <span class=c1># 周六</span>
+</span></span><span class=line><span class=cl>                <span class=mi>6</span><span class=p>:</span> <span class=mf>1.5</span>   <span class=c1># 周日</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 月度影响因子（月末效应）</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>month</span> <span class=o>&gt;=</span> <span class=mi>28</span><span class=p>:</span>  <span class=c1># 月末</span>
+</span></span><span class=line><span class=cl>                <span class=n>month_factor</span> <span class=o>=</span> <span class=mf>1.2</span>
+</span></span><span class=line><span class=cl>            <span class=k>elif</span> <span class=n>month</span> <span class=o>&lt;=</span> <span class=mi>3</span><span class=p>:</span>  <span class=c1># 月初</span>
+</span></span><span class=line><span class=cl>                <span class=n>month_factor</span> <span class=o>=</span> <span class=mf>0.9</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>month_factor</span> <span class=o>=</span> <span class=mf>1.0</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 市场波动率状态</span>
+</span></span><span class=line><span class=cl>            <span class=n>volatility_factors</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;low&#39;</span><span class=p>:</span> <span class=mf>0.8</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;normal&#39;</span><span class=p>:</span> <span class=mf>1.0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;high&#39;</span><span class=p>:</span> <span class=mf>1.5</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;extreme&#39;</span><span class=p>:</span> <span class=mf>2.0</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;time_factor&#39;</span><span class=p>:</span> <span class=n>time_factors</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>time_of_day</span><span class=p>,</span> <span class=mf>1.0</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;weekday_factor&#39;</span><span class=p>:</span> <span class=n>weekday_factors</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>day_of_week</span><span class=p>,</span> <span class=mf>1.0</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;month_factor&#39;</span><span class=p>:</span> <span class=n>month_factor</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;volatility_factor&#39;</span><span class=p>:</span> <span class=n>volatility_factors</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>market_volatility_regime</span><span class=p>,</span> <span class=mf>1.0</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;combined_factor&#39;</span><span class=p>:</span> <span class=p>(</span><span class=n>time_factors</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>time_of_day</span><span class=p>,</span> <span class=mf>1.0</span><span class=p>)</span> <span class=o>*</span> 
+</span></span><span class=line><span class=cl>                                   <span class=n>weekday_factors</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>day_of_week</span><span class=p>,</span> <span class=mf>1.0</span><span class=p>)</span> <span class=o>*</span> 
+</span></span><span class=line><span class=cl>                                   <span class=n>month_factor</span> <span class=o>*</span> 
+</span></span><span class=line><span class=cl>                                   <span class=n>volatility_factors</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>market_volatility_regime</span><span class=p>,</span> <span class=mf>1.0</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>create_dynamic_cost_model</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>historical_data</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>            创建动态成本模型
+</span></span></span><span class=line><span class=cl><span class=s2>            &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=c1># 基于历史数据校准成本模型</span>
+</span></span><span class=line><span class=cl>            <span class=n>cost_calibration</span> <span class=o>=</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 分析历史滑点</span>
+</span></span><span class=line><span class=cl>            <span class=n>historical_slippage</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>analyze_historical_slippage</span><span class=p>(</span><span class=n>historical_data</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>cost_calibration</span><span class=p>[</span><span class=s1>&#39;slippage_model&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>historical_slippage</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 分析历史市场冲击</span>
+</span></span><span class=line><span class=cl>            <span class=n>historical_impact</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>analyze_historical_market_impact</span><span class=p>(</span><span class=n>historical_data</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>cost_calibration</span><span class=p>[</span><span class=s1>&#39;impact_model&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>historical_impact</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 分析时间模式</span>
+</span></span><span class=line><span class=cl>            <span class=n>temporal_patterns</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>analyze_temporal_patterns</span><span class=p>(</span><span class=n>historical_data</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>cost_calibration</span><span class=p>[</span><span class=s1>&#39;temporal_model&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>temporal_patterns</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 分析波动率影响</span>
+</span></span><span class=line><span class=cl>            <span class=n>volatility_impact</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>analyze_volatility_impact</span><span class=p>(</span><span class=n>historical_data</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>cost_calibration</span><span class=p>[</span><span class=s1>&#39;volatility_model&#39;</span><span class=p>]</span> <span class=o>=</span> <span class=n>volatility_impact</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>cost_calibration</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>analyze_historical_slippage</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>data</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>            分析历史滑点数据
+</span></span></span><span class=line><span class=cl><span class=s2>            &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=c1># 这里应该基于实际历史交易数据分析</span>
+</span></span><span class=line><span class=cl>            <span class=c1># 简化版本返回经验参数</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;spread_factor&#39;</span><span class=p>:</span> <span class=mf>0.5</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;volume_factor&#39;</span><span class=p>:</span> <span class=mf>0.3</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;volatility_factor&#39;</span><span class=p>:</span> <span class=mf>0.2</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;base_slippage_rate&#39;</span><span class=p>:</span> <span class=mf>0.001</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>analyze_historical_market_impact</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>data</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>            分析历史市场冲击
+</span></span></span><span class=line><span class=cl><span class=s2>            &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;price_impact_factor&#39;</span><span class=p>:</span> <span class=mf>0.0001</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;permanent_impact_factor&#39;</span><span class=p>:</span> <span class=mf>0.00005</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;impact_decay_rate&#39;</span><span class=p>:</span> <span class=mf>0.3</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>analyze_temporal_patterns</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>data</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>            分析时间模式
+</span></span></span><span class=line><span class=cl><span class=s2>            &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;intraday_pattern&#39;</span><span class=p>:</span> <span class=p>[</span><span class=mf>1.5</span><span class=p>,</span> <span class=mf>1.2</span><span class=p>,</span> <span class=mf>1.0</span><span class=p>,</span> <span class=mf>1.0</span><span class=p>,</span> <span class=mf>1.1</span><span class=p>,</span> <span class=mf>1.3</span><span class=p>],</span>  <span class=c1># 6个时间段</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;weekly_pattern&#39;</span><span class=p>:</span> <span class=p>[</span><span class=mf>1.1</span><span class=p>,</span> <span class=mf>1.0</span><span class=p>,</span> <span class=mf>1.0</span><span class=p>,</span> <span class=mf>1.0</span><span class=p>,</span> <span class=mf>1.2</span><span class=p>,</span> <span class=mf>1.5</span><span class=p>,</span> <span class=mf>1.5</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;monthly_pattern&#39;</span><span class=p>:</span> <span class=p>[</span><span class=mf>0.9</span><span class=p>,</span> <span class=mf>1.0</span><span class=p>,</span> <span class=mf>1.0</span><span class=p>,</span> <span class=mf>1.2</span><span class=p>]</span>  <span class=c1># 月初、月中、月末</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>analyze_volatility_impact</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>data</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>            分析波动率影响
+</span></span></span><span class=line><span class=cl><span class=s2>            &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;volatility_thresholds&#39;</span><span class=p>:</span> <span class=p>[</span><span class=mf>0.01</span><span class=p>,</span> <span class=mf>0.02</span><span class=p>,</span> <span class=mf>0.03</span><span class=p>,</span> <span class=mf>0.05</span><span class=p>],</span>  <span class=c1># 10%, 20%, 30%, 50%</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;cost_multipliers&#39;</span><span class=p>:</span> <span class=p>[</span><span class=mf>0.8</span><span class=p>,</span> <span class=mf>1.0</span><span class=p>,</span> <span class=mf>1.5</span><span class=p>,</span> <span class=mf>2.0</span><span class=p>,</span> <span class=mf>3.0</span><span class=p>]</span>      <span class=c1># 对应的成本倍数</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>TransactionCostModel</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>advanced_slippage_modeling</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>    高级滑点建模
+</span></span></span><span class=line><span class=cl><span class=s2>    &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>class</span> <span class=nc>AdvancedSlippageModel</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>model_parameters</span> <span class=o>=</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>market_microstructure</span> <span class=o>=</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>almgren_chriss_model</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>trade_size</span><span class=p>,</span> <span class=n>daily_volume</span><span class=p>,</span> <span class=n>volatility</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                               <span class=n>temporary_coeff</span><span class=o>=</span><span class=mf>0.314</span><span class=p>,</span> <span class=n>permanent_coeff</span><span class=o>=</span><span class=mf>0.0001</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>            Almgren-Chriss市场冲击模型
+</span></span></span><span class=line><span class=cl><span class=s2>            &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=c1># 标准化交易规模</span>
+</span></span><span class=line><span class=cl>            <span class=n>normalized_size</span> <span class=o>=</span> <span class=n>trade_size</span> <span class=o>/</span> <span class=n>daily_volume</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 临时冲击（临时价格影响）</span>
+</span></span><span class=line><span class=cl>            <span class=n>temporary_impact</span> <span class=o>=</span> <span class=n>temporary_coeff</span> <span class=o>*</span> <span class=n>volatility</span> <span class=o>*</span> <span class=p>(</span><span class=n>trade_size</span> <span class=o>/</span> <span class=n>daily_volume</span><span class=p>)</span> <span class=o>**</span> <span class=mf>0.6</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 永久冲击（永久价格影响）</span>
+</span></span><span class=line><span class=cl>            <span class=n>permanent_impact</span> <span class=o>=</span> <span class=n>permanent_coeff</span> <span class=o>*</span> <span class=n>volatility</span> <span class=o>*</span> <span class=p>(</span><span class=n>trade_size</span> <span class=o>/</span> <span class=n>daily_volume</span><span class=p>)</span> <span class=o>**</span> <span class=mf>0.5</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 总冲击成本</span>
+</span></span><span class=line><span class=cl>            <span class=n>total_impact</span> <span class=o>=</span> <span class=n>temporary_impact</span> <span class=o>+</span> <span class=n>permanent_impact</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;temporary_impact&#39;</span><span class=p>:</span> <span class=n>temporary_impact</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;permanent_impact&#39;</span><span class=p>:</span> <span class=n>permanent_impact</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;total_impact&#39;</span><span class=p>:</span> <span class=n>total_impact</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;impact_components&#39;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;spread_component&#39;</span><span class=p>:</span> <span class=mf>0.5</span> <span class=o>*</span> <span class=n>volatility</span> <span class=o>*</span> <span class=mf>0.001</span><span class=p>,</span>  <span class=c1># 基础价差</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;temporary_component&#39;</span><span class=p>:</span> <span class=n>temporary_impact</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;permanent_component&#39;</span><span class=p>:</span> <span class=n>permanent_impact</span>
+</span></span><span class=line><span class=cl>                <span class=p>},</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;model_parameters&#39;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;temporary_coeff&#39;</span><span class=p>:</span> <span class=n>temporary_coeff</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;permanent_coeff&#39;</span><span class=p>:</span> <span class=n>permanent_coeff</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;volatility&#39;</span><span class=p>:</span> <span class=n>volatility</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;trade_size&#39;</span><span class=p>:</span> <span class=n>trade_size</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;daily_volume&#39;</span><span class=p>:</span> <span class=n>daily_volume</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>square_root_law_model</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>order_size</span><span class=p>,</span> <span class=n>average_daily_volume</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                                <span class=n>volatility</span><span class=p>,</span> <span class=n>spread</span><span class=o>=</span><span class=mf>0.001</span><span class=p>,</span> <span class=n>eta</span><span class=o>=</span><span class=mf>0.142</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>            平方根定律模型
+</span></span></span><span class=line><span class=cl><span class=s2>            &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=c1># 相对订单规模</span>
+</span></span><span class=line><span class=cl>            <span class=n>relative_size</span> <span class=o>=</span> <span class=n>order_size</span> <span class=o>/</span> <span class=n>average_daily_volume</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 基础滑点（价差）</span>
+</span></span><span class=line><span class=cl>            <span class=n>base_slippage</span> <span class=o>=</span> <span class=n>spread</span> <span class=o>/</span> <span class=mi>2</span>  <span class=c1># 半价差</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 临时冲击（平方根定律）</span>
+</span></span><span class=line><span class=cl>            <span class=n>temporary_impact</span> <span class=o>=</span> <span class=n>eta</span> <span class=o>*</span> <span class=n>volatility</span> <span class=o>*</span> <span class=n>np</span><span class=o>.</span><span class=n>sqrt</span><span class=p>(</span><span class=n>relative_size</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 总滑点</span>
+</span></span><span class=line><span class=cl>            <span class=n>total_slippage</span> <span class=o>=</span> <span class=n>base_slippage</span> <span class=o>+</span> <span class=n>temporary_impact</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;base_slippage&#39;</span><span class=p>:</span> <span class=n>base_slippage</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;temporary_impact&#39;</span><span class=p>:</span> <span class=n>temporary_impact</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;total_slippage&#39;</span><span class=p>:</span> <span class=n>total_slippage</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;slippage_rate&#39;</span><span class=p>:</span> <span class=n>total_slippage</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;model_type&#39;</span><span class=p>:</span> <span class=s1>&#39;square_root_law&#39;</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;parameters&#39;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;eta&#39;</span><span class=p>:</span> <span class=n>eta</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;volatility&#39;</span><span class=p>:</span> <span class=n>volatility</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;relative_size&#39;</span><span class=p>:</span> <span class=n>relative_size</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;spread&#39;</span><span class=p>:</span> <span class=n>spread</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>volume_weighted_average_price_slippage</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>order_size</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                                                   <span class=n>vwap_period_volume</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                                                   <span class=n>participation_rate</span><span class=o>=</span><span class=mf>0.1</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>            VWAP滑点模型
+</span></span></span><span class=line><span class=cl><span class=s2>            &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=c1># 参与率</span>
+</span></span><span class=line><span class=cl>            <span class=n>actual_participation</span> <span class=o>=</span> <span class=n>order_size</span> <span class=o>/</span> <span class=n>vwap_period_volume</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># VWAP滑点（基于参与率）</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>actual_participation</span> <span class=o>&lt;=</span> <span class=n>participation_rate</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=n>vwap_slippage</span> <span class=o>=</span> <span class=mf>0.5</span> <span class=o>*</span> <span class=n>actual_participation</span> <span class=o>*</span> <span class=mf>0.001</span>  <span class=c1># 低参与率</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=c1># 高参与率时的额外滑点</span>
+</span></span><span class=line><span class=cl>                <span class=n>excess_participation</span> <span class=o>=</span> <span class=n>actual_participation</span> <span class=o>-</span> <span class=n>participation_rate</span>
+</span></span><span class=line><span class=cl>                <span class=n>vwap_slippage</span> <span class=o>=</span> <span class=p>(</span><span class=mf>0.5</span> <span class=o>*</span> <span class=n>participation_rate</span> <span class=o>*</span> <span class=mf>0.001</span> <span class=o>+</span> 
+</span></span><span class=line><span class=cl>                               <span class=mf>1.5</span> <span class=o>*</span> <span class=n>excess_participation</span> <span class=o>*</span> <span class=mf>0.001</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;vwap_slippage&#39;</span><span class=p>:</span> <span class=n>vwap_slippage</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;participation_rate&#39;</span><span class=p>:</span> <span class=n>actual_participation</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;target_participation&#39;</span><span class=p>:</span> <span class=n>participation_rate</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;excess_participation&#39;</span><span class=p>:</span> <span class=nb>max</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=n>actual_participation</span> <span class=o>-</span> <span class=n>participation_rate</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;slippage_components&#39;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;base_vwap_slippage&#39;</span><span class=p>:</span> <span class=mf>0.5</span> <span class=o>*</span> <span class=nb>min</span><span class=p>(</span><span class=n>actual_participation</span><span class=p>,</span> <span class=n>participation_rate</span><span class=p>)</span> <span class=o>*</span> <span class=mf>0.001</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;excess_slippage&#39;</span><span class=p>:</span> <span class=mf>1.5</span> <span class=o>*</span> <span class=nb>max</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=n>actual_participation</span> <span class=o>-</span> <span class=n>participation_rate</span><span class=p>)</span> <span class=o>*</span> <span class=mf>0.001</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>time_series_slippage_model</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>intraday_volume_profile</span><span class=p>,</span> <span class=n>order_schedule</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                                     <span class=n>price_volatility_profile</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>            时间序列滑点模型
+</span></span></span><span class=line><span class=cl><span class=s2>            &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=n>total_slippage</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>            <span class=n>slippage_by_period</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=n>period</span><span class=p>,</span> <span class=p>(</span><span class=n>volume_pct</span><span class=p>,</span> <span class=n>order_pct</span><span class=p>,</span> <span class=n>volatility</span><span class=p>)</span> <span class=ow>in</span> <span class=nb>enumerate</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=nb>zip</span><span class=p>(</span><span class=n>intraday_volume_profile</span><span class=p>,</span> <span class=n>order_schedule</span><span class=p>,</span> <span class=n>price_volatility_profile</span><span class=p>)):</span>
+</span></span><span class=line><span class=cl>                
+</span></span><span class=line><span class=cl>                <span class=c1># 该时段的相对订单规模</span>
+</span></span><span class=line><span class=cl>                <span class=n>period_order_size</span> <span class=o>=</span> <span class=n>order_pct</span>
+</span></span><span class=line><span class=cl>                <span class=n>period_volume_pct</span> <span class=o>=</span> <span class=n>volume_pct</span>
+</span></span><span class=line><span class=cl>                
+</span></span><span class=line><span class=cl>                <span class=c1># 基于时段特征的滑点</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=n>period_volume_pct</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=n>period_slippage</span> <span class=o>=</span> <span class=p>(</span><span class=mf>0.5</span> <span class=o>*</span> <span class=p>(</span><span class=n>period_order_size</span> <span class=o>/</span> <span class=n>period_volume_pct</span><span class=p>)</span> <span class=o>**</span> <span class=mf>0.6</span> <span class=o>*</span> 
+</span></span><span class=line><span class=cl>                                     <span class=n>volatility</span> <span class=o>*</span> <span class=mf>0.001</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=n>period_slippage</span> <span class=o>=</span> <span class=mf>0.001</span>  <span class=c1># 低成交量时段的默认滑点</span>
+</span></span><span class=line><span class=cl>                
+</span></span><span class=line><span class=cl>                <span class=n>total_slippage</span> <span class=o>+=</span> <span class=n>period_slippage</span>
+</span></span><span class=line><span class=cl>                <span class=n>slippage_by_period</span><span class=o>.</span><span class=n>append</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;period&#39;</span><span class=p>:</span> <span class=n>period</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;volume_pct&#39;</span><span class=p>:</span> <span class=n>volume_pct</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;order_pct&#39;</span><span class=p>:</span> <span class=n>order_pct</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;volatility&#39;</span><span class=p>:</span> <span class=n>volatility</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;slippage&#39;</span><span class=p>:</span> <span class=n>period_slippage</span>
+</span></span><span class=line><span class=cl>                <span class=p>})</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;total_slippage&#39;</span><span class=p>:</span> <span class=n>total_slippage</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;average_slippage&#39;</span><span class=p>:</span> <span class=n>total_slippage</span> <span class=o>/</span> <span class=nb>len</span><span class=p>(</span><span class=n>order_schedule</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;slippage_by_period&#39;</span><span class=p>:</span> <span class=n>slippage_by_period</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;peak_slippage_period&#39;</span><span class=p>:</span> <span class=nb>max</span><span class=p>(</span><span class=n>slippage_by_period</span><span class=p>,</span> <span class=n>key</span><span class=o>=</span><span class=k>lambda</span> <span class=n>x</span><span class=p>:</span> <span class=n>x</span><span class=p>[</span><span class=s1>&#39;slippage&#39;</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>stochastic_slippage_model</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>order_size</span><span class=p>,</span> <span class=n>market_conditions</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                                    <span class=n>confidence_level</span><span class=o>=</span><span class=mf>0.95</span><span class=p>,</span> <span class=n>n_simulations</span><span class=o>=</span><span class=mi>1000</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>            随机滑点模型
+</span></span></span><span class=line><span class=cl><span class=s2>            &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=n>np</span><span class=o>.</span><span class=n>random</span><span class=o>.</span><span class=n>seed</span><span class=p>(</span><span class=mi>42</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 市场条件参数</span>
+</span></span><span class=line><span class=cl>            <span class=n>avg_spread</span> <span class=o>=</span> <span class=n>market_conditions</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;avg_spread&#39;</span><span class=p>,</span> <span class=mf>0.001</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>spread_volatility</span> <span class=o>=</span> <span class=n>market_conditions</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;spread_volatility&#39;</span><span class=p>,</span> <span class=mf>0.0002</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>volume_profile</span> <span class=o>=</span> <span class=n>market_conditions</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;volume_profile&#39;</span><span class=p>,</span> <span class=p>[</span><span class=mf>0.1</span><span class=p>]</span> <span class=o>*</span> <span class=mi>10</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>volatility_profile</span> <span class=o>=</span> <span class=n>market_conditions</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;volatility_profile&#39;</span><span class=p>,</span> <span class=p>[</span><span class=mf>0.02</span><span class=p>]</span> <span class=o>*</span> <span class=mi>10</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=n>simulated_slippages</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=n>_</span> <span class=ow>in</span> <span class=nb>range</span><span class=p>(</span><span class=n>n_simulations</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>                <span class=c1># 模拟市场条件</span>
+</span></span><span class=line><span class=cl>                <span class=n>simulated_spread</span> <span class=o>=</span> <span class=nb>max</span><span class=p>(</span><span class=mi>0</span><span class=p>,</span> <span class=n>np</span><span class=o>.</span><span class=n>random</span><span class=o>.</span><span class=n>normal</span><span class=p>(</span><span class=n>avg_spread</span><span class=p>,</span> <span class=n>spread_volatility</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>                <span class=n>simulated_volume</span> <span class=o>=</span> <span class=p>[</span><span class=nb>max</span><span class=p>(</span><span class=mf>0.01</span><span class=p>,</span> <span class=n>np</span><span class=o>.</span><span class=n>random</span><span class=o>.</span><span class=n>normal</span><span class=p>(</span><span class=n>v</span><span class=p>,</span> <span class=n>v</span> <span class=o>*</span> <span class=mf>0.3</span><span class=p>))</span> <span class=k>for</span> <span class=n>v</span> <span class=ow>in</span> <span class=n>volume_profile</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>                <span class=n>simulated_volatility</span> <span class=o>=</span> <span class=p>[</span><span class=nb>max</span><span class=p>(</span><span class=mf>0.005</span><span class=p>,</span> <span class=n>np</span><span class=o>.</span><span class=n>random</span><span class=o>.</span><span class=n>normal</span><span class=p>(</span><span class=n>v</span><span class=p>,</span> <span class=n>v</span> <span class=o>*</span> <span class=mf>0.2</span><span class=p>))</span> <span class=k>for</span> <span class=n>v</span> <span class=ow>in</span> <span class=n>volatility_profile</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>                
+</span></span><span class=line><span class=cl>                <span class=c1># 计算该次模拟的滑点</span>
+</span></span><span class=line><span class=cl>                <span class=n>total_slippage</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>                
+</span></span><span class=line><span class=cl>                <span class=k>for</span> <span class=n>vol_pct</span><span class=p>,</span> <span class=n>volat</span> <span class=ow>in</span> <span class=nb>zip</span><span class=p>(</span><span class=n>simulated_volume</span><span class=p>,</span> <span class=n>simulated_volatility</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>                    <span class=k>if</span> <span class=n>vol_pct</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                        <span class=n>period_slippage</span> <span class=o>=</span> <span class=p>(</span><span class=n>simulated_spread</span> <span class=o>/</span> <span class=mi>2</span> <span class=o>+</span> 
+</span></span><span class=line><span class=cl>                                         <span class=mf>0.1</span> <span class=o>*</span> <span class=p>(</span><span class=n>order_size</span> <span class=o>/</span> <span class=p>(</span><span class=n>vol_pct</span> <span class=o>*</span> <span class=mi>1000000</span><span class=p>))</span> <span class=o>**</span> <span class=mf>0.5</span> <span class=o>*</span> <span class=n>volat</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                        <span class=n>total_slippage</span> <span class=o>+=</span> <span class=n>period_slippage</span>
+</span></span><span class=line><span class=cl>                
+</span></span><span class=line><span class=cl>                <span class=n>simulated_slippages</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>total_slippage</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 统计结果</span>
+</span></span><span class=line><span class=cl>            <span class=n>slippage_stats</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;mean_slippage&#39;</span><span class=p>:</span> <span class=n>np</span><span class=o>.</span><span class=n>mean</span><span class=p>(</span><span class=n>simulated_slippages</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;std_slippage&#39;</span><span class=p>:</span> <span class=n>np</span><span class=o>.</span><span class=n>std</span><span class=p>(</span><span class=n>simulated_slippages</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;median_slippage&#39;</span><span class=p>:</span> <span class=n>np</span><span class=o>.</span><span class=n>median</span><span class=p>(</span><span class=n>simulated_slippages</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;percentile_5&#39;</span><span class=p>:</span> <span class=n>np</span><span class=o>.</span><span class=n>percentile</span><span class=p>(</span><span class=n>simulated_slippages</span><span class=p>,</span> <span class=mi>5</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;percentile_95&#39;</span><span class=p>:</span> <span class=n>np</span><span class=o>.</span><span class=n>percentile</span><span class=p>(</span><span class=n>simulated_slippages</span><span class=p>,</span> <span class=mi>95</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;var_95&#39;</span><span class=p>:</span> <span class=n>np</span><span class=o>.</span><span class=n>percentile</span><span class=p>(</span><span class=n>simulated_slippages</span><span class=p>,</span> <span class=mi>5</span><span class=p>),</span>  <span class=c1># 95%置信度的最坏情况</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;cvar_95&#39;</span><span class=p>:</span> <span class=n>np</span><span class=o>.</span><span class=n>mean</span><span class=p>([</span><span class=n>s</span> <span class=k>for</span> <span class=n>s</span> <span class=ow>in</span> <span class=n>simulated_slippages</span> <span class=k>if</span> <span class=n>s</span> <span class=o>&lt;=</span> <span class=n>np</span><span class=o>.</span><span class=n>percentile</span><span class=p>(</span><span class=n>simulated_slippages</span><span class=p>,</span> <span class=mi>5</span><span class=p>)])</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;slippage_distribution&#39;</span><span class=p>:</span> <span class=n>simulated_slippages</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;slippage_statistics&#39;</span><span class=p>:</span> <span class=n>slippage_stats</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;confidence_intervals&#39;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;90%&#39;</span><span class=p>:</span> <span class=p>[</span><span class=n>np</span><span class=o>.</span><span class=n>percentile</span><span class=p>(</span><span class=n>simulated_slippages</span><span class=p>,</span> <span class=mi>5</span><span class=p>),</span> <span class=n>np</span><span class=o>.</span><span class=n>percentile</span><span class=p>(</span><span class=n>simulated_slippages</span><span class=p>,</span> <span class=mi>95</span><span class=p>)],</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;95%&#39;</span><span class=p>:</span> <span class=p>[</span><span class=n>np</span><span class=o>.</span><span class=n>percentile</span><span class=p>(</span><span class=n>simulated_slippages</span><span class=p>,</span> <span class=mf>2.5</span><span class=p>),</span> <span class=n>np</span><span class=o>.</span><span class=n>percentile</span><span class=p>(</span><span class=n>simulated_slippages</span><span class=p>,</span> <span class=mf>97.5</span><span class=p>)],</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;99%&#39;</span><span class=p>:</span> <span class=p>[</span><span class=n>np</span><span class=o>.</span><span class=n>percentile</span><span class=p>(</span><span class=n>simulated_slippages</span><span class=p>,</span> <span class=mf>0.5</span><span class=p>),</span> <span class=n>np</span><span class=o>.</span><span class=n>percentile</span><span class=p>(</span><span class=n>simulated_slippages</span><span class=p>,</span> <span class=mf>99.5</span><span class=p>)]</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>AdvancedSlippageModel</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>realistic_backtesting_engine</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>    真实回测引擎
+</span></span></span><span class=line><span class=cl><span class=s2>    &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>class</span> <span class=nc>RealisticBacktestEngine</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=fm>__init__</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>cost_model</span><span class=o>=</span><span class=kc>None</span><span class=p>,</span> <span class=n>slippage_model</span><span class=o>=</span><span class=kc>None</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>cost_model</span> <span class=o>=</span> <span class=n>cost_model</span> <span class=ow>or</span> <span class=n>TransactionCostModel</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>slippage_model</span> <span class=o>=</span> <span class=n>slippage_model</span> <span class=ow>or</span> <span class=n>AdvancedSlippageModel</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>execution_records</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>market_conditions</span> <span class=o>=</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>execute_realistic_trade</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>symbol</span><span class=p>,</span> <span class=n>order_type</span><span class=p>,</span> <span class=n>order_size</span><span class=p>,</span> <span class=n>current_data</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                                  <span class=n>execution_time</span><span class=o>=</span><span class=kc>None</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>            执行真实交易
+</span></span></span><span class=line><span class=cl><span class=s2>            &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=c1># 获取当前市场数据</span>
+</span></span><span class=line><span class=cl>            <span class=n>current_price</span> <span class=o>=</span> <span class=n>current_data</span><span class=p>[</span><span class=s1>&#39;close&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>            <span class=n>daily_volume</span> <span class=o>=</span> <span class=n>current_data</span><span class=p>[</span><span class=s1>&#39;volume&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>            <span class=n>volatility</span> <span class=o>=</span> <span class=n>current_data</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;volatility&#39;</span><span class=p>,</span> <span class=mf>0.02</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>market_cap</span> <span class=o>=</span> <span class=n>current_data</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;market_cap&#39;</span><span class=p>,</span> <span class=mi>1000000000</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>daily_turnover</span> <span class=o>=</span> <span class=n>current_data</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;turnover&#39;</span><span class=p>,</span> <span class=mf>0.01</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 计算交易成本</span>
+</span></span><span class=line><span class=cl>            <span class=n>trade_value</span> <span class=o>=</span> <span class=n>order_size</span> <span class=o>*</span> <span class=n>current_price</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 获取市场条件</span>
+</span></span><span class=line><span class=cl>            <span class=n>market_conditions</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;avg_spread&#39;</span><span class=p>:</span> <span class=n>current_data</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;spread&#39;</span><span class=p>,</span> <span class=mf>0.001</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;spread_volatility&#39;</span><span class=p>:</span> <span class=n>current_data</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;spread_volatility&#39;</span><span class=p>,</span> <span class=mf>0.0002</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;volume_profile&#39;</span><span class=p>:</span> <span class=n>current_data</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;volume_profile&#39;</span><span class=p>,</span> <span class=p>[</span><span class=mf>0.1</span><span class=p>]</span> <span class=o>*</span> <span class=mi>10</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;volatility_profile&#39;</span><span class=p>:</span> <span class=n>current_data</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=s1>&#39;volatility_profile&#39;</span><span class=p>,</span> <span class=p>[</span><span class=mf>0.02</span><span class=p>]</span> <span class=o>*</span> <span class=mi>10</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 计算滑点</span>
+</span></span><span class=line><span class=cl>            <span class=n>slippage_result</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>slippage_model</span><span class=o>.</span><span class=n>square_root_law_model</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=n>order_size</span><span class=p>,</span> <span class=n>daily_volume</span><span class=p>,</span> <span class=n>volatility</span>
+</span></span><span class=line><span class=cl>            <span class=p>)</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 计算市场冲击</span>
+</span></span><span class=line><span class=cl>            <span class=n>market_impact</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>cost_model</span><span class=o>.</span><span class=n>model_market_impact</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                <span class=n>order_size</span><span class=p>,</span> <span class=n>market_cap</span><span class=p>,</span> <span class=n>daily_turnover</span>
+</span></span><span class=line><span class=cl>            <span class=p>)</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 计算佣金</span>
+</span></span><span class=line><span class=cl>            <span class=n>commission</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>cost_model</span><span class=o>.</span><span class=n>model_commission_costs</span><span class=p>(</span><span class=n>trade_value</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 总成本</span>
+</span></span><span class=line><span class=cl>            <span class=n>total_cost</span> <span class=o>=</span> <span class=p>(</span><span class=n>slippage_result</span><span class=p>[</span><span class=s1>&#39;slippage_cost&#39;</span><span class=p>]</span> <span class=o>+</span> 
+</span></span><span class=line><span class=cl>                         <span class=n>market_impact</span><span class=p>[</span><span class=s1>&#39;impact_cost&#39;</span><span class=p>]</span> <span class=o>+</span> 
+</span></span><span class=line><span class=cl>                         <span class=n>commission</span><span class=p>[</span><span class=s1>&#39;commission_amount&#39;</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 实际执行价格（考虑滑点和冲击）</span>
+</span></span><span class=line><span class=cl>            <span class=n>execution_price</span> <span class=o>=</span> <span class=n>current_price</span> <span class=o>*</span> <span class=p>(</span><span class=mi>1</span> <span class=o>+</span> <span class=n>slippage_result</span><span class=p>[</span><span class=s1>&#39;total_slippage&#39;</span><span class=p>]</span> <span class=o>+</span> 
+</span></span><span class=line><span class=cl>                                               <span class=n>market_impact</span><span class=p>[</span><span class=s1>&#39;total_impact_rate&#39;</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 记录执行</span>
+</span></span><span class=line><span class=cl>            <span class=n>execution_record</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;symbol&#39;</span><span class=p>:</span> <span class=n>symbol</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;order_type&#39;</span><span class=p>:</span> <span class=n>order_type</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;order_size&#39;</span><span class=p>:</span> <span class=n>order_size</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;current_price&#39;</span><span class=p>:</span> <span class=n>current_price</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;execution_price&#39;</span><span class=p>:</span> <span class=n>execution_price</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;total_cost&#39;</span><span class=p>:</span> <span class=n>total_cost</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;total_cost_rate&#39;</span><span class=p>:</span> <span class=n>total_cost</span> <span class=o>/</span> <span class=n>trade_value</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;cost_breakdown&#39;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;slippage_cost&#39;</span><span class=p>:</span> <span class=n>slippage_result</span><span class=p>[</span><span class=s1>&#39;slippage_cost&#39;</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;market_impact_cost&#39;</span><span class=p>:</span> <span class=n>market_impact</span><span class=p>[</span><span class=s1>&#39;impact_cost&#39;</span><span class=p>],</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;commission_cost&#39;</span><span class=p>:</span> <span class=n>commission</span><span class=p>[</span><span class=s1>&#39;commission_amount&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>                <span class=p>},</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;market_conditions&#39;</span><span class=p>:</span> <span class=n>market_conditions</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;execution_time&#39;</span><span class=p>:</span> <span class=n>execution_time</span> <span class=ow>or</span> <span class=n>pd</span><span class=o>.</span><span class=n>Timestamp</span><span class=o>.</span><span class=n>now</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=bp>self</span><span class=o>.</span><span class=n>execution_records</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>execution_record</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>execution_record</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>run_realistic_backtest</span><span class=p>(</span><span class=bp>self</span><span class=p>,</span> <span class=n>strategy_func</span><span class=p>,</span> <span class=n>data</span><span class=p>,</span> <span class=n>start_date</span><span class=p>,</span> <span class=n>end_date</span><span class=p>,</span> 
+</span></span><span class=line><span class=cl>                                 <span class=n>initial_capital</span><span class=o>=</span><span class=mi>1000000</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>            运行真实回测
+</span></span></span><span class=line><span class=cl><span class=s2>            &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=c1># 初始化</span>
+</span></span><span class=line><span class=cl>            <span class=n>capital</span> <span class=o>=</span> <span class=n>initial_capital</span>
+</span></span><span class=line><span class=cl>            <span class=n>positions</span> <span class=o>=</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>            <span class=n>portfolio_value</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>            <span class=n>daily_records</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 按日期循环</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=n>date</span> <span class=ow>in</span> <span class=n>pd</span><span class=o>.</span><span class=n>date_range</span><span class=p>(</span><span class=n>start_date</span><span class=p>,</span> <span class=n>end_date</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>                <span class=c1># 获取当日数据</span>
+</span></span><span class=line><span class=cl>                <span class=n>day_data</span> <span class=o>=</span> <span class=n>data</span><span class=p>[</span><span class=n>data</span><span class=o>.</span><span class=n>index</span><span class=o>.</span><span class=n>date</span> <span class=o>==</span> <span class=n>date</span><span class=o>.</span><span class=n>date</span><span class=p>()]</span>
+</span></span><span class=line><span class=cl>                
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=n>day_data</span><span class=o>.</span><span class=n>empty</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=k>continue</span>
+</span></span><span class=line><span class=cl>                
+</span></span><span class=line><span class=cl>                <span class=c1># 运行策略</span>
+</span></span><span class=line><span class=cl>                <span class=n>strategy_signals</span> <span class=o>=</span> <span class=n>strategy_func</span><span class=p>(</span><span class=n>day_data</span><span class=p>,</span> <span class=n>positions</span><span class=p>,</span> <span class=n>capital</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                
+</span></span><span class=line><span class=cl>                <span class=c1># 执行交易</span>
+</span></span><span class=line><span class=cl>                <span class=n>daily_trades</span> <span class=o>=</span> <span class=p>[]</span>
+</span></span><span class=line><span class=cl>                <span class=n>daily_costs</span> <span class=o>=</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>                
+</span></span><span class=line><span class=cl>                <span class=k>for</span> <span class=n>signal</span> <span class=ow>in</span> <span class=n>strategy_signals</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=n>symbol</span> <span class=o>=</span> <span class=n>signal</span><span class=p>[</span><span class=s1>&#39;symbol&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>                    <span class=n>action</span> <span class=o>=</span> <span class=n>signal</span><span class=p>[</span><span class=s1>&#39;action&#39;</span><span class=p>]</span>  <span class=c1># &#39;buy&#39; or &#39;sell&#39;</span>
+</span></span><span class=line><span class=cl>                    <span class=n>size</span> <span class=o>=</span> <span class=n>signal</span><span class=p>[</span><span class=s1>&#39;size&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>                    
+</span></span><span class=line><span class=cl>                    <span class=c1># 获取股票数据</span>
+</span></span><span class=line><span class=cl>                    <span class=n>stock_data</span> <span class=o>=</span> <span class=n>day_data</span><span class=p>[</span><span class=n>day_data</span><span class=p>[</span><span class=s1>&#39;symbol&#39;</span><span class=p>]</span> <span class=o>==</span> <span class=n>symbol</span><span class=p>]</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>                    
+</span></span><span class=line><span class=cl>                    <span class=c1># 执行真实交易</span>
+</span></span><span class=line><span class=cl>                    <span class=n>execution</span> <span class=o>=</span> <span class=bp>self</span><span class=o>.</span><span class=n>execute_realistic_trade</span><span class=p>(</span>
+</span></span><span class=line><span class=cl>                        <span class=n>symbol</span><span class=p>,</span> <span class=n>action</span><span class=p>,</span> <span class=n>size</span><span class=p>,</span> <span class=n>stock_data</span><span class=p>,</span> <span class=n>date</span>
+</span></span><span class=line><span class=cl>                    <span class=p>)</span>
+</span></span><span class=line><span class=cl>                    
+</span></span><span class=line><span class=cl>                    <span class=c1># 更新持仓和资金</span>
+</span></span><span class=line><span class=cl>                    <span class=k>if</span> <span class=n>action</span> <span class=o>==</span> <span class=s1>&#39;buy&#39;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                        <span class=n>positions</span><span class=p>[</span><span class=n>symbol</span><span class=p>]</span> <span class=o>=</span> <span class=n>positions</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>symbol</span><span class=p>,</span> <span class=mi>0</span><span class=p>)</span> <span class=o>+</span> <span class=n>size</span>
+</span></span><span class=line><span class=cl>                        <span class=n>capital</span> <span class=o>-=</span> <span class=n>execution</span><span class=p>[</span><span class=s1>&#39;execution_price&#39;</span><span class=p>]</span> <span class=o>*</span> <span class=n>size</span> <span class=o>+</span> <span class=n>execution</span><span class=p>[</span><span class=s1>&#39;total_cost&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>                    <span class=k>elif</span> <span class=n>action</span> <span class=o>==</span> <span class=s1>&#39;sell&#39;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                        <span class=n>positions</span><span class=p>[</span><span class=n>symbol</span><span class=p>]</span> <span class=o>=</span> <span class=n>positions</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>symbol</span><span class=p>,</span> <span class=mi>0</span><span class=p>)</span> <span class=o>-</span> <span class=n>size</span>
+</span></span><span class=line><span class=cl>                        <span class=n>capital</span> <span class=o>+=</span> <span class=n>execution</span><span class=p>[</span><span class=s1>&#39;execution_price&#39;</span><span class=p>]</span> <span class=o>*</span> <span class=n>size</span> <span class=o>-</span> <span class=n>execution</span><span class=p>[</span><span class=s1>&#39;total_cost&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>                    
+</span></span><span class=line><span class=cl>                    <span class=n>daily_trades</span><span class=o>.</span><span class=n>append</span><span class=p>(</span><span class=n>execution</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                    <span class=n>daily_costs</span> <span class=o>+=</span> <span class=n>execution</span><span class=p>[</span><span class=s1>&#39;total_cost&#39;</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>                
+</span></span><span class=line><span class=cl>                <span class=c1># 计算组合价值</span>
+</span></span><span class=line><span class=cl>                <span class=n>portfolio_val</span> <span class=o>=</span> <span class=n>capital</span>
+</span></span><span class=line><span class=cl>                <span class=k>for</span> <span class=n>symbol</span><span class=p>,</span> <span class=n>pos</span> <span class=ow>in</span> <span class=n>positions</span><span class=o>.</span><span class=n>items</span><span class=p>():</span>
+</span></span><span class=line><span class=cl>                    <span class=k>if</span> <span class=n>pos</span> <span class=o>&gt;</span> <span class=mi>0</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                        <span class=n>current_price</span> <span class=o>=</span> <span class=n>day_data</span><span class=p>[</span><span class=n>day_data</span><span class=p>[</span><span class=s1>&#39;symbol&#39;</span><span class=p>]</span> <span class=o>==</span> <span class=n>symbol</span><span class=p>][</span><span class=s1>&#39;close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>iloc</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>]</span>
+</span></span><span class=line><span class=cl>                        <span class=n>portfolio_val</span> <span class=o>+=</span> <span class=n>pos</span> <span class=o>*</span> <span class=n>current_price</span>
+</span></span><span class=line><span class=cl>                
+</span></span><span class=line><span class=cl>                <span class=n>portfolio_value</span><span class=o>.</span><span class=n>append</span><span class=p>({</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;date&#39;</span><span class=p>:</span> <span class=n>date</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;portfolio_value&#39;</span><span class=p>:</span> <span class=n>portfolio_val</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;cash&#39;</span><span class=p>:</span> <span class=n>capital</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;positions&#39;</span><span class=p>:</span> <span class=n>positions</span><span class=o>.</span><span class=n>copy</span><span class=p>(),</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;daily_trades&#39;</span><span class=p>:</span> <span class=n>daily_trades</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;daily_costs&#39;</span><span class=p>:</span> <span class=n>daily_costs</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;daily_return&#39;</span><span class=p>:</span> <span class=p>(</span><span class=n>portfolio_val</span> <span class=o>/</span> <span class=n>portfolio_value</span><span class=p>[</span><span class=o>-</span><span class=mi>1</span><span class=p>][</span><span class=s1>&#39;portfolio_value&#39;</span><span class=p>]</span> <span class=o>-</span> <span class=mi>1</span><span class=p>)</span> 
+</span></span><span class=line><span class=cl>                                   <span class=k>if</span> <span class=n>portfolio_value</span> <span class=k>else</span> <span class=mi>0</span>
+</span></span><span class=line><span class=cl>                <span class=p>})</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;portfolio_value&#39;</span><span class=p>:</span> <span class=n>portfolio_value</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;execution_records&#39;</span><span class=p>:</span> <span class=bp>self</span><span class=o>.</span><span class=n>execution_records</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;total_costs&#39;</span><span class=p>:</span> <span class=nb>sum</span><span class=p>([</span><span class=n>record</span><span class=p>[</span><span class=s1>&#39;total_cost&#39;</span><span class=p>]</span> <span class=k>for</span> <span class=n>record</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>execution_records</span><span class=p>]),</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;cost_analysis&#39;</span><span class=p>:</span> <span class=bp>self</span><span class=o>.</span><span class=n>analyze_costs</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=k>def</span> <span class=nf>analyze_costs</span><span class=p>(</span><span class=bp>self</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>            <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>            分析交易成本
+</span></span></span><span class=line><span class=cl><span class=s2>            &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=ow>not</span> <span class=bp>self</span><span class=o>.</span><span class=n>execution_records</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=k>return</span> <span class=p>{}</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 成本统计</span>
+</span></span><span class=line><span class=cl>            <span class=n>total_costs</span> <span class=o>=</span> <span class=nb>sum</span><span class=p>([</span><span class=n>record</span><span class=p>[</span><span class=s1>&#39;total_cost&#39;</span><span class=p>]</span> <span class=k>for</span> <span class=n>record</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>execution_records</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>            <span class=n>total_trade_value</span> <span class=o>=</span> <span class=nb>sum</span><span class=p>([</span><span class=n>record</span><span class=p>[</span><span class=s1>&#39;current_price&#39;</span><span class=p>]</span> <span class=o>*</span> <span class=n>record</span><span class=p>[</span><span class=s1>&#39;order_size&#39;</span><span class=p>]</span> 
+</span></span><span class=line><span class=cl>                                   <span class=k>for</span> <span class=n>record</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>execution_records</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 成本分解</span>
+</span></span><span class=line><span class=cl>            <span class=n>commission_costs</span> <span class=o>=</span> <span class=nb>sum</span><span class=p>([</span><span class=n>record</span><span class=p>[</span><span class=s1>&#39;cost_breakdown&#39;</span><span class=p>][</span><span class=s1>&#39;commission_cost&#39;</span><span class=p>]</span> 
+</span></span><span class=line><span class=cl>                                  <span class=k>for</span> <span class=n>record</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>execution_records</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>            <span class=n>slippage_costs</span> <span class=o>=</span> <span class=nb>sum</span><span class=p>([</span><span class=n>record</span><span class=p>[</span><span class=s1>&#39;cost_breakdown&#39;</span><span class=p>][</span><span class=s1>&#39;slippage_cost&#39;</span><span class=p>]</span> 
+</span></span><span class=line><span class=cl>                                <span class=k>for</span> <span class=n>record</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>execution_records</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>            <span class=n>impact_costs</span> <span class=o>=</span> <span class=nb>sum</span><span class=p>([</span><span class=n>record</span><span class=p>[</span><span class=s1>&#39;cost_breakdown&#39;</span><span class=p>][</span><span class=s1>&#39;market_impact_cost&#39;</span><span class=p>]</span> 
+</span></span><span class=line><span class=cl>                              <span class=k>for</span> <span class=n>record</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>execution_records</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 按成本类型分析</span>
+</span></span><span class=line><span class=cl>            <span class=n>cost_analysis</span> <span class=o>=</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;total_costs&#39;</span><span class=p>:</span> <span class=n>total_costs</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;total_cost_rate&#39;</span><span class=p>:</span> <span class=n>total_costs</span> <span class=o>/</span> <span class=n>total_trade_value</span> <span class=k>if</span> <span class=n>total_trade_value</span> <span class=o>&gt;</span> <span class=mi>0</span> <span class=k>else</span> <span class=mi>0</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;cost_breakdown&#39;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;commission&#39;</span><span class=p>:</span> <span class=n>commission_costs</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;slippage&#39;</span><span class=p>:</span> <span class=n>slippage_costs</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;market_impact&#39;</span><span class=p>:</span> <span class=n>impact_costs</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;commission_rate&#39;</span><span class=p>:</span> <span class=n>commission_costs</span> <span class=o>/</span> <span class=n>total_trade_value</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;slippage_rate&#39;</span><span class=p>:</span> <span class=n>slippage_costs</span> <span class=o>/</span> <span class=n>total_trade_value</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;impact_rate&#39;</span><span class=p>:</span> <span class=n>impact_costs</span> <span class=o>/</span> <span class=n>total_trade_value</span>
+</span></span><span class=line><span class=cl>                <span class=p>},</span>
+</span></span><span class=line><span class=cl>                <span class=s1>&#39;cost_statistics&#39;</span><span class=p>:</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;avg_cost_per_trade&#39;</span><span class=p>:</span> <span class=n>total_costs</span> <span class=o>/</span> <span class=nb>len</span><span class=p>(</span><span class=bp>self</span><span class=o>.</span><span class=n>execution_records</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;max_cost_rate&#39;</span><span class=p>:</span> <span class=nb>max</span><span class=p>([</span><span class=n>record</span><span class=p>[</span><span class=s1>&#39;total_cost_rate&#39;</span><span class=p>]</span> <span class=k>for</span> <span class=n>record</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>execution_records</span><span class=p>]),</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;min_cost_rate&#39;</span><span class=p>:</span> <span class=nb>min</span><span class=p>([</span><span class=n>record</span><span class=p>[</span><span class=s1>&#39;total_cost_rate&#39;</span><span class=p>]</span> <span class=k>for</span> <span class=n>record</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>execution_records</span><span class=p>]),</span>
+</span></span><span class=line><span class=cl>                    <span class=s1>&#39;cost_volatility&#39;</span><span class=p>:</span> <span class=n>np</span><span class=o>.</span><span class=n>std</span><span class=p>([</span><span class=n>record</span><span class=p>[</span><span class=s1>&#39;total_cost_rate&#39;</span><span class=p>]</span> <span class=k>for</span> <span class=n>record</span> <span class=ow>in</span> <span class=bp>self</span><span class=o>.</span><span class=n>execution_records</span><span class=p>])</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>cost_analysis</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>RealisticBacktestEngine</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=vm>__name__</span> <span class=o>==</span> <span class=s2>&#34;__main__&#34;</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>    <span class=c1># 高级回测技巧示例</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;=== SuperMind高级回测技巧与实盘准备 ===&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;本讲介绍了高级回测建模和实盘准备的关键技术&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;请在SuperMind平台上应用这些技巧，提升策略的真实性&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=nb>print</span><span class=p>(</span><span class=s2>&#34;记住：真实的交易成本建模是成功实盘交易的基础&#34;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    </span></span></code></pre></td></tr></table></div></div></div></div></div></article><aside class="lg:w-80 xl:w-96"><div class=space-y-8></div></aside></div><nav class="border-t border-gray-200 mt-12 pt-8"><div class="flex justify-between items-center"><a href=/blog/%E5%9B%9E%E6%B5%8B%E5%B9%B3%E5%8F%B0/08-%E7%AD%96%E7%95%A5%E4%BC%98%E5%8C%96%E4%B8%8E%E5%8F%82%E6%95%B0%E8%B0%83%E4%BC%98/ class="group flex items-center"><svg class="w-5 h-5 mr-2 text-gray-600 group-hover:text-primary-600" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0 7-7m-7 7h18"/></svg><div><div class="text-sm text-gray-600">上一篇</div><div class="font-medium group-hover:text-primary-600">SuperMind第8讲：策略优化与参数调优</div></div></a><div></div></div></nav></div></div><footer class="bg-gray-50 py-12 border-t border-gray-200"><div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl"><div class="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0"><div class=flex-1><div class="flex items-center space-x-3 mb-4"><a href=https://sk-quant.github.io/ class=inline-block><img src=/images/logo.svg alt=烧烤量化 class=h-6>
+</a><span class="text-xl font-bold text-gray-900">烧烤量化</span></div><div class="flex space-x-3 p-2"></div></div><div class=flex-1><h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4"></h3><ul class=space-y-2></ul></div><div class=flex-1><h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4"></h3><ul class=space-y-2></ul></div><div class=flex-1><h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4"></h3><ul class=space-y-2></ul></div></div><div class="mt-12 pt-8 border-t border-gray-200"><div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0"><p class="text-gray-600 text-sm">© 2025 烧烤量化. All rights reserved.</p><a href=https://chaoming.li class="text-sm text-gray-600 hover:text-primary-600" target=_blank rel="noopener noreferrer">Powered by sk-quant</a></div></div></div></footer><script>const mobileMenuButton=document.getElementById("mobile-menu-button");mobileMenuButton&&mobileMenuButton.addEventListener("click",function(){const e=document.getElementById("mobile-menu");e&&e.classList.toggle("hidden")})</script></body></html>

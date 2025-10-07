@@ -1,0 +1,237 @@
+<!doctype html><html lang=zh-cn class=h-full><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><script>(function(e,t,n,s,o){e[s]=e[s]||[],e[s].push({"gtm.start":(new Date).getTime(),event:"gtm.js"});var a=t.getElementsByTagName(n)[0],i=t.createElement(n),r=s!="dataLayer"?"&l="+s:"";i.async=!0,i.src="https://www.googletagmanager.com/gtm.js?id="+o+r,a.parentNode.insertBefore(i,a)})(window,document,"script","dataLayer","GTM-XXXXXXX")</script><script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script><script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-XXXXXXXXXX")</script><title>SuperMind第1讲：量化交易平台入门与环境搭建 | 烧烤量化</title>
+<meta name=description content="从零开始掌握同花顺SuperMind量化交易平台：平台优势、环境配置、第一个量化程序，循序渐进构建量化交易基础。"><meta name=author content="Ryan"><meta name=robots content="index, follow"><meta property="og:title" content="SuperMind第1讲：量化交易平台入门与环境搭建 | 烧烤量化"><meta property="og:description" content="从零开始掌握同花顺SuperMind量化交易平台：平台优势、环境配置、第一个量化程序，循序渐进构建量化交易基础。"><meta property="og:type" content="article"><meta property="og:url" content="https://sk-quant.github.io/blog/%E5%9B%9E%E6%B5%8B%E5%B9%B3%E5%8F%B0/01-supermind%E5%B9%B3%E5%8F%B0%E5%85%A5%E9%97%A8%E4%B8%8E%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/"><meta property="og:site_name" content="烧烤量化"><meta name=twitter:card content="summary_large_image"><meta name=twitter:title content="SuperMind第1讲：量化交易平台入门与环境搭建 | 烧烤量化"><meta name=twitter:description content="从零开始掌握同花顺SuperMind量化交易平台：平台优势、环境配置、第一个量化程序，循序渐进构建量化交易基础。"><link rel=icon type=image/x-icon href=/images/favicon.ico><link rel=canonical href=https://sk-quant.github.io/blog/%E5%9B%9E%E6%B5%8B%E5%B9%B3%E5%8F%B0/01-supermind%E5%B9%B3%E5%8F%B0%E5%85%A5%E9%97%A8%E4%B8%8E%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/><link rel=preconnect href=https://fonts.googleapis.com><link rel=preconnect href=https://fonts.gstatic.com crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel=stylesheet><link rel=stylesheet href="/css/main.min.9a3c970d7feebe1317992d10ced98f226635b831a963ee601e5901734ff0da21.css"></head><body class="min-h-screen flex flex-col"><noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-XXXXXXX" height=0 width=0 style=display:none;visibility:hidden></iframe></noscript><div class="fixed top-0 left-0 right-0 z-50"><div class=mobile-menu-wrapper><input type=checkbox id=nav-toggle class=nav-toggle><header class="fixed w-full top-0 z-50 bg-white/80 backdrop-blur-sm border-b border-gray-100"><div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl"><nav class="flex items-center justify-between h-20"><a href=https://sk-quant.github.io/ class="flex items-center space-x-4"><img src=/images/logo.svg alt=烧烤量化 class=h-12>
+<span class="text-3xl font-semibold text-gray-800">烧烤量化</span></a><div class="hidden md:flex items-center space-x-8"><a href=/path class="text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">学习路线</a><div class="relative group"><button class="flex items-center text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">
+量化基础<svg class="ml-2 w-4 h-4" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="absolute left-0 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out"><div class="py-6 bg-white border border-gray-100 shadow-xl rounded-lg"><a href=/categories/%e6%8a%95%e8%b5%84%e7%90%86%e8%ae%ba/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">投资理论</a>
+<a href=/categories/%e4%bb%a3%e7%a0%81%e5%9f%ba%e7%a1%80/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">代码基础</a>
+<a href=/categories/%e6%8a%80%e6%9c%af%e6%8c%87%e6%a0%87/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">技术指标</a>
+<a href=/categories/%e5%9b%9e%e6%b5%8b%e5%b9%b3%e5%8f%b0/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">回测平台</a></div></div></div><div class="relative group"><button class="flex items-center text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">
+量化进阶<svg class="ml-2 w-4 h-4" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="absolute left-0 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out"><div class="py-6 bg-white border border-gray-100 shadow-xl rounded-lg"><a href=/categories/%e7%ad%96%e7%95%a5%e5%88%86%e4%ba%ab/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">策略分享</a>
+<a href=/categories/%e5%ae%9e%e7%9b%98%e5%b7%a5%e5%85%b7/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">实盘工具</a>
+<a href=/categories/%e7%83%ad%e7%82%b9%e9%a3%8e%e5%8f%a3/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">热点风口</a>
+<a href=/categories/%e7%bb%bc%e5%90%88%e5%ae%9e%e6%88%98/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">综合实战</a></div></div></div><div class="relative group"><button class="flex items-center text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">
+量化高手<svg class="ml-2 w-4 h-4" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg></button><div class="absolute left-0 mt-2 w-72 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 ease-in-out"><div class="py-6 bg-white border border-gray-100 shadow-xl rounded-lg"><a href=/categories/%e5%8f%af%e8%bd%ac%e5%80%ba/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">可转债</a>
+<a href=/categories/%e8%9e%8d%e8%b5%84%e8%9e%8d%e5%88%b8/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">融资融券</a>
+<a href=/categories/%e8%82%a1%e7%a5%a8%e6%9c%9f%e6%9d%83/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">股票期权</a>
+<a href=/categories/%e8%82%a1%e6%8c%87%e6%9c%9f%e8%b4%a7/ class="block px-8 py-3 text-sm text-gray-700 hover:bg-gray-50">股指期货</a></div></div></div><a href=/pricing class="text-base text-gray-900 hover:text-primary-600 font-bold transition duration-200">服务套餐</a></div><div class="hidden md:flex items-center space-x-4"><a href=/contact class="inline-flex items-center justify-center px-6 py-3 rounded-lg font-bold transition duration-200 ease-in-out bg-primary-600 text-white hover:bg-primary-700 hover:scale-105">现在加入</a></div><div class=md:hidden><label for=nav-toggle class="p-2 rounded-lg hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-primary-600 focus:ring-offset-2 transition-colors cursor-pointer"><svg class="w-6 h-6" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg></label></div></nav></div><div class="nav-content md:hidden w-full fixed left-0 right-0 top-20 bg-white border-t border-gray-100 shadow-lg"><div class="w-full px-6 py-4"><a href=/path class="block text-xl text-gray-900 hover:text-primary-600 font-bold transition duration-200 py-2">学习路线</a><div class=py-2><div class="text-xl text-gray-900 font-bold mb-2">量化基础</div><div class=pl-4><a href=/categories/%e6%8a%95%e8%b5%84%e7%90%86%e8%ae%ba/ class="block text-gray-700 hover:text-primary-600 py-2">投资理论</a>
+<a href=/categories/%e4%bb%a3%e7%a0%81%e5%9f%ba%e7%a1%80/ class="block text-gray-700 hover:text-primary-600 py-2">代码基础</a>
+<a href=/categories/%e6%8a%80%e6%9c%af%e6%8c%87%e6%a0%87/ class="block text-gray-700 hover:text-primary-600 py-2">技术指标</a>
+<a href=/categories/%e5%9b%9e%e6%b5%8b%e5%b9%b3%e5%8f%b0/ class="block text-gray-700 hover:text-primary-600 py-2">回测平台</a></div></div><div class=py-2><div class="text-xl text-gray-900 font-bold mb-2">量化进阶</div><div class=pl-4><a href=/categories/%e7%ad%96%e7%95%a5%e5%88%86%e4%ba%ab/ class="block text-gray-700 hover:text-primary-600 py-2">策略分享</a>
+<a href=/categories/%e5%ae%9e%e7%9b%98%e5%b7%a5%e5%85%b7/ class="block text-gray-700 hover:text-primary-600 py-2">实盘工具</a>
+<a href=/categories/%e7%83%ad%e7%82%b9%e9%a3%8e%e5%8f%a3/ class="block text-gray-700 hover:text-primary-600 py-2">热点风口</a>
+<a href=/categories/%e7%bb%bc%e5%90%88%e5%ae%9e%e6%88%98/ class="block text-gray-700 hover:text-primary-600 py-2">综合实战</a></div></div><div class=py-2><div class="text-xl text-gray-900 font-bold mb-2">量化高手</div><div class=pl-4><a href=/categories/%e5%8f%af%e8%bd%ac%e5%80%ba/ class="block text-gray-700 hover:text-primary-600 py-2">可转债</a>
+<a href=/categories/%e8%9e%8d%e8%b5%84%e8%9e%8d%e5%88%b8/ class="block text-gray-700 hover:text-primary-600 py-2">融资融券</a>
+<a href=/categories/%e8%82%a1%e7%a5%a8%e6%9c%9f%e6%9d%83/ class="block text-gray-700 hover:text-primary-600 py-2">股票期权</a>
+<a href=/categories/%e8%82%a1%e6%8c%87%e6%9c%9f%e8%b4%a7/ class="block text-gray-700 hover:text-primary-600 py-2">股指期货</a></div></div><a href=/pricing class="block text-xl text-gray-900 hover:text-primary-600 font-bold transition duration-200 py-2">服务套餐</a><div class="pt-4 space-y-4"><a href=/contact class="block text-center px-6 py-3 rounded-lg font-bold transition duration-200 ease-in-out bg-primary-600 text-white hover:bg-primary-700 hover:scale-105">现在加入</a></div></div></div></header><style>.mobile-menu-wrapper{position:relative}.nav-toggle{display:none}.nav-content{display:none}.nav-toggle:checked~header .nav-content{display:block}</style></div></div><div class=pt-20><div class="container mx-auto px-4 py-12"><div class="flex flex-col lg:flex-row gap-8 mb-12"><article class=flex-1><header class=mb-8><div class=mb-4><a href=/categories/%E5%9B%9E%E6%B5%8B%E5%B9%B3%E5%8F%B0 class="inline-block px-3 py-1 text-sm font-medium text-primary-600 bg-primary-50 rounded-full hover:bg-primary-100 mr-2">回测平台</a></div><h1 class="text-4xl font-bold mb-4">SuperMind第1讲：量化交易平台入门与环境搭建</h1><div class="flex flex-col space-y-4"><div class="flex items-center justify-between text-sm text-gray-500"><div class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7A4 4 0 118 7a4 4 0 018 0zm-4 7a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+<span>Ryan</span></div><div class="flex items-center space-x-6"><div class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747.0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746.0-3.332.477-4.5 1.253"/></svg>
+<span>12 分钟</span></div><div class="flex items-center"><svg class="w-4 h-4 mr-2" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5A2 2 0 003 7v12a2 2 0 002 2z"/></svg>
+<time datetime=2025-09-21>September 21, 2025</time></div></div></div><div class="flex items-center flex-wrap gap-2"><a href=/tags/2025 class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors duration-200">#2025
+</a><a href=/tags/supermind class="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full text-sm text-gray-700 transition-colors duration-200">#SuperMind</a></div></div></header><div class=mb-8><img src=/images/blog/%e5%9b%9e%e6%b5%8b%e5%b9%b3%e5%8f%b0.jpg alt=SuperMind第1讲：量化交易平台入门与环境搭建 class="w-full h-auto rounded-lg" loading=lazy></div><div class="prose prose-lg max-w-none"><div class="bg-gray-50 p-6 rounded-lg mb-8"><h2 class="text-xl font-semibold mb-4">目录</h2><nav id=TableOfContents><ul><li><a href=#supermind平台概述专业量化交易的起点>SuperMind平台概述：专业量化交易的起点</a><ul><li><a href=#平台核心优势>平台核心优势</a></li><li><a href=#支持的交易品种>支持的交易品种</a></li></ul></li><li><a href=#平台注册与环境配置>平台注册与环境配置</a><ul><li><a href=#账号注册与登录>账号注册与登录</a></li><li><a href=#研究环境介绍>研究环境介绍</a></li><li><a href=#策略库管理界面>策略库管理界面</a></li></ul></li><li><a href=#第一个量化程序hello-quant-world>第一个量化程序：Hello Quant World</a><ul><li><a href=#创建第一个策略>创建第一个策略</a></li><li><a href=#基础代码框架>基础代码框架</a></li><li><a href=#代码解析>代码解析</a></li><li><a href=#运行策略>运行策略</a></li><li><a href=#策略调试技巧>策略调试技巧</a></li></ul></li><li><a href=#进阶策略参数配置>进阶：策略参数配置</a></li><li><a href=#总结与展望>总结与展望</a></li></ul></nav></div><h2 id=supermind平台概述专业量化交易的起点>SuperMind平台概述：专业量化交易的起点</h2><p>在量化交易的世界里，选择一个功能强大、数据丰富的平台是成功的第一步。同花顺SuperMind量化交易平台作为业内领先的专业量化投资平台，为广大投资者提供了从策略研究到实盘交易的一站式解决方案。</p><h3 id=平台核心优势>平台核心优势</h3><p>SuperMind平台的突出特点可以用"全、快、智、简"四个字来概括：</p><p><strong>数据全面覆盖</strong>：平台提供2014年至今完整的Level-2行情数据，涵盖股票、基金、期货、可转债等多个品种。不仅有日线、分钟线数据，还提供tick级别的精细数据，为策略开发提供了充足的数据支撑。</p><p><strong>回测极速高效</strong>：真正的秒级回测引擎让策略验证变得高效便捷。300只股票4年历史数据的回测仅需0.29秒，这种极快的回测速度让投资者能够快速迭代策略，大大提升研发效率。</p><p><strong>智能选股支持</strong>：平台集成了同花顺强大的"i问财"自然语言选股功能，通过简单的自然语言描述就能筛选出符合条件的股票，降低了量化交易的门槛。</p><p><strong>简单易学易用</strong>：支持广泛使用的Python语言，配合完整的API文档和丰富的示例代码，让编程基础薄弱的用户也能快速上手。</p><h3 id=支持的交易品种>支持的交易品种</h3><p>SuperMind平台目前支持七大类交易策略开发：</p><ol><li><strong>股票策略</strong>：适用于A股股票、场内基金、可转债的策略回测</li><li><strong>股票日内策略</strong>：专门用于股票日内回转交易策略</li><li><strong>期货期权策略</strong>：支持期货和期权合约的策略回测</li><li><strong>股票期货对冲</strong>：股票与期货的对冲策略回测</li><li><strong>场外基金策略</strong>：场外基金申赎策略回测</li><li><strong>外汇策略</strong>：外汇合约策略回测</li><li><strong>T+D合约策略</strong>：延期交收合约策略回测</li></ol><p>每种策略类型都有对应的专业API接口，确保策略开发的精确性和可靠性。</p><h2 id=平台注册与环境配置>平台注册与环境配置</h2><h3 id=账号注册与登录>账号注册与登录</h3><p>访问SuperMind官网，点击注册按钮，按照提示完成账号注册。注册成功后，你将获得一个独立的研究环境，所有的策略代码和数据都将在这个环境中运行和管理。</p><h3 id=研究环境介绍>研究环境介绍</h3><p>SuperMind为每个用户提供了独立的研究环境，这是平台安全性的重要保障：</p><p><strong>环境隔离</strong>：每个用户的策略都部署在独立的容器中运行，策略代码、数据和运行环境完全隔离，确保策略安全。</p><p><strong>资源分配</strong>：免费用户享有2GB内存的研究环境，足以满足大部分策略开发和回测需求。对于需要更大计算资源的用户，平台还提供付费升级选项。</p><p><strong>数据安全</strong>：平台采用网络隔离、访问控制和加密技术等多重安全措施，确保用户策略的机密性、完整性和可用性。</p><h3 id=策略库管理界面>策略库管理界面</h3><p>登录平台后，你将看到直观友好的策略管理界面：</p><p><strong>策略列表</strong>：展示所有创建的策略，包括策略名称、创建时间、运行状态等信息。</p><p><strong>代码编辑器</strong>：内置的代码编辑器支持语法高亮、自动补全等功能，提供良好的编程体验。</p><p><strong>回测中心</strong>：专门的回测管理区域，可以查看历史回测记录、绩效报告等详细信息。</p><p><strong>数据浏览器</strong>：便捷的数据查看工具，可以快速浏览各类金融数据，为策略开发提供参考。</p><h2 id=第一个量化程序hello-quant-world>第一个量化程序：Hello Quant World</h2><p>让我们从最简单的量化程序开始，体验SuperMind平台的强大功能。</p><h3 id=创建第一个策略>创建第一个策略</h3><p>在策略管理界面点击"新建策略"，输入策略名称"hello_quant"，选择策略类型为"股票策略"，然后点击"创建"。</p><h3 id=基础代码框架>基础代码框架</h3><p>SuperMind为每种类型的策略都提供了标准的代码框架。对于股票策略，最基本的结构包含两个核心函数：</p><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>mindgo_api</span> <span class=kn>import</span> <span class=o>*</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>init</span><span class=p>(</span><span class=n>context</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>    初始化函数，策略启动时执行一次
+</span></span></span><span class=line><span class=cl><span class=s2>    用于设置策略参数、订阅股票等
+</span></span></span><span class=line><span class=cl><span class=s2>    &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=c1># 设置要交易的股票（平安银行）</span>
+</span></span><span class=line><span class=cl>    <span class=n>context</span><span class=o>.</span><span class=n>stock</span> <span class=o>=</span> <span class=s1>&#39;000001.SZ&#39;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 打印初始化信息</span>
+</span></span><span class=line><span class=cl>    <span class=n>log</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;策略初始化完成，交易标的：</span><span class=si>%s</span><span class=s1>&#39;</span> <span class=o>%</span> <span class=n>context</span><span class=o>.</span><span class=n>stock</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>handle_bar</span><span class=p>(</span><span class=n>context</span><span class=p>,</span> <span class=n>bar_dict</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;
+</span></span></span><span class=line><span class=cl><span class=s2>    主交易函数，每个交易频率（日/分钟）自动调用一次
+</span></span></span><span class=line><span class=cl><span class=s2>    在这里编写交易逻辑
+</span></span></span><span class=line><span class=cl><span class=s2>    
+</span></span></span><span class=line><span class=cl><span class=s2>    参数：
+</span></span></span><span class=line><span class=cl><span class=s2>    context - 上下文对象，包含账户信息、策略状态等
+</span></span></span><span class=line><span class=cl><span class=s2>    bar_dict - 当前时刻所有订阅股票的K线数据
+</span></span></span><span class=line><span class=cl><span class=s2>    &#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=c1># 获取当前股票的价格数据</span>
+</span></span><span class=line><span class=cl>    <span class=n>stock</span> <span class=o>=</span> <span class=n>context</span><span class=o>.</span><span class=n>stock</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 打印当前价格（用于演示）</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>stock</span> <span class=ow>in</span> <span class=n>bar_dict</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>current_price</span> <span class=o>=</span> <span class=n>bar_dict</span><span class=p>[</span><span class=n>stock</span><span class=p>]</span><span class=o>.</span><span class=n>close</span>
+</span></span><span class=line><span class=cl>        <span class=n>log</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;</span><span class=si>%s</span><span class=s1> 当前价格：</span><span class=si>%.2f</span><span class=s1>元&#39;</span> <span class=o>%</span> <span class=p>(</span><span class=n>stock</span><span class=p>,</span> <span class=n>current_price</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 简单的交易逻辑：每天买入100股</span>
+</span></span><span class=line><span class=cl>        <span class=n>order</span><span class=p>(</span><span class=n>stock</span><span class=p>,</span> <span class=mi>100</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=n>log</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;买入100股 </span><span class=si>%s</span><span class=s1>&#39;</span> <span class=o>%</span> <span class=n>stock</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><h3 id=代码解析>代码解析</h3><p>让我们详细解析这个基础策略的每个部分：</p><p><strong>导入库文件</strong>：<code>from mindgo_api import *</code> 导入SuperMind提供的所有API函数，这是每个策略都必须包含的导入语句。</p><p><strong>init()函数</strong>：这是策略的初始化函数，在策略启动时执行一次。在这里我们可以：</p><ul><li>设置要交易的股票标的</li><li>配置策略参数</li><li>初始化全局变量</li></ul><p><strong>handle_bar()函数</strong>：这是策略的核心交易函数，根据设定的交易频率（日线或分钟线）自动调用。在这个函数中，我们：</p><ul><li>获取当前的行情数据</li><li>执行交易逻辑</li><li>下单交易</li></ul><p><strong>context对象</strong>：这是策略的上下文对象，包含了账户信息、持仓情况、策略状态等重要数据。通过context对象，我们可以：</p><ul><li>获取当前账户资金</li><li>查看持仓信息</li><li>存储策略状态</li></ul><p><strong>bar_dict参数</strong>：这是一个字典对象，包含了当前时刻所有订阅股票的K线数据。每个股票代码对应一个bar对象，包含开盘价、收盘价、最高价、最低价、成交量等信息。</p><h3 id=运行策略>运行策略</h3><p>完成代码编写后，点击"运行回测"按钮，设置回测参数：</p><ul><li><strong>回测开始时间</strong>：选择2023-01-01</li><li><strong>回测结束时间</strong>：选择2023-12-31</li><li><strong>初始资金</strong>：设置为100000元</li><li><strong>交易频率</strong>：选择日线</li></ul><p>点击"开始回测"，平台将开始执行策略。回测过程中，你可以实时查看：</p><p><strong>日志输出</strong>：在日志窗口中可以看到策略的执行情况，包括买入卖出记录、价格信息等。</p><p><strong>绩效指标</strong>：回测完成后，系统会自动生成详细的绩效报告，包括收益率、夏普比率、最大回撤等关键指标。</p><p><strong>交易记录</strong>：详细的每一笔交易记录，包括成交时间、价格、数量等信息。</p><h3 id=策略调试技巧>策略调试技巧</h3><p>在开发策略过程中，调试是必不可少的环节。SuperMind提供了强大的调试功能：</p><p><strong>日志输出</strong>：使用<code>log.info()</code>、<code>log.warning()</code>、<code>log.error()</code>等函数输出调试信息。</p><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>handle_bar</span><span class=p>(</span><span class=n>context</span><span class=p>,</span> <span class=n>bar_dict</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=n>stock</span> <span class=o>=</span> <span class=n>context</span><span class=o>.</span><span class=n>stock</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 输出调试信息</span>
+</span></span><span class=line><span class=cl>    <span class=n>log</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;=== 新的一天开始 ===&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>log</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;当前日期：</span><span class=si>%s</span><span class=s1>&#39;</span> <span class=o>%</span> <span class=n>context</span><span class=o>.</span><span class=n>current_dt</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>log</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;账户现金：</span><span class=si>%.2f</span><span class=s1>&#39;</span> <span class=o>%</span> <span class=n>context</span><span class=o>.</span><span class=n>portfolio</span><span class=o>.</span><span class=n>cash</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>log</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;持仓市值：</span><span class=si>%.2f</span><span class=s1>&#39;</span> <span class=o>%</span> <span class=n>context</span><span class=o>.</span><span class=n>portfolio</span><span class=o>.</span><span class=n>positions_value</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1># 获取当前价格</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=n>stock</span> <span class=ow>in</span> <span class=n>bar_dict</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>current_price</span> <span class=o>=</span> <span class=n>bar_dict</span><span class=p>[</span><span class=n>stock</span><span class=p>]</span><span class=o>.</span><span class=n>close</span>
+</span></span><span class=line><span class=cl>        <span class=n>log</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;</span><span class=si>%s</span><span class=s1> 当前价格：</span><span class=si>%.2f</span><span class=s1>&#39;</span> <span class=o>%</span> <span class=p>(</span><span class=n>stock</span><span class=p>,</span> <span class=n>current_price</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=c1># 检查是否有足够资金</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>context</span><span class=o>.</span><span class=n>portfolio</span><span class=o>.</span><span class=n>cash</span> <span class=o>&gt;=</span> <span class=n>current_price</span> <span class=o>*</span> <span class=mi>100</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>order</span><span class=p>(</span><span class=n>stock</span><span class=p>,</span> <span class=mi>100</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>log</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;成功买入100股 </span><span class=si>%s</span><span class=s1>&#39;</span> <span class=o>%</span> <span class=n>stock</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>log</span><span class=o>.</span><span class=n>warning</span><span class=p>(</span><span class=s1>&#39;资金不足，无法买入&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=n>log</span><span class=o>.</span><span class=n>error</span><span class=p>(</span><span class=s1>&#39;未获取到 </span><span class=si>%s</span><span class=s1> 的行情数据&#39;</span> <span class=o>%</span> <span class=n>stock</span><span class=p>)</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><p><strong>断点调试</strong>：在代码编辑器中可以设置断点，逐步执行代码，查看变量值的变化。</p><p><strong>数据检查</strong>：使用<code>log.info()</code>输出关键变量的值，确保数据处理的正确性。</p><h2 id=进阶策略参数配置>进阶：策略参数配置</h2><p>在实际策略开发中，我们通常需要将一些关键参数提取出来，方便后续调整优化。</p><div class="not-prose my-8 overflow-hidden rounded-lg bg-gray-900 shadow-lg"><div class="p-4 overflow-x-auto"><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-python data-lang=python><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kn>from</span> <span class=nn>mindgo_api</span> <span class=kn>import</span> <span class=o>*</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>init</span><span class=p>(</span><span class=n>context</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;策略初始化&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=c1># 基本参数配置</span>
+</span></span><span class=line><span class=cl>    <span class=n>context</span><span class=o>.</span><span class=n>stocks</span> <span class=o>=</span> <span class=p>[</span><span class=s1>&#39;000001.SZ&#39;</span><span class=p>,</span> <span class=s1>&#39;000002.SZ&#39;</span><span class=p>,</span> <span class=s1>&#39;600000.SH&#39;</span><span class=p>]</span>  <span class=c1># 股票池</span>
+</span></span><span class=line><span class=cl>    <span class=n>context</span><span class=o>.</span><span class=n>buy_amount</span> <span class=o>=</span> <span class=mi>100</span>  <span class=c1># 每次买入数量</span>
+</span></span><span class=line><span class=cl>    <span class=n>context</span><span class=o>.</span><span class=n>max_position</span> <span class=o>=</span> <span class=mf>0.8</span>  <span class=c1># 最大仓位</span>
+</span></span><span class=line><span class=cl>    <span class=n>context</span><span class=o>.</span><span class=n>stop_loss</span> <span class=o>=</span> <span class=mf>0.05</span>  <span class=c1># 止损比例</span>
+</span></span><span class=line><span class=cl>    <span class=n>context</span><span class=o>.</span><span class=n>take_profit</span> <span class=o>=</span> <span class=mf>0.15</span>  <span class=c1># 止盈比例</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=n>log</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;策略参数初始化完成&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>log</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;股票池：</span><span class=si>%s</span><span class=s1>&#39;</span> <span class=o>%</span> <span class=nb>str</span><span class=p>(</span><span class=n>context</span><span class=o>.</span><span class=n>stocks</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>    <span class=n>log</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;单次买入数量：</span><span class=si>%d</span><span class=s1>&#39;</span> <span class=o>%</span> <span class=n>context</span><span class=o>.</span><span class=n>buy_amount</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>def</span> <span class=nf>handle_bar</span><span class=p>(</span><span class=n>context</span><span class=p>,</span> <span class=n>bar_dict</span><span class=p>):</span>
+</span></span><span class=line><span class=cl>    <span class=s2>&#34;&#34;&#34;主交易逻辑&#34;&#34;&#34;</span>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=n>stock</span> <span class=ow>in</span> <span class=n>context</span><span class=o>.</span><span class=n>stocks</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=n>stock</span> <span class=ow>in</span> <span class=n>bar_dict</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>            <span class=n>current_price</span> <span class=o>=</span> <span class=n>bar_dict</span><span class=p>[</span><span class=n>stock</span><span class=p>]</span><span class=o>.</span><span class=n>close</span>
+</span></span><span class=line><span class=cl>            
+</span></span><span class=line><span class=cl>            <span class=c1># 检查持仓</span>
+</span></span><span class=line><span class=cl>            <span class=n>position</span> <span class=o>=</span> <span class=n>context</span><span class=o>.</span><span class=n>portfolio</span><span class=o>.</span><span class=n>positions</span><span class=o>.</span><span class=n>get</span><span class=p>(</span><span class=n>stock</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=n>position</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=c1># 已有持仓，检查止盈止损</span>
+</span></span><span class=line><span class=cl>                <span class=n>cost_price</span> <span class=o>=</span> <span class=n>position</span><span class=o>.</span><span class=n>avg_cost</span>
+</span></span><span class=line><span class=cl>                <span class=n>profit_pct</span> <span class=o>=</span> <span class=p>(</span><span class=n>current_price</span> <span class=o>-</span> <span class=n>cost_price</span><span class=p>)</span> <span class=o>/</span> <span class=n>cost_price</span>
+</span></span><span class=line><span class=cl>                
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=n>profit_pct</span> <span class=o>&gt;=</span> <span class=n>context</span><span class=o>.</span><span class=n>take_profit</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=c1># 达到止盈，卖出</span>
+</span></span><span class=line><span class=cl>                    <span class=n>order_target</span><span class=p>(</span><span class=n>stock</span><span class=p>,</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                    <span class=n>log</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;</span><span class=si>%s</span><span class=s1> 达到止盈，卖出清仓&#39;</span> <span class=o>%</span> <span class=n>stock</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=k>elif</span> <span class=n>profit_pct</span> <span class=o>&lt;=</span> <span class=o>-</span><span class=n>context</span><span class=o>.</span><span class=n>stop_loss</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=c1># 达到止损，卖出</span>
+</span></span><span class=line><span class=cl>                    <span class=n>order_target</span><span class=p>(</span><span class=n>stock</span><span class=p>,</span> <span class=mi>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                    <span class=n>log</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;</span><span class=si>%s</span><span class=s1> 达到止损，卖出清仓&#39;</span> <span class=o>%</span> <span class=n>stock</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                <span class=c1># 没有持仓，考虑买入</span>
+</span></span><span class=line><span class=cl>                <span class=c1># 简单的买入逻辑：价格大于20日均线</span>
+</span></span><span class=line><span class=cl>                <span class=n>hist</span> <span class=o>=</span> <span class=n>history</span><span class=p>(</span><span class=n>stock</span><span class=p>,</span> <span class=p>[</span><span class=s1>&#39;close&#39;</span><span class=p>],</span> <span class=mi>20</span><span class=p>,</span> <span class=s1>&#39;1d&#39;</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=nb>len</span><span class=p>(</span><span class=n>hist</span><span class=p>)</span> <span class=o>&gt;=</span> <span class=mi>20</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=n>ma20</span> <span class=o>=</span> <span class=n>hist</span><span class=p>[</span><span class=s1>&#39;close&#39;</span><span class=p>]</span><span class=o>.</span><span class=n>mean</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>                    <span class=k>if</span> <span class=n>current_price</span> <span class=o>&gt;</span> <span class=n>ma20</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                        <span class=c1># 买入逻辑</span>
+</span></span><span class=line><span class=cl>                        <span class=n>order</span><span class=p>(</span><span class=n>stock</span><span class=p>,</span> <span class=n>context</span><span class=o>.</span><span class=n>buy_amount</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                        <span class=n>log</span><span class=o>.</span><span class=n>info</span><span class=p>(</span><span class=s1>&#39;</span><span class=si>%s</span><span class=s1> 价格突破20日均线，买入</span><span class=si>%d</span><span class=s1>股&#39;</span> <span class=o>%</span> <span class=p>(</span><span class=n>stock</span><span class=p>,</span> <span class=n>context</span><span class=o>.</span><span class=n>buy_amount</span><span class=p>))</span>
+</span></span></code></pre></td></tr></table></div></div></div></div><p>这个进阶示例展示了如何将策略参数化，并加入了一些基本的交易逻辑，包括：</p><p><strong>多股票管理</strong>：同时管理多只股票，每只股票独立判断。</p><p><strong>仓位控制</strong>：设置最大仓位限制，避免过度集中风险。</p><p><strong>止盈止损</strong>：为每笔交易设置明确的止盈止损条件。</p><p><strong>技术分析</strong>：使用简单的移动平均线作为买入信号。</p><h2 id=总结与展望>总结与展望</h2><p>通过本篇的学习，你已经掌握了SuperMind量化交易平台的基础使用方法，包括：</p><p>✅ <strong>平台优势理解</strong>：了解了SuperMind在数据、速度、智能化方面的核心优势</p><p>✅ <strong>环境配置完成</strong>：学会了平台注册、策略创建、代码编写的基本流程</p><p>✅ <strong>基础策略开发</strong>：能够编写简单的量化策略，理解init()和handle_bar()函数的作用</p><p>✅ <strong>策略调试技巧</strong>：掌握了日志输出、参数配置等调试方法</p><p>这只是量化交易之旅的开始。在接下来的教程中，我们将深入学习：</p><ul><li><strong>数据获取与处理</strong>：如何获取高质量的金融数据并进行有效处理</li><li><strong>技术指标应用</strong>：构建基于技术分析的量化策略</li><li><strong>因子选股模型</strong>：开发多因子选股策略</li><li><strong>风险管理技术</strong>：建立完善的风险控制体系</li><li><strong>策略优化方法</strong>：通过参数优化提升策略表现</li></ul><p>量化交易是一个需要持续学习和实践的领域。建议你：</p><ol><li><strong>多实践</strong>：尝试修改本篇的示例代码，加入自己的想法</li><li><strong>多思考</strong>：理解每个函数背后的原理，不要只停留在代码层面</li><li><strong>多总结</strong>：记录策略开发过程中的问题和解决方案</li><li><strong>多交流</strong>：与其他量化交易者交流经验，共同进步</li></ol><p>记住，最好的学习方式是动手实践。现在就开始你的第一个量化策略吧！</p></div></article><aside class="lg:w-80 xl:w-96"><div class=space-y-8></div></aside></div><nav class="border-t border-gray-200 mt-12 pt-8"><div class="flex justify-between items-center"><a href=/blog/content-management-hugo/ class="group flex items-center"><svg class="w-5 h-5 mr-2 text-gray-600 group-hover:text-primary-600" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0 7-7m-7 7h18"/></svg><div><div class="text-sm text-gray-600">上一篇</div><div class="font-medium group-hover:text-primary-600">敬请期待</div></div></a><a href=/blog/%E5%9B%9E%E6%B5%8B%E5%B9%B3%E5%8F%B0/02-%E9%87%91%E8%9E%8D%E6%95%B0%E6%8D%AE%E8%8E%B7%E5%8F%96%E4%B8%8Eapi%E5%9F%BA%E7%A1%80%E5%BA%94%E7%94%A8/ class="group flex items-center text-right"><div><div class="text-sm text-gray-600">Next Post</div><div class="font-medium group-hover:text-primary-600">SuperMind第2讲：金融数据获取与API基础应用</div></div><svg class="w-5 h-5 ml-2 text-gray-600 group-hover:text-primary-600" fill="none" stroke="currentcolor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0-7 7m7-7H3"/></svg></a></div></nav></div></div><footer class="bg-gray-50 py-12 border-t border-gray-200"><div class="container mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl"><div class="flex flex-col md:flex-row justify-between space-y-4 md:space-y-0"><div class=flex-1><div class="flex items-center space-x-3 mb-4"><a href=https://sk-quant.github.io/ class=inline-block><img src=/images/logo.svg alt=烧烤量化 class=h-6>
+</a><span class="text-xl font-bold text-gray-900">烧烤量化</span></div><div class="flex space-x-3 p-2"></div></div><div class=flex-1><h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4"></h3><ul class=space-y-2></ul></div><div class=flex-1><h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4"></h3><ul class=space-y-2></ul></div><div class=flex-1><h3 class="text-sm font-semibold uppercase tracking-wider text-gray-900 mb-4"></h3><ul class=space-y-2></ul></div></div><div class="mt-12 pt-8 border-t border-gray-200"><div class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0"><p class="text-gray-600 text-sm">© 2025 烧烤量化. All rights reserved.</p><a href=https://chaoming.li class="text-sm text-gray-600 hover:text-primary-600" target=_blank rel="noopener noreferrer">Powered by sk-quant</a></div></div></div></footer><script>const mobileMenuButton=document.getElementById("mobile-menu-button");mobileMenuButton&&mobileMenuButton.addEventListener("click",function(){const e=document.getElementById("mobile-menu");e&&e.classList.toggle("hidden")})</script></body></html>
